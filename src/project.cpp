@@ -55,7 +55,7 @@ struct stateData_t {
 // Build and compile shader program
 GLuint buildShaderProgram() {
 	// Read the Vertex Shader code from the file
-	string vertex_shader_path = "../src/shaders/vertex.shader";
+	string vertex_shader_path = string(PROJECT_ROOT) + string("/src/shaders/vertex.shader");
 	string VertexShaderCode;
 	std::ifstream VertexShaderStream(vertex_shader_path.c_str(), ios::in);
 
@@ -87,7 +87,7 @@ GLuint buildShaderProgram() {
 	}
 
 	// Read the Fragment Shader code from the file
-	string fragment_shader_path = "../src/shaders/fragment.shader";
+	string fragment_shader_path = string(PROJECT_ROOT) + string("/src/shaders/fragment.shader");
 	std::string FragmentShaderCode;
 	std::ifstream FragmentShaderStream(fragment_shader_path.c_str(), std::ios::in);
 
