@@ -1,3 +1,4 @@
+# cmake intermediate files
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
@@ -6,6 +7,11 @@ cmake_install.cmake
 install_manifest.txt
 CTestTestfile.cmake
 
+# build files, libraries and binaries
 #lib/*
 bin/*
 build/*
+
+# sublime text files
+*.sublime-project
+*.sublime-workspace
