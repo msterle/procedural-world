@@ -8,6 +8,7 @@
 #include "../include/glm/gtc/constants.hpp"
 
 #include "terrain.cpp"
+#include "camera.cpp"
 
 #include <cstdlib>
 #include <stdio.h>
@@ -41,12 +42,7 @@ struct stateData_t {
 	glm::mat4 model, view, proj;
 	Terrain terrain;
 	cimg_library::CImg<unsigned char> heightImg, colorImg;
-	// Camera definition
-	struct {
-		glm::vec3 position;
-		glm::vec3 direction;
-		glm::vec3 up;
-	} camera;
+	Camera camera;
 	// Last recorded cursor positions
 	double cursorLastX, cursorLastY;
 };
@@ -181,21 +177,19 @@ void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, in
 			break;
 		case GLFW_KEY_LEFT:
 			stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-			stateData->camera.position -= 0.1f * glm::cross(stateData->camera.direction,
-			                                                stateData->camera.up);
+			stateData->camera.moveRelative(glm::vec3(-0.1, 0, 0));
 			break;
 		case GLFW_KEY_RIGHT:
 			stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-			stateData->camera.position += 0.1f * glm::cross(stateData->camera.direction,
-			                                                stateData->camera.up);
+			stateData->camera.moveRelative(glm::vec3(0.1, 0, 0));
 			break;
 		case GLFW_KEY_UP:
 			stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-			stateData->camera.position += 0.1f * stateData->camera.up;
+			stateData->camera.moveRelative(glm::vec3(0, 0.1, 0));
 			break;
 		case GLFW_KEY_DOWN:
 			stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-			stateData->camera.position -= 0.1f * stateData->camera.up;
+			stateData->camera.moveRelative(glm::vec3(0, -0.1, 0));
 			break;
 		case GLFW_KEY_T:
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -232,36 +226,17 @@ void glfw_mouse_button_callback(GLFWwindow* window, int button, int action, int 
 
 static void glfw_cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
 	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+		// change heading and attitude
 		stateData_t* stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-		// convert to euler angles
-		float pitch =
-			glm::atan( stateData->camera.direction.z,
-			           (float)glm::sqrt( glm::pow(stateData->camera.direction.x,
-			                                      2) + glm::pow(stateData->camera.direction.y, 2) ) ),
-		      yaw = glm::atan(stateData->camera.direction.y, stateData->camera.direction.x);
-		// update euler angles
-		yaw += (xpos - stateData->cursorLastX) * MOUSE_SENS_ROT;
-		pitch += (ypos - stateData->cursorLastY) * MOUSE_SENS_ROT;
-		if(pitch > glm::half_pi<float>() - 0.01) pitch = glm::half_pi<float>() - 0.01;
-		if(pitch < -glm::half_pi<float>() + 0.01) pitch = -glm::half_pi<float>() + 0.01;
-		// convert back to direction vector
-		stateData->camera.direction.x = cos(pitch) * cos(yaw);
-		stateData->camera.direction.y = cos(pitch) * sin(yaw);
-		stateData->camera.direction.z = sin(pitch);
-		// recalculate up vector
-		stateData->camera.up = glm::normalize(
-			glm::cross(
-				glm::cross( stateData->camera.direction, glm::vec3(0.0f, 0.0f, 0.1f) ) // find camera right first
-				, stateData->camera.direction) );
-		// store cursor position
+		stateData->camera.yaw((stateData->cursorLastX - xpos) * MOUSE_SENS_ROT);
+		stateData->camera.pitch((stateData->cursorLastY - ypos) * MOUSE_SENS_ROT);
 		stateData->cursorLastX = xpos;
 		stateData->cursorLastY = ypos;
 	}
 	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
 		stateData_t* stateData = (stateData_t*)glfwGetWindowUserPointer(window);
 		// move camera in/out
-		stateData->camera.position += stateData->camera.direction * (stateData->cursorLastY - ypos) *
-		                              MOUSE_SENS_MOV;
+		stateData->camera.moveRelative(glm::vec3(0, 0, stateData->cursorLastY - ypos) * MOUSE_SENS_MOV);
 		// store cursor position
 		stateData->cursorLastX = xpos;
 		stateData->cursorLastY = ypos;
@@ -354,19 +329,10 @@ int main() {
 	stateData->terrain.setShaderProgram(stateData->shaderProgram);
 	stateData->terrain.buildFromHeightmap(stateData->heightImg, stateData->colorImg);
 
-	// Initialize camera and view matrix
-	stateData->camera.position = glm::vec3(1.0f, 1.0f, 1.0f);
-	stateData->camera.direction = glm::normalize(-stateData->camera.position); // Set to look at (0, 0, 0)
-	stateData->camera.up = glm::normalize(
-		glm::cross(
-			glm::cross( stateData->camera.direction, glm::vec3(0.0f, 0.0f, 0.1f) ) // find camera right first
-			, stateData->camera.direction) );
-
-	stateData->view = glm::lookAt(
-		stateData->camera.position,
-		stateData->camera.position + stateData->camera.direction,
-		stateData->camera.up
-		);
+	// position camera
+	stateData->camera.setPosition(glm::vec3(0, 0, -1));
+	stateData->camera.lookAt(glm::vec3(0, 0, 0));
+	cout << glm::to_string(stateData->camera.getOrientation()) << endl;
 
 	// Initialize projection matrix
 	stateData->proj = glm::perspective(
@@ -390,11 +356,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Update view matrix from camera
-		stateData->view = glm::lookAt(
-			stateData->camera.position,
-			stateData->camera.position + stateData->camera.direction,
-			stateData->camera.up
-			);
+		stateData->view = stateData->camera.getViewMat();
 
 		// Bind transformation matrices to shader program
 		glUniformMatrix4fv( uniTrans, 1, GL_FALSE, glm::value_ptr(stateData->model) );

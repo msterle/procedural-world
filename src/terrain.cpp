@@ -38,17 +38,17 @@ void Terrain::buildFromHeightmap(const cimg_library::CImg<unsigned char>& height
 	int sourceWidth = heightImg.width(), sourceHeight = heightImg.width();
 	int width = scale * sourceWidth;
 	int height = scale * sourceHeight;
-	float zMax = 0;
+	float yMax = 0;
 	for(int y = 0; y < height; y++) {
 		for(int x = 0; x < width; x++) {
 			// For each pixel add a vertex with pixel's x and y values, z determined
 			// from heightmap image's first channel value and color copied from color image
 			glm::vec3 vertex;
 			vertex.x = (float) x / (width - 1) - 0.5f;
-			vertex.y = (float) y / (height - 1) - 0.5f;
-			vertex.z = upsample(x, y, 0, heightImg, sourceWidth, sourceHeight, scale) / 255;
-			if(vertex.z > zMax)
-				zMax = vertex.z;
+			vertex.z = (float) y / (height - 1) - 0.5f;
+			vertex.y = upsample(x, y, 0, heightImg, sourceWidth, sourceHeight, scale) / 255;
+			if(vertex.y > yMax)
+				yMax = vertex.y;
 			this->vertices.push_back(vertex);
 			
 			glm::vec3 vertexColor;
@@ -59,9 +59,9 @@ void Terrain::buildFromHeightmap(const cimg_library::CImg<unsigned char>& height
 		}
 	}
 
-	// Center object on Z plane according to maximum z value
+	// Center object on Y plane according to maximum y value
 	for(std::vector<glm::vec3>::iterator it = this->vertices.begin(); it != this->vertices.end(); ++it) {
-   		it->z -= zMax / 2;
+   		it->y -= yMax / 2;
 	}
 
 	// build indices

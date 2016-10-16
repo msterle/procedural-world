@@ -23,6 +23,7 @@ public:
 	void yaw(float angle);
 	void pitch(float angle);
 	void roll(float angle);
+	void lookAt(glm::vec3 target);
 	glm::mat4 getViewMat();
 
 private:
@@ -56,9 +57,10 @@ void Camera::translate(glm::vec3 t) {
 
 // Move relative to camera orientation (+X = right, +Y = up, +Z = forward)
 void Camera::moveRelative(glm::vec3 m) {
-	this->translate(m[0] * this->getViewMat()[0]
-		+ m[1] * this->getViewMat()[1]
-		+ m[2] * this->getViewMat()[2]);
+	glm::mat4 mat = this->getViewMat();
+	this->translate(m[0] * glm::normalize(mat[0])
+		+ m[1] * glm::normalize(mat[1])
+		+ m[2] * glm::normalize(mat[2]));
 }
 
 void Camera::setOrientation(glm::vec3 orientation) {
@@ -96,6 +98,13 @@ void Camera::pitch(float angle) {
 
 void Camera::roll(float angle) {
 	this->setBank(this->orientation[2] + angle);
+}
+
+void Camera::lookAt(glm::vec3 target) {
+	glm::vec3 direction = glm::normalize(target - this->position);
+	this->setHeading(glm::atan(direction.x, direction.z));
+	this->setAttitude(glm::asin(direction.y));
+	this->setBank(0.0f);
 }
 
 glm::mat4 Camera::Camera::getViewMat() {
