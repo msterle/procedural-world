@@ -1,24 +1,16 @@
+#include "../include/glew.h"
+#include "../include/glfw3.h"
 #include "../include/glm/gtc/type_ptr.hpp"
 #include "../include/CImg.h"
 #include <vector>
 
-#include "model.cpp"
+#include "model.h"
+#include "terrain.h"
 
 // debugging only!
 #include <iostream>
 
 using namespace std;
-
-class Terrain: public Model {
-public:
-	Terrain();
-	void buildFromHeightmap(const cimg_library::CImg<unsigned char>& heightImg, const cimg_library::CImg<unsigned char>& ColorImg, int scale = 1);
-	void draw();
-private:
-	GLuint colorBuffer;
-	vector<glm::vec3> vertexColors;
-	float upsample(int x, int y, int c, const cimg_library::CImg<unsigned char>& image, int width, int height, int scale);
-};
 
 Terrain::Terrain() {
 	glGenBuffers(1, &this->colorBuffer);

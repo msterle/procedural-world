@@ -3,20 +3,12 @@
 #include <string>
 #include <fstream>
 
+#include "shader.h"
+
 // Debugging only
 #include <iostream>
 
 using namespace std;
-
-class ShaderProgram {
-public:
-	ShaderProgram(string vertexShaderPath, string fragmentShaderPath);
-	GLuint getProgramRef();
-protected:
-	enum Type { VertexShader, FragmentShader };
-	GLuint programRef;
-	static GLuint compileShader(Type type, string path);
-};
 
 // Public methods
 

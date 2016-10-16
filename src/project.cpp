@@ -1,6 +1,7 @@
 #include "../include/glew.h"
 #include "../include/glfw3.h"
 #include "../include/glm/gtc/type_ptr.hpp"
+#include "../include/glm/gtc/matrix_transform.hpp"
 #include <cstdlib>
 #include <stdio.h>
 #include <iostream>
@@ -8,9 +9,9 @@
 #include <fstream>
 #include <vector>
 
-#include "terrain.cpp"
-#include "camera.cpp"
-#include "shaders.cpp"
+#include "shader.h"
+#include "terrain.h"
+#include "camera.h"
 
 using namespace std;
 

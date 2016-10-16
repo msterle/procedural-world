@@ -4,22 +4,11 @@
 #include "../include/glm/gtc/matrix_transform.hpp"
 #include <vector>
 
+#include "model.h"
+
 using namespace std;
 
-class Model {
-public:
-	Model();
-	void setShaderProgram(GLuint shaderProgram);
-	void translate(glm::vec3 t);
-	void scale(glm::vec3 s);
-	void rotate(float angle, glm::vec3 axis);
-protected:
-	GLuint VAO, vertexBuffer, indexBuffer;
-	GLuint shaderProgram;
-	vector<glm::vec3> vertices;
-	vector<unsigned int> indices;
-	glm::mat4 modelMat;
-};
+// Public Methods
 
 Model::Model() {
 	glGenVertexArrays(1, &this->VAO);
