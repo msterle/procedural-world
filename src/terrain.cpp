@@ -12,22 +12,28 @@
 
 using namespace std;
 
+// Public methods
+
 Terrain::Terrain() {
 	glGenBuffers(1, &this->colorBuffer);
 }
 
-void Terrain::buildFromHeightmap(const cimg_library::CImg<unsigned char>& heightImg, const cimg_library::CImg<unsigned char>& colorImg, int scale) {
-	
+void Terrain::buildFromHeightmap(string heightmapPath, string colorPath, int scale) {
+	this->heightImg = cimg_library::CImg<unsigned char>(heightmapPath.c_str());
+	this->colorImg = cimg_library::CImg<unsigned char>(colorPath.c_str());
 	// input check
-	if( heightImg.width() != colorImg.width() || heightImg.height() != colorImg.height() ) {
+	if( heightImg.width() != this->colorImg.width() || heightImg.height() != this->colorImg.height() ) {
 		cerr << "Error: input images not equal dimensions";
 		exit(-1);
 	}
-	
+	this->resampleHeightmap(scale);	
+}
+
+void Terrain::resampleHeightmap(int scale) {
 	// build vertices
 	this->vertices.clear();
 	this->vertexColors.clear();
-	int sourceWidth = heightImg.width(), sourceHeight = heightImg.width();
+	int sourceWidth = this->heightImg.width(), sourceHeight = this->heightImg.width();
 	int width = scale * sourceWidth;
 	int height = scale * sourceHeight;
 	float yMax = 0;
@@ -38,15 +44,15 @@ void Terrain::buildFromHeightmap(const cimg_library::CImg<unsigned char>& height
 			glm::vec3 vertex;
 			vertex.x = (float) x / (width - 1) - 0.5f;
 			vertex.z = (float) y / (height - 1) - 0.5f;
-			vertex.y = upsample(x, y, 0, heightImg, sourceWidth, sourceHeight, scale) / 255;
+			vertex.y = upsample(x, y, 0, this->heightImg, sourceWidth, sourceHeight, scale) / 255;
 			if(vertex.y > yMax)
 				yMax = vertex.y;
 			this->vertices.push_back(vertex);
 			
 			glm::vec3 vertexColor;
-			vertexColor.r = upsample(x, y, 0, colorImg, sourceWidth, sourceHeight, scale) / 255;
-			vertexColor.g = upsample(x, y, 1, colorImg, sourceWidth, sourceHeight, scale) / 255;
-			vertexColor.b = upsample(x, y, 2, colorImg, sourceWidth, sourceHeight, scale) / 255;
+			vertexColor.r = upsample(x, y, 0, this->colorImg, sourceWidth, sourceHeight, scale) / 255;
+			vertexColor.g = upsample(x, y, 1, this->colorImg, sourceWidth, sourceHeight, scale) / 255;
+			vertexColor.b = upsample(x, y, 2, this->colorImg, sourceWidth, sourceHeight, scale) / 255;
 			this->vertexColors.push_back(vertexColor);
 		}
 	}
@@ -97,6 +103,17 @@ void Terrain::buildFromHeightmap(const cimg_library::CImg<unsigned char>& height
 	glBindVertexArray(0);
 }
 
+void Terrain::draw() {
+	GLint loc_modelMat = glGetUniformLocation(this->shaderProgram, "model");
+	glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(this->modelMat));
+	glBindVertexArray(this->VAO);
+	glDrawElements(GL_TRIANGLE_STRIP, this->indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+}
+
+
+// Protected methods
+
 float Terrain::upsample(int x, int y, int c, const cimg_library::CImg<unsigned char>& image, int width, int height, int scale) {
 	// Weighted average of four surrounding source pixels
 	// note: requires image width & height to reduce overhead of calling CImg methods
@@ -112,12 +129,4 @@ float Terrain::upsample(int x, int y, int c, const cimg_library::CImg<unsigned c
 			+ (float) *image.data(x / scale,         y / scale + yLast, 0, c) * (scale - xmod) * ymod 
 			+ (float) *image.data(x / scale + xLast, y / scale + yLast, 0, c) * xmod *           ymod ) 
 		/ (scale * scale);     // faster than pow(scale, 2)
-}
-
-void Terrain::draw() {
-	GLint loc_modelMat = glGetUniformLocation(this->shaderProgram, "model");
-	glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(this->modelMat));
-	glBindVertexArray(this->VAO);
-	glDrawElements(GL_TRIANGLE_STRIP, this->indices.size(), GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
 }

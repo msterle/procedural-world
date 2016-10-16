@@ -2,24 +2,15 @@
 #include "../include/glfw3.h"
 #include "../include/glm/gtc/type_ptr.hpp"
 #include "../include/glm/gtc/matrix_transform.hpp"
-#include <cstdlib>
-#include <stdio.h>
 #include <iostream>
 #include <string>
-#include <fstream>
-#include <vector>
 
+#include "glhelper.h"
 #include "shader.h"
 #include "terrain.h"
 #include "camera.h"
 
 using namespace std;
-
-// Target openGL version
-const int OPENGL_VERSION_MAJOR = 3, OPENGL_VERSION_MINOR = 3;
-
-// Window dimensions
-const GLuint WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
 
 const float CAMERA_FOV = 45.0f; // camera field of view
 
@@ -40,23 +31,15 @@ struct stateData_t {
 	double cursorLastX, cursorLastY;
 };
 
-// Error handling callback
-void glfw_error_callback(int error, const char* description) {
-	cerr << "GLFW error: " << description << endl;
-}
-
 // Window resize callback
-void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
+void glfw_framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
 	stateData_t* stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-	// Modify projection matrix
-	stateData->proj = glm::perspective(
-		glm::radians(CAMERA_FOV),
+	stateData->camera.perspective(glm::radians(CAMERA_FOV),
 		(float)width / (float)height,
 		0.1f,
 		10.0f
 		);
-	// Update viewport
-	glViewport(0, 0, width, height);
 }
 
 // Keyboard event callback
@@ -110,15 +93,15 @@ void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, in
 			break;
 		case GLFW_KEY_1:
 			stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-			stateData->terrain.buildFromHeightmap(stateData->heightImg, stateData->colorImg, 1);
+			stateData->terrain.resampleHeightmap(1);
 			break;
 		case GLFW_KEY_2:
 			stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-			stateData->terrain.buildFromHeightmap(stateData->heightImg, stateData->colorImg, 2);
+			stateData->terrain.resampleHeightmap(2);
 			break;
 		case GLFW_KEY_4:
 			stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-			stateData->terrain.buildFromHeightmap(stateData->heightImg, stateData->colorImg, 4);
+			stateData->terrain.resampleHeightmap(4);
 			break;
 		}
 	}
@@ -154,110 +137,51 @@ static void glfw_cursor_position_callback(GLFWwindow* window, double xpos, doubl
 	}
 }
 
-GLFWwindow* initGL() {
-	//// GLFW setup
 
-	cout << "Starting GLFW context, OpenGL " << OPENGL_VERSION_MAJOR << "." << OPENGL_VERSION_MINOR << endl;
 
-	// Initialize GLFW
-	glfwInit();
-	glfwSetErrorCallback(glfw_error_callback);
-
-	// Set GLFW options
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, OPENGL_VERSION_MAJOR);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPENGL_VERSION_MINOR);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-
-	// Create a GLFWwindow object that we can use for GLFW's functions
-	GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Triangle", nullptr, nullptr);
-	if (window == nullptr) {
-		cerr << "Failed to create GLFW window" << endl;
-		glfwTerminate();
-		exit(-1);
-	}
-	glfwMakeContextCurrent(window);
+int main() {
+	//// Program setup
+	GLFWwindow* window = glhelper::initGL();
 
 	// Set to catch state change between polling cycles
 	glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, 1);
 
 	// Set window callback functions
 	glfwSetKeyCallback(window, glfw_key_callback);
-	glfwSetWindowSizeCallback(window, glfw_window_size_callback);
+	glfwSetFramebufferSizeCallback(window, glfw_framebuffer_size_callback);
 	glfwSetMouseButtonCallback(window, glfw_mouse_button_callback);
 	glfwSetCursorPosCallback(window, glfw_cursor_position_callback);
-	glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, 1);
-
-
-	//// GLEW setup
-
-	// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
-	glewExperimental = GL_TRUE;
-
-	// Initialize GLEW to setup the OpenGL Function pointers
-	if (glewInit() != GLEW_OK)
-	{
-		cerr << "Failed to initialize GLEW" << endl;
-		exit(-1);
-	}
-
-	// Initialize the viewport dimensions
-	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
-	glViewport(0, 0, width, height);
-
-	//// OpenGL setup
-
-	// Set point size for point draw mode
-	glEnable(GL_PROGRAM_POINT_SIZE);
-	glPointSize(1.0f);
-
-	// Enable depth buffer
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-
-	// Enable primitive restart
-	glEnable(GL_PRIMITIVE_RESTART);
-	// Define restart index
-	glPrimitiveRestartIndex(65535);
-
-	return window;
-}
-
-int main() {
-
-	//// Program setup
-	GLFWwindow* window = initGL();
 
 	stateData_t* stateData = new stateData_t;
 	glfwSetWindowUserPointer(window, stateData);
 
 	string vertexShaderPath = string(PROJECT_ROOT) + string("/src/shaders/vertex.shader");
 	string fragmentShaderPath = string(PROJECT_ROOT) + string("/src/shaders/fragment.shader");
-
 	ShaderProgram shaderProgram(vertexShaderPath, fragmentShaderPath);
 
 	//// Data setup
-	stateData->heightImg = cimg_library::CImg<unsigned char>((string(PROJECT_ROOT) + string(TERRAIN_PATH_HEIGHTMAP)).c_str());
-	stateData->colorImg = cimg_library::CImg<unsigned char>((string(PROJECT_ROOT) + string(TERRAIN_PATH_COLOR)).c_str());
+	string terrainHeightmapPath = string(PROJECT_ROOT) + string(TERRAIN_PATH_HEIGHTMAP);
+	string terrainColorPath = string(PROJECT_ROOT) + string(TERRAIN_PATH_COLOR);
 
 	cout << "Creating terrain..." << endl;
 	stateData->terrain.setShaderProgram(shaderProgram.getProgramRef());
-	stateData->terrain.buildFromHeightmap(stateData->heightImg, stateData->colorImg);
+	stateData->terrain.buildFromHeightmap(terrainHeightmapPath, terrainColorPath);
 
 	// position camera
 	stateData->camera.setPosition(glm::vec3(1, 1, 1));
 	stateData->camera.lookAt(glm::vec3(0, 0, 0));
 
 	// Initialize projection matrix
-	stateData->proj = glm::perspective(
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+	stateData->camera.perspective(
 		glm::radians(CAMERA_FOV),
-		(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
-		0.005f, 10.0f
+		(float)width / (float)height,
+		0.1f, 
+		10.0f
 		);
 
 	// Get shader matrix pointers
-	GLint uniTrans = glGetUniformLocation(shaderProgram.getProgramRef(), "model");
 	GLint uniView = glGetUniformLocation(shaderProgram.getProgramRef(), "view");
 	GLint uniProj = glGetUniformLocation(shaderProgram.getProgramRef(), "proj");
 
@@ -274,9 +198,8 @@ int main() {
 		stateData->view = stateData->camera.getViewMat();
 
 		// Bind transformation matrices to shader program
-		glUniformMatrix4fv( uniTrans, 1, GL_FALSE, glm::value_ptr(stateData->model) );
-		glUniformMatrix4fv( uniView, 1, GL_FALSE, glm::value_ptr(stateData->view) );
-		glUniformMatrix4fv( uniProj, 1, GL_FALSE, glm::value_ptr(stateData->proj) );
+		glUniformMatrix4fv(uniView, 1, GL_FALSE, glm::value_ptr(stateData->camera.getViewMat()));
+		glUniformMatrix4fv(uniProj, 1, GL_FALSE, glm::value_ptr(stateData->camera.getProjMat()));
 
 		stateData->terrain.draw();
 

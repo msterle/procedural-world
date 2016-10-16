@@ -79,7 +79,6 @@ void Camera::roll(float angle) {
 	this->setBank(this->orientation[2] + angle);
 }
 
-// METHOD IS CORRECT
 void Camera::lookAt(glm::vec3 target) {
 	if(target == this->position)
 		return;
@@ -91,6 +90,14 @@ void Camera::lookAt(glm::vec3 target) {
 
 glm::mat4 Camera::Camera::getViewMat() {
 	return this->getOrientationMat() * glm::translate(glm::mat4(), -this->position);
+}
+
+void Camera::perspective(float fov, float aspect, float near, float far) {
+	this->projMat = glm::perspective(fov, aspect, near, far);
+}
+
+glm::mat4 Camera::getProjMat() {
+	return this->projMat;
 }
 
 
