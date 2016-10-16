@@ -1,21 +1,16 @@
 #include "../include/glew.h"
 #include "../include/glfw3.h"
-#include "../include/CImg.h"
-#include "../include/glm/glm.hpp"
-#include "../include/glm/gtc/matrix_transform.hpp"
 #include "../include/glm/gtc/type_ptr.hpp"
-#include "../include/glm/ext.hpp"
-#include "../include/glm/gtc/constants.hpp"
-
-#include "terrain.cpp"
-#include "camera.cpp"
-
 #include <cstdlib>
 #include <stdio.h>
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <vector>
+
+#include "terrain.cpp"
+#include "camera.cpp"
+#include "shaders.cpp"
 
 using namespace std;
 
@@ -25,19 +20,16 @@ const int OPENGL_VERSION_MAJOR = 3, OPENGL_VERSION_MINOR = 3;
 // Window dimensions
 const GLuint WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
 
+const float CAMERA_FOV = 45.0f; // camera field of view
+
 const char* TERRAIN_PATH_HEIGHTMAP = "/res/heightmap_lores.png";
 const char* TERRAIN_PATH_COLOR = "/res/colour_lores.png";
 
-// Vertical scaling for terrain
-const float VSCALE = 0.25;
-
 // Mouse sensitivity
 const float MOUSE_SENS_MOV = 0.005f;
-const float MOUSE_SENS_ROT = 0.001f;
 
 // Type definition for state data to be passed to GLFW calls
 struct stateData_t {
-	GLuint shaderProgram;
 	// Model, view and projection transformation matrices
 	glm::mat4 model, view, proj;
 	Terrain terrain;
@@ -46,91 +38,6 @@ struct stateData_t {
 	// Last recorded cursor positions
 	double cursorLastX, cursorLastY;
 };
-
-// Build and compile shader program
-GLuint buildShaderProgram() {
-	// Read the Vertex Shader code from the file
-	string vertex_shader_path = string(PROJECT_ROOT) + string("/src/shaders/vertex.shader");
-	string VertexShaderCode;
-	std::ifstream VertexShaderStream(vertex_shader_path.c_str(), ios::in);
-
-	if ( VertexShaderStream.is_open() ) {
-		string Line = "";
-		while ( getline(VertexShaderStream, Line) )
-			VertexShaderCode += "\n" + Line;
-		VertexShaderStream.close();
-	}
-	else {
-		cerr << "Error: Couldn't open vertex shader program ''" << vertex_shader_path.c_str() << "'" << endl;
-		exit(-1);
-	}
-
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	char const * VertexSourcePointer = VertexShaderCode.c_str();
-	glShaderSource(vertexShader, 1, &VertexSourcePointer, NULL);
-	glCompileShader(vertexShader);
-
-	// Check for compile time errors
-	GLint success;
-	GLchar infoLog[512];
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << endl;
-		exit(-1);
-	}
-
-	// Read the Fragment Shader code from the file
-	string fragment_shader_path = string(PROJECT_ROOT) + string("/src/shaders/fragment.shader");
-	std::string FragmentShaderCode;
-	std::ifstream FragmentShaderStream(fragment_shader_path.c_str(), std::ios::in);
-
-	if ( FragmentShaderStream.is_open() ) {
-		std::string Line = "";
-		while ( getline(FragmentShaderStream, Line) )
-			FragmentShaderCode += "\n" + Line;
-		FragmentShaderStream.close();
-	}
-	else {
-		cerr << "Error: Couldn't open fragment shader program ''" << fragment_shader_path.c_str() << "'" <<
-		        endl;
-		exit(-1);
-	}
-
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	char const * FragmentSourcePointer = FragmentShaderCode.c_str();
-	glShaderSource(fragmentShader, 1, &FragmentSourcePointer, NULL);
-	glCompileShader(fragmentShader);
-
-	// Check for compile time errors
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED" << infoLog << endl;
-		exit(-1);
-	}
-
-	// Link shaders
-	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-
-	// Check for linking errors
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		cerr << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << endl;
-		exit(-1);
-	}
-	glDeleteShader(vertexShader); //free up memory
-	glDeleteShader(fragmentShader);
-
-	glUseProgram(shaderProgram);
-	return shaderProgram;
-}
 
 // Error handling callback
 void glfw_error_callback(int error, const char* description) {
@@ -142,7 +49,7 @@ void glfw_window_size_callback(GLFWwindow* window, int width, int height) {
 	stateData_t* stateData = (stateData_t*)glfwGetWindowUserPointer(window);
 	// Modify projection matrix
 	stateData->proj = glm::perspective(
-		glm::radians(45.0f),
+		glm::radians(CAMERA_FOV),
 		(float)width / (float)height,
 		0.1f,
 		10.0f
@@ -228,8 +135,11 @@ static void glfw_cursor_position_callback(GLFWwindow* window, double xpos, doubl
 	if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
 		// change heading and attitude
 		stateData_t* stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-		stateData->camera.yaw((stateData->cursorLastX - xpos) * MOUSE_SENS_ROT);
-		stateData->camera.pitch((stateData->cursorLastY - ypos) * MOUSE_SENS_ROT);
+		int width, height;
+		glfwGetFramebufferSize(window, &width, &height);
+		float anglePerPixel = CAMERA_FOV / height;
+		stateData->camera.yaw((stateData->cursorLastX - xpos) * anglePerPixel);
+		stateData->camera.pitch((ypos - stateData->cursorLastY) * anglePerPixel);
 		stateData->cursorLastX = xpos;
 		stateData->cursorLastY = ypos;
 	}
@@ -275,6 +185,7 @@ GLFWwindow* initGL() {
 	glfwSetWindowSizeCallback(window, glfw_window_size_callback);
 	glfwSetMouseButtonCallback(window, glfw_mouse_button_callback);
 	glfwSetCursorPosCallback(window, glfw_cursor_position_callback);
+	glfwSetInputMode(window, GLFW_STICKY_MOUSE_BUTTONS, 1);
 
 
 	//// GLEW setup
@@ -319,32 +230,35 @@ int main() {
 
 	stateData_t* stateData = new stateData_t;
 	glfwSetWindowUserPointer(window, stateData);
-	stateData->shaderProgram = buildShaderProgram();
+
+	string vertexShaderPath = string(PROJECT_ROOT) + string("/src/shaders/vertex.shader");
+	string fragmentShaderPath = string(PROJECT_ROOT) + string("/src/shaders/fragment.shader");
+
+	ShaderProgram shaderProgram(vertexShaderPath, fragmentShaderPath);
 
 	//// Data setup
 	stateData->heightImg = cimg_library::CImg<unsigned char>((string(PROJECT_ROOT) + string(TERRAIN_PATH_HEIGHTMAP)).c_str());
 	stateData->colorImg = cimg_library::CImg<unsigned char>((string(PROJECT_ROOT) + string(TERRAIN_PATH_COLOR)).c_str());
 
 	cout << "Creating terrain..." << endl;
-	stateData->terrain.setShaderProgram(stateData->shaderProgram);
+	stateData->terrain.setShaderProgram(shaderProgram.getProgramRef());
 	stateData->terrain.buildFromHeightmap(stateData->heightImg, stateData->colorImg);
 
 	// position camera
-	stateData->camera.setPosition(glm::vec3(0, 0, -1));
+	stateData->camera.setPosition(glm::vec3(1, 1, 1));
 	stateData->camera.lookAt(glm::vec3(0, 0, 0));
-	cout << glm::to_string(stateData->camera.getOrientation()) << endl;
 
 	// Initialize projection matrix
 	stateData->proj = glm::perspective(
-		glm::radians(45.0f),
+		glm::radians(CAMERA_FOV),
 		(float)WINDOW_WIDTH / (float)WINDOW_HEIGHT,
 		0.005f, 10.0f
 		);
 
 	// Get shader matrix pointers
-	GLint uniTrans = glGetUniformLocation(stateData->shaderProgram, "model");
-	GLint uniView = glGetUniformLocation(stateData->shaderProgram, "view");
-	GLint uniProj = glGetUniformLocation(stateData->shaderProgram, "proj");
+	GLint uniTrans = glGetUniformLocation(shaderProgram.getProgramRef(), "model");
+	GLint uniView = glGetUniformLocation(shaderProgram.getProgramRef(), "view");
+	GLint uniProj = glGetUniformLocation(shaderProgram.getProgramRef(), "proj");
 
 	// Main loop
 	while ( !glfwWindowShouldClose(window) ) {

@@ -1,7 +1,8 @@
-#include "model.cpp"
-
+#include "../include/glm/gtc/type_ptr.hpp"
 #include "../include/CImg.h"
 #include <vector>
+
+#include "model.cpp"
 
 // debugging only!
 #include <iostream>
@@ -13,7 +14,6 @@ public:
 	Terrain();
 	void buildFromHeightmap(const cimg_library::CImg<unsigned char>& heightImg, const cimg_library::CImg<unsigned char>& ColorImg, int scale = 1);
 	void draw();
-
 private:
 	GLuint colorBuffer;
 	vector<glm::vec3> vertexColors;
@@ -77,7 +77,7 @@ void Terrain::buildFromHeightmap(const cimg_library::CImg<unsigned char>& height
 		}
 	}
 
-	this->scale(glm::vec3(1, 1, 0.5));
+	this->scale(glm::vec3(1, 0.5, 1));
 
 	// bind buffers
 	glBindVertexArray(this->VAO);

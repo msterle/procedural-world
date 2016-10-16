@@ -1,5 +1,7 @@
 #include "../include/glew.h"
 #include "../include/glfw3.h"
+#include "../include/glm/glm.hpp"
+#include "../include/glm/gtc/matrix_transform.hpp"
 #include <vector>
 
 using namespace std;
@@ -11,7 +13,6 @@ public:
 	void translate(glm::vec3 t);
 	void scale(glm::vec3 s);
 	void rotate(float angle, glm::vec3 axis);
-
 protected:
 	GLuint VAO, vertexBuffer, indexBuffer;
 	GLuint shaderProgram;
@@ -31,13 +32,13 @@ void Model::setShaderProgram(GLuint shaderProgram) {
 }
 
 void Model::translate(glm::vec3 t) {
-	this->modelMat = glm::translate(this->modelMat, t);
+	this->modelMat = glm::translate(glm::mat4(), t) * this->modelMat;
 }
 
 void Model::scale(glm::vec3 s) {
-	this->modelMat = glm::scale(this->modelMat, s);
+	this->modelMat = glm::scale(glm::mat4(), s) * this->modelMat;
 }
 
 void Model::rotate(float angle, glm::vec3 axis) {
-	this->modelMat = glm::rotate(this->modelMat, angle, axis);
+	this->modelMat = glm::rotate(glm::mat4(), angle, axis) * this->modelMat;
 }

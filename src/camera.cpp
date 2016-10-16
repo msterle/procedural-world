@@ -1,21 +1,21 @@
 #include "../include/glm/glm.hpp"
-#include "../include/glm/gtc/constants.hpp"
-#include "../include/glm/gtx/euler_angles.hpp"
-
+#include "../include/glm/gtc/matrix_transform.hpp"
 #include <cmath>
 
 using namespace std;
+
+static const float maxAbsoluteAttitude = 89.0f;
 
 class Camera {
 public:
 	Camera(glm::vec3 position, glm::vec3 orientation);
 	Camera() : Camera(glm::vec3(0, 0, 1), glm::vec3(-glm::half_pi<float>(), 0, 0)) {};
 	glm::vec3 getPosition();
-	glm::vec3 getOrientation();
-	glm::vec3 getDirection();
 	void setPosition(glm::vec3 position);
 	void translate(glm::vec3 t);
 	void moveRelative(glm::vec3 m);
+	glm::vec3 getOrientation();
+	glm::mat4 getOrientationMat();
 	void setOrientation(glm::vec3 orientation);
 	void setHeading(float angle);
 	void setAttitude(float angle);
@@ -25,10 +25,15 @@ public:
 	void roll(float angle);
 	void lookAt(glm::vec3 target);
 	glm::mat4 getViewMat();
-
-private:
-	glm::vec3 position, orientation; // orientation form (yaw, pitch, roll)
+protected:
+	glm::vec3 position, orientation; // orientation in degrees (yaw, pitch, roll)
+	glm::vec3 getForward();
+	glm::vec3 getUp();
+	glm::vec3 getRight();
 };
+
+
+// Public methods
 
 Camera::Camera(glm::vec3 position, glm::vec3 orientation) {
 	this->setPosition(position);
@@ -39,14 +44,6 @@ glm::vec3 Camera::getPosition() {
 	return this->position;
 }
 
-glm::vec3 Camera::getOrientation() {
-	return this->orientation;
-}
-
-glm::vec3 Camera::getDirection() {
-	return glm::normalize(-this->getViewMat()[1]);
-}
-
 void Camera::setPosition(glm::vec3 position) {
 	this->position = position;
 }
@@ -55,12 +52,21 @@ void Camera::translate(glm::vec3 t) {
 	this->position += t;
 }
 
-// Move relative to camera orientation (+X = right, +Y = up, +Z = forward)
 void Camera::moveRelative(glm::vec3 m) {
-	glm::mat4 mat = this->getViewMat();
-	this->translate(m[0] * glm::normalize(mat[0])
-		+ m[1] * glm::normalize(mat[1])
-		+ m[2] * glm::normalize(mat[2]));
+	this->translate(m[0] * this->getRight()
+		+ m[1] * this->getUp()
+		+ m[2] * this->getForward());
+}
+
+glm::vec3 Camera::getOrientation() {
+	return this->orientation;
+}
+
+glm::mat4 Camera::getOrientationMat() {
+	glm::mat4 orientationMat;
+	orientationMat = glm::rotate(orientationMat, glm::radians(-this->orientation[1]), glm::vec3(1, 0, 0));
+	orientationMat = glm::rotate(orientationMat, glm::radians(this->orientation[0]), glm::vec3(0, 1, 0));
+	return orientationMat;
 }
 
 void Camera::setOrientation(glm::vec3 orientation) {
@@ -70,22 +76,22 @@ void Camera::setOrientation(glm::vec3 orientation) {
 }
 
 void Camera::setHeading(float angle) {
-	// keep between -pi and pi
-	this->orientation[0] = fmod(angle + glm::pi<float>(), 2 * glm::pi<float>()) - glm::pi<float>();
+	// wrap heading between -180 and 180
+	this->orientation[0] = angle - 360.0f * floor((angle + 180.0f) / 360.0f);
 }
 
 void Camera::setAttitude(float angle) {
-	// keep between -pi/2 and pi/2
-	if(angle < -glm::pi<float>())
-		angle = -glm::pi<float>();
-	if(angle > glm::pi<float>())
-		angle = glm::pi<float>();
+	// keep attitude within bounds
+	if(angle < -maxAbsoluteAttitude)
+		angle = -maxAbsoluteAttitude;
+	if(angle > maxAbsoluteAttitude)
+		angle = maxAbsoluteAttitude;
 	this->orientation[1] = angle; 
 }
 
 void Camera::setBank(float angle) {
-	// keep between -pi and pi
-	this->orientation[2] = fmod(angle + glm::pi<float>(), 2 * glm::pi<float>()) - glm::pi<float>();
+	// wrap bank between -180 and 180
+	this->orientation[2] = angle - 360.0f * floor((angle + 180.0f) / 360.0f);
 }
 
 void Camera::yaw(float angle) {
@@ -100,13 +106,30 @@ void Camera::roll(float angle) {
 	this->setBank(this->orientation[2] + angle);
 }
 
+// METHOD IS CORRECT
 void Camera::lookAt(glm::vec3 target) {
+	if(target == this->position)
+		return;
 	glm::vec3 direction = glm::normalize(target - this->position);
-	this->setHeading(glm::atan(direction.x, direction.z));
-	this->setAttitude(glm::asin(direction.y));
+	this->setHeading(-glm::degrees(glm::atan(-direction.x, -direction.z)));
+	this->setAttitude(-glm::degrees(glm::asin(-direction.y)));
 	this->setBank(0.0f);
 }
 
 glm::mat4 Camera::Camera::getViewMat() {
-	return glm::translate(glm::yawPitchRoll(orientation[0], orientation[1], orientation[2]), position);
+	return this->getOrientationMat() * glm::translate(glm::mat4(), -this->position);
+}
+
+
+// Protected methods
+glm::vec3 Camera::getForward() {
+	return glm::vec3(glm::inverse(this->getOrientationMat()) * glm::vec4(0, 0, -1, 1));
+}
+
+glm::vec3 Camera::getUp() {
+	return glm::vec3(glm::inverse(this->getOrientationMat()) * glm::vec4(0, 1, 0, 1));
+}
+
+glm::vec3 Camera::getRight() {
+	return glm::vec3(glm::inverse(this->getOrientationMat()) * glm::vec4(1, 0, 0, 1));
 }
