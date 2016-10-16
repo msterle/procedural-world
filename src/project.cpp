@@ -7,6 +7,8 @@
 #include "../include/glm/ext.hpp"
 #include "../include/glm/gtc/constants.hpp"
 
+#include "terrain.cpp"
+
 #include <cstdlib>
 #include <stdio.h>
 #include <iostream>
@@ -22,6 +24,9 @@ const int OPENGL_VERSION_MAJOR = 3, OPENGL_VERSION_MINOR = 3;
 // Window dimensions
 const GLuint WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
 
+const char* TERRAIN_PATH_HEIGHTMAP = "/res/heightmap_lores.png";
+const char* TERRAIN_PATH_COLOR = "/res/colour_lores.png";
+
 // Vertical scaling for terrain
 const float VSCALE = 0.25;
 
@@ -31,17 +36,11 @@ const float MOUSE_SENS_ROT = 0.001f;
 
 // Type definition for state data to be passed to GLFW calls
 struct stateData_t {
-	GLuint VAO, VBO, EBO;
 	GLuint shaderProgram;
 	// Model, view and projection transformation matrices
 	glm::mat4 model, view, proj;
-	// Vertex buffer type definition/instantiation
-	struct vertexArray_t {
-		int width;
-		int height;
-		vector<GLfloat> vertices;
-	} vertexArray;
-	vector<GLuint> indexArray;
+	Terrain terrain;
+	cimg_library::CImg<unsigned char> heightImg, colorImg;
 	// Camera definition
 	struct {
 		glm::vec3 position;
@@ -137,121 +136,6 @@ GLuint buildShaderProgram() {
 	return shaderProgram;
 }
 
-float upsample(int x, int y, int c, cimg_library::CImg<unsigned char>* image, int width, int height, int scale) {
-	// Weighted average of four surrounding source pixels
-	// note: requires image width & height to reduce overhead of calling CImg methods
-	// ex: in 4x4 upsampling (scale = 4), output pixel (1, 2) has weighted average of
-	// surrounding 4 input pixels A (0,0), B (1, 0), C(0, 1) and D (1, 1)
-	// 6/16 * A + 2/16 * B + 6/16 * C + 2/16 * D
-	int xmod = x % scale, ymod = y % scale;
-	int xLast = x / scale + 1 < width ? 1 : 0;
-	int yLast = y / scale + 1 < height ? 1 : 0;
-	// Optimized from operator() to
-	return ( (float)*image->data(x / scale,         y / scale,         0, c) * (scale - xmod) * (scale - ymod) +
-	         (float)*image->data(x / scale + xLast, y / scale,         0, c) * xmod *           (scale - ymod) +
-	         (float)*image->data(x / scale,         y / scale + yLast, 0, c) * (scale - xmod) * ymod +
-	         (float)*image->data(x / scale + xLast, y / scale + yLast, 0, c) * xmod *           ymod ) /
-	       (scale * scale);     // faster than pow(scale, 2)
-}
-
-// Build vertex array from input files: res/heightmap.png for height values and res/colour.png for colour values
-void buildVertexArray(stateData_t* stateData, int scale = 1) {
-	// vertex format [x, y, z, r, g, b]
-	// Load source images
-	cimg_library::CImg<unsigned char> heightImg((string(PROJECT_ROOT) + string("/res/heightmap.png")).c_str()), colourImg((string(PROJECT_ROOT) + string("/res/colour.png")).c_str());
-	if( heightImg.width() != colourImg.width() || heightImg.height() != colourImg.height() ) {
-		cerr << "Error: input images not equal dimensions";
-		exit(-1);
-	}
-	int sourceWidth = heightImg.width(), sourceHeight = heightImg.width();
-	stateData->vertexArray.width = scale * sourceWidth;
-	stateData->vertexArray.height = scale * sourceHeight;
-	// Clear and allocate vector
-	stateData->vertexArray.vertices.clear();
-	stateData->vertexArray.vertices.resize(stateData->vertexArray.width * stateData->vertexArray.height * 6);
-	float maxZ = 0;
-	for(int y = 0; y < stateData->vertexArray.height; y++) {
-		for(int x = 0; x < stateData->vertexArray.width; x++) {
-			// For each pixel add a vertex with pixel's x and y values, z determined
-			// from heightmap image's first channel value and colour copied from colour image
-			// Optimized from push_back to operator[]
-			stateData->vertexArray.vertices[6 * (y * stateData->vertexArray.width + x)] =
-				(float) x / (stateData->vertexArray.width - 1) - 0.5f;
-			stateData->vertexArray.vertices[6 * (y * stateData->vertexArray.width + x) + 1] =
-				(float) y / (stateData->vertexArray.height - 1) -0.5f;
-			float z = upsample(x, y, 0, &heightImg, sourceWidth, sourceHeight, scale) / 255 * VSCALE;
-			// Determine maximum z value
-			if(z > maxZ)
-				maxZ = z;
-			stateData->vertexArray.vertices[6 * (y * stateData->vertexArray.width + x) + 2] = z;
-			int channels[3];
-			// For colour upsampling, average of four surrounding source pixels weighted accordingly
-			for(int c = 0; c < 3; c++)
-				stateData->vertexArray.vertices[6 * (y * stateData->vertexArray.width + x) + 3 +
-				                                c] = upsample(x, y, c, &colourImg, sourceWidth,
-				                                              sourceHeight, scale) / 255;
-		}
-	}
-
-	// Center object on Z plane according to maximum z value
-	for(int y = 0; y < stateData->vertexArray.height; y++) {
-		for(int x = 0; x < stateData->vertexArray.width; x++) {
-			stateData->vertexArray.vertices[(y * stateData->vertexArray.width + x) * 6 + 2] -= maxZ / 2;
-		}
-	}
-}
-
-// Build element index array
-void buildIndexBuffer(stateData_t* stateData) {
-	// Clear and allocate vector
-	stateData->indexArray.clear();
-	stateData->indexArray.reserve( (stateData->vertexArray.width * 2 + 1) * stateData->vertexArray.height );
-	// Not worth optimizing push_back call
-	for(int y = 0; y < stateData->vertexArray.height - 1; y++) {
-		for(int x = 0; x < stateData->vertexArray.width; x++) {
-			stateData->indexArray.push_back(x + y * stateData->vertexArray.width);
-			stateData->indexArray.push_back(x + (y + 1) * stateData->vertexArray.width);
-		}
-		// Restart primitive at end of row
-		if(y < stateData->vertexArray.height - 2) {
-			stateData->indexArray.push_back(65535);
-		}
-	}
-}
-
-void bindBuffers(stateData_t* stateData) {
-	glBindBuffer(GL_ARRAY_BUFFER, stateData->VBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, stateData->EBO);
-
-	// Set vertex buffer data
-	glBufferData(GL_ARRAY_BUFFER,
-	             stateData->vertexArray.vertices.size() * sizeof(GLfloat),
-	             &stateData->vertexArray.vertices.front(), GL_STATIC_DRAW);
-
-	// Set attribute pointers
-	// model: [x, y, z, r, g, b]
-	GLint posAttrib = glGetAttribLocation(stateData->shaderProgram, "position");
-	glEnableVertexAttribArray(posAttrib);
-	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), 0);
-
-	GLint colAttrib = glGetAttribLocation(stateData->shaderProgram, "in_colour");
-	glEnableVertexAttribArray(colAttrib);
-	glVertexAttribPointer( colAttrib, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)( 3 * sizeof(GLfloat) ) );
-
-	// Set index buffer data
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-	             stateData->indexArray.size() * sizeof(GLuint), &stateData->indexArray.front(), GL_STATIC_DRAW);
-
-	// Unbind array buffer
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void buildBuffers(stateData_t* stateData, int scale = 1) {
-	buildVertexArray(stateData, scale);
-	buildIndexBuffer(stateData);
-	bindBuffers(stateData);
-}
-
 // Error handling callback
 void glfw_error_callback(int error, const char* description) {
 	cerr << "GLFW error: " << description << endl;
@@ -282,27 +166,18 @@ void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, in
 		// Rotate model around world axes
 		case GLFW_KEY_X:
 			stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-			stateData->model = glm::rotate(
-				glm::mat4(),
-				glm::radians(10.0f),
-				glm::vec3( (mods == GLFW_MOD_SHIFT ? 1.0f : -1.0f), 0.0f, 0.0f )
-				) * stateData->model;
+			stateData->terrain.rotate(glm::radians(10.0f),
+				glm::vec3((mods == GLFW_MOD_SHIFT ? 1.0f : -1.0f), 0.0f, 0.0f ));
 			break;
 		case GLFW_KEY_Y:
 			stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-			stateData->model = glm::rotate(
-				glm::mat4(),
-				glm::radians(10.0f),
-				glm::vec3(0.0f, (mods == GLFW_MOD_SHIFT ? 1.0f : -1.0f), 0.0f)
-				) * stateData->model;
+			stateData->terrain.rotate(glm::radians(10.0f), 
+				glm::vec3(0.0f, (mods == GLFW_MOD_SHIFT ? 1.0f : -1.0f), 0.0f));
 			break;
 		case GLFW_KEY_Z:
 			stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-			stateData->model = glm::rotate(
-				glm::mat4(),
-				glm::radians(10.0f),
-				glm::vec3( 0.0f, 0.0f, (mods == GLFW_MOD_SHIFT ? 1.0f : -1.0f) )
-				) * stateData->model;
+			stateData->terrain.rotate(glm::radians(10.0f), 
+				glm::vec3(0.0f, 0.0f, (mods == GLFW_MOD_SHIFT ? 1.0f : -1.0f)));
 			break;
 		case GLFW_KEY_LEFT:
 			stateData = (stateData_t*)glfwGetWindowUserPointer(window);
@@ -333,15 +208,15 @@ void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, in
 			break;
 		case GLFW_KEY_1:
 			stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-			buildBuffers(stateData, 1);
+			stateData->terrain.buildFromHeightmap(stateData->heightImg, stateData->colorImg, 1);
 			break;
 		case GLFW_KEY_2:
 			stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-			buildBuffers(stateData, 2);
+			stateData->terrain.buildFromHeightmap(stateData->heightImg, stateData->colorImg, 2);
 			break;
 		case GLFW_KEY_4:
 			stateData = (stateData_t*)glfwGetWindowUserPointer(window);
-			buildBuffers(stateData, 4);
+			stateData->terrain.buildFromHeightmap(stateData->heightImg, stateData->colorImg, 4);
 			break;
 		}
 	}
@@ -472,21 +347,12 @@ int main() {
 	stateData->shaderProgram = buildShaderProgram();
 
 	//// Data setup
+	stateData->heightImg = cimg_library::CImg<unsigned char>((string(PROJECT_ROOT) + string(TERRAIN_PATH_HEIGHTMAP)).c_str());
+	stateData->colorImg = cimg_library::CImg<unsigned char>((string(PROJECT_ROOT) + string(TERRAIN_PATH_COLOR)).c_str());
 
-	// Initialize vertex array
-	glGenVertexArrays(1, &stateData->VAO);
-	glBindVertexArray(stateData->VAO);
-
-	// Initialize vertex buffer
-	glGenBuffers(1, &stateData->VBO);
-
-	// Initialize element buffer
-	glGenBuffers(1, &stateData->EBO);
-
-	// Build buffers
-	buildBuffers(stateData, 1);
-
-	glBindVertexArray(0);
+	cout << "Creating terrain..." << endl;
+	stateData->terrain.setShaderProgram(stateData->shaderProgram);
+	stateData->terrain.buildFromHeightmap(stateData->heightImg, stateData->colorImg);
 
 	// Initialize camera and view matrix
 	stateData->camera.position = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -535,10 +401,7 @@ int main() {
 		glUniformMatrix4fv( uniView, 1, GL_FALSE, glm::value_ptr(stateData->view) );
 		glUniformMatrix4fv( uniProj, 1, GL_FALSE, glm::value_ptr(stateData->proj) );
 
-		// Draw elements
-		glBindVertexArray(stateData->VAO);
-		glDrawElements(GL_TRIANGLE_STRIP, stateData->indexArray.size(), GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
+		stateData->terrain.draw();
 
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
