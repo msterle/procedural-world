@@ -6,6 +6,7 @@
 
 class ShaderProgram {
 public:
+	ShaderProgram();
 	ShaderProgram(std::string vertexShaderPath, std::string fragmentShaderPath);
 	GLuint getProgramRef();
 protected:

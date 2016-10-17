@@ -12,6 +12,10 @@ using namespace std;
 
 // Public methods
 
+ShaderProgram::ShaderProgram() {
+	
+}
+
 ShaderProgram::ShaderProgram(string vertexShaderPath, string fragmentShaderPath) {
 	// Compile shaders
 	GLuint vertexShaderRef = this->compileShader(VertexShader, vertexShaderPath);
