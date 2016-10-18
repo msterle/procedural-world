@@ -8,13 +8,6 @@ class World;
 class Camera;
 
 namespace UI {
-
-	const float MOUSE_SENS_MOV = 0.005f;
-	const float CAMERA_FOV = 45.0f; // camera field of view
-	World* world;
-	Camera* camera;
-	GLFWwindow* window;
-
 	// Abstract base class
 	class UIBase {
 		// Event callbacks to be defined by children
@@ -45,6 +38,7 @@ namespace UI {
 		}
 	};
 
+	// UI for walk mode class
 	class UIWalk : public UIBase {
 	public:
 		UIWalk();
@@ -55,9 +49,9 @@ namespace UI {
 	protected:
 		double cursorLastX, cursorLastY;
 	};
-	UIWalk* walk;
+	extern UIWalk* walk;
 
-	void init(World* world, Camera* camera, GLFWwindow* window);
+	void init(World* world, GLFWwindow* window);
 	void setActive(UIBase* UIinstance);
 
 }

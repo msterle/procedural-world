@@ -9,6 +9,9 @@
 
 #include "world.h"
 
+// debugging only
+#include <iostream>
+
 using namespace std;
 
 // Public Methods
@@ -34,6 +37,7 @@ World::World() {
 }
 
 void World::draw() {
+	cout << "World::draw" << endl;
 	// Clear the colorbuffer
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

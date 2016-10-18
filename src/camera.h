@@ -8,7 +8,7 @@ static const float maxAbsoluteAttitude = 89.0f;
 class Camera {
 public:
 	Camera(glm::vec3 position, glm::vec3 orientation);
-	Camera() : Camera(glm::vec3(0, 0, -1), glm::vec3(0, 0, 0)) {};
+	Camera() : Camera(glm::vec3(0, 0, -1), glm::vec3(0, 0, 1)) {};
 	glm::vec3 getPosition();
 	void setPosition(glm::vec3 position);
 	void translate(glm::vec3 t);

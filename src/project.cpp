@@ -19,13 +19,15 @@ int main() {
 	GLFWwindow* window = glhelper::initGL();
 	
 	World* world = new World();
-	UI::init(world, &world->camera, window);
+	UI::init(world, window);
 	UI::setActive(UI::walk);
 
 	// Main loop
 	while ( !glfwWindowShouldClose(window) ) {
 		glfwPollEvents();
 		world->draw();
+		// Swap the screen buffers
+		glfwSwapBuffers(window);
 	}
 
 	// Cleanup before exit
