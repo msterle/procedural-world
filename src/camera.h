@@ -3,8 +3,6 @@
 
 #include "../include/glm/glm.hpp"
 
-static const float maxAbsoluteAttitude = 89.0f;
-
 class Camera {
 public:
 	Camera(glm::vec3 position, glm::vec3 orientation);
@@ -27,6 +25,7 @@ public:
 	void perspective(float fov, float aspect, float near, float far);
 	glm::mat4 getProjMat();
 protected:
+	static const float maxAbsoluteAttitude;
 	glm::vec3 position, orientation; // orientation in degrees (yaw, pitch, roll)
 	glm::mat4 projMat;
 	glm::vec3 getForward();

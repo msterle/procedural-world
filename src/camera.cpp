@@ -6,6 +6,8 @@
 
 using namespace std;
 
+const float Camera::maxAbsoluteAttitude = 89.0f;
+
 // Public methods
 
 Camera::Camera(glm::vec3 position, glm::vec3 orientation) {
@@ -55,10 +57,10 @@ void Camera::setHeading(float angle) {
 
 void Camera::setAttitude(float angle) {
 	// keep attitude within bounds
-	if(angle < -maxAbsoluteAttitude)
-		angle = -maxAbsoluteAttitude;
-	if(angle > maxAbsoluteAttitude)
-		angle = maxAbsoluteAttitude;
+	if(angle < -Camera::maxAbsoluteAttitude)
+		angle = -Camera::maxAbsoluteAttitude;
+	if(angle > Camera::maxAbsoluteAttitude)
+		angle = Camera::maxAbsoluteAttitude;
 	this->orientation[1] = angle; 
 }
 

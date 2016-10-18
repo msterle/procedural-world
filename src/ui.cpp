@@ -13,12 +13,13 @@ namespace UI {
 	const float CAMERA_FOV = 45.0f; // camera field of view
 	World* world;
 	GLFWwindow* window;
-	UIWalk* walk = new UIWalk();
 
-	UIBase* UIBase::UIinstance;
+	UIBase* UIBase::activeUI;
+	UIExplore Explore;
 
 	// Public methods
 
+	// Initialize UI elements
 	void init(World* world, GLFWwindow* window) {
 		UI::world = world;
 		UI::window = window;
@@ -43,15 +44,13 @@ namespace UI {
 			);
 	}
 
-	void setActive(UIBase* UIinstance) {
-		UIinstance->setActive();
+	void setActive(UIBase &UIinstance) {
+		UIinstance.setActive();
 	}
 
-	UIWalk::UIWalk() {
-		
-	}
+	// IUExplore event callbacks
 
-	void UIWalk::onKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	void UIExplore::onKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
 		if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 			glfwSetWindowShouldClose(window, GL_TRUE);
 		}
@@ -104,14 +103,14 @@ namespace UI {
 		}
 	}
 
-	void UIWalk::onMouseButton(GLFWwindow* window, int button, int action, int mods) {
+	void UIExplore::onMouseButton(GLFWwindow* window, int button, int action, int mods) {
 		if( action == GLFW_PRESS && (button == GLFW_MOUSE_BUTTON_LEFT || button == GLFW_MOUSE_BUTTON_RIGHT) ) {
 			// store cursor position
 			glfwGetCursorPos(window, &this->cursorLastX, &this->cursorLastY);
 		}
 	}
 
-	void UIWalk::onCursorMove(GLFWwindow* window, double xpos, double ypos) {
+	void UIExplore::onCursorMove(GLFWwindow* window, double xpos, double ypos) {
 		if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
 			// change heading and attitude
 			int width, height;
@@ -131,7 +130,7 @@ namespace UI {
 		}
 	}
 
-	void UIWalk::onResize(GLFWwindow* window, int width, int height) {
+	void UIExplore::onResize(GLFWwindow* window, int width, int height) {
 		glViewport(0, 0, width, height);
 		UI::world->camera.perspective(glm::radians(UI::CAMERA_FOV),
 			(float)width / (float)height,
