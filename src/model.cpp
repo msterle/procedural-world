@@ -14,6 +14,7 @@ Model::Model() {
 	glGenVertexArrays(1, &this->VAO);
 	glGenBuffers(1, &this->vertexBuffer);
 	glGenBuffers(1, &this->indexBuffer);
+	glGenBuffers(1, &this->normalBuffer);
 }
 
 void Model::setShaderProgram(GLuint shaderProgram) {
