@@ -39,7 +39,7 @@ World::World() {
 
 
 	this->terrain.setShaderProgram(shaderProgram.getProgramRef());
-	this->terrain.generateDiamondSquare(128, 0.5f);
+	this->terrain.generateDiamondSquare(512, 0.5f);
 	
 
 	// Set up camera
