@@ -90,7 +90,7 @@ void Camera::lookAt(glm::vec3 target) {
 	this->setBank(0.0f);
 }
 
-glm::mat4 Camera::Camera::getViewMat() {
+glm::mat4 Camera::getViewMat() {
 	return this->getOrientationMat() * glm::translate(glm::mat4(), -this->position);
 }
 

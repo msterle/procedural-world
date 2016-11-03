@@ -15,3 +15,12 @@ build/*
 # sublime text files
 *.sublime-project
 *.sublime-workspace
+
+# MSVC files
+*.vcxproj
+*.vcxproj.filters
+Win32
+*.dir
+*.sdf
+*.sln
+*.v12.suo
