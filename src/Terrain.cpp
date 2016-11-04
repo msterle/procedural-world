@@ -8,8 +8,9 @@
 #include <time.h>
 #include <algorithm>
 
-#include "model.h"
-#include "terrain.h"
+#include "Model.h"
+#include "Terrain.h"
+#include "Material.h"
 
 // debugging only!
 #include <iostream>
@@ -74,10 +75,7 @@ void Terrain::generateHills(int width, int number) {
 	this->scale(glm::vec3(1.0f / width, maxHeight == minHeight ? 1 : 1.0f / (maxHeight - minHeight), 1.0f / width));
 	this->scale(glm::vec3(1, 0.25, 1));
 
-	this->material.ambient = glm::vec4(0.19125, 0.0735, 0.0225, 1.0);
-	this->material.diffuse = glm::vec4(0.7038, 0.27048, 0.0828, 1.0);
-	this->material.specular = glm::vec4(0.256777, 0.137622, 0.086014, 1.0);
-	this->material.shininess = 12.8;
+	this->material = &Materials::copper;
 
 	// bind buffers
 	glBindVertexArray(this->VAO);
@@ -102,15 +100,17 @@ void Terrain::generateHills(int width, int number) {
 
 	glBindVertexArray(0);
 	
+	GLuint shaderProgram = this->shader.getProgramRef();
+
 	GLuint MaterialAmbientLoc = glGetUniformLocation(shaderProgram, "material.ambient");
 	GLuint MaterialDiffuseLoc = glGetUniformLocation(shaderProgram, "material.diffuse");
 	GLuint MaterialSpecularLoc = glGetUniformLocation(shaderProgram, "material.specular");
 	GLuint MaterialShininessLoc = glGetUniformLocation(shaderProgram, "material.shininess");
 
-	glUniform4fv(MaterialAmbientLoc, 1, glm::value_ptr(this->material.ambient));
-	glUniform4fv(MaterialDiffuseLoc, 1, glm::value_ptr(this->material.diffuse));
-	glUniform4fv(MaterialSpecularLoc, 1, glm::value_ptr(this->material.specular));
-	glUniform1f(MaterialShininessLoc, this->material.shininess);
+	glUniform4fv(MaterialAmbientLoc, 1, glm::value_ptr(this->material->ambient));
+	glUniform4fv(MaterialDiffuseLoc, 1, glm::value_ptr(this->material->diffuse));
+	glUniform4fv(MaterialSpecularLoc, 1, glm::value_ptr(this->material->specular));
+	glUniform1f(MaterialShininessLoc, this->material->shininess);
 
 	GLuint useLightingLoc = glGetUniformLocation(shaderProgram, "useLighting");
 
@@ -156,10 +156,7 @@ void Terrain::generateDiamondSquare(int aproxWidth, float roughness) {
 	this->scale(glm::vec3(1.0f / width, maxHeight == minHeight ? 1 : 1.0f / (maxHeight - minHeight), 1.0f / width));
 	this->scale(glm::vec3(1, 0.25, 1));
 
-	this->material.ambient = glm::vec4(0.19125, 0.0735, 0.0225, 1.0);
-	this->material.diffuse = glm::vec4(0.7038, 0.27048, 0.0828, 1.0);
-	this->material.specular = glm::vec4(0.256777, 0.137622, 0.086014, 1.0);
-	this->material.shininess = 12.8;
+	this->material = &Materials::pewter;
 
 	// bind buffers
 	glBindVertexArray(this->VAO);
@@ -184,15 +181,17 @@ void Terrain::generateDiamondSquare(int aproxWidth, float roughness) {
 
 	glBindVertexArray(0);
 	
+	GLuint shaderProgram = this->shader.getProgramRef();
+
 	GLuint MaterialAmbientLoc = glGetUniformLocation(shaderProgram, "material.ambient");
 	GLuint MaterialDiffuseLoc = glGetUniformLocation(shaderProgram, "material.diffuse");
 	GLuint MaterialSpecularLoc = glGetUniformLocation(shaderProgram, "material.specular");
 	GLuint MaterialShininessLoc = glGetUniformLocation(shaderProgram, "material.shininess");
 
-	glUniform4fv(MaterialAmbientLoc, 1, glm::value_ptr(this->material.ambient));
-	glUniform4fv(MaterialDiffuseLoc, 1, glm::value_ptr(this->material.diffuse));
-	glUniform4fv(MaterialSpecularLoc, 1, glm::value_ptr(this->material.specular));
-	glUniform1f(MaterialShininessLoc, this->material.shininess);
+	glUniform4fv(MaterialAmbientLoc, 1, glm::value_ptr(this->material->ambient));
+	glUniform4fv(MaterialDiffuseLoc, 1, glm::value_ptr(this->material->diffuse));
+	glUniform4fv(MaterialSpecularLoc, 1, glm::value_ptr(this->material->specular));
+	glUniform1f(MaterialShininessLoc, this->material->shininess);
 
 	GLuint useLightingLoc = glGetUniformLocation(shaderProgram, "useLighting");
 
@@ -280,6 +279,8 @@ void Terrain::resampleHeightmap(int scale) {
 
 	glBindVertexArray(0);
 
+	GLuint shaderProgram = this->shader.getProgramRef();
+
 	GLuint useLightingLoc = glGetUniformLocation(shaderProgram, "useLighting");
 
 	glUniform1i(useLightingLoc, 0);
@@ -293,7 +294,8 @@ void Terrain::draw() {
 	glDrawElements(GL_TRIANGLE_STRIP, this->indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 	*/
-	GLint loc_modelMat = glGetUniformLocation(this->shaderProgram, "modelMat");
+	GLuint shaderProgram = this->shader.getProgramRef();
+	GLint loc_modelMat = glGetUniformLocation(shaderProgram, "modelMat");
 	glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(this->modelMat));
 	glBindVertexArray(this->VAO);
 	glDrawElements(GL_TRIANGLE_STRIP, this->indices.size(), GL_UNSIGNED_INT, 0);

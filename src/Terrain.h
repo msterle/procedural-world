@@ -5,7 +5,7 @@
 #include <vector>
 #include "../include/CImg.h"
 #include "../include/glm/glm.hpp"
-#include "model.h"
+#include "Model.h"
 
 class Terrain: public Model {
 public:

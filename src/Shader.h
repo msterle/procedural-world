@@ -4,10 +4,10 @@
 #include <string>
 #include "../include/glfw3.h"
 
-class ShaderProgram {
+class Shader {
 public:
-	ShaderProgram();
-	ShaderProgram(std::string vertexShaderPath, std::string fragmentShaderPath);
+	Shader();
+	Shader(std::string vertexShaderPath, std::string fragmentShaderPath);
 	GLuint getProgramRef();
 protected:
 	enum Type { VertexShader, FragmentShader };
@@ -15,4 +15,4 @@ protected:
 	static GLuint compileShader(Type type, std::string path);
 };
 
-#endif /* SHADER_H */
+#endif

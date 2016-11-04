@@ -3,9 +3,14 @@
 - https://github.com/tomdalling/opengl-series
 - https://github.com/BennyQBD/3DGameEngine
 
+## Instancing
+
+- [Learn OpenGL - Instancing](http://learnopengl.com/#!Advanced-OpenGL/Instancing)
+
 ## Model Generation
 
 - http://outerra.blogspot.ca/2012/05/procedural-grass-rendering.html
+- [The Algorithmic Beauty of Plants](http://algorithmicbotany.org/papers/#abop)
 
 ## Terrain Generation
 
@@ -19,3 +24,5 @@
 ## TODO
 
 - fix cmake root directory
+- 'set as startup project' for MSVC
+- transform normals

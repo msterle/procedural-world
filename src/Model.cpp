@@ -1,10 +1,13 @@
 #include "../include/glew.h"
 #include "../include/glfw3.h"
-#include "../include/glm/glm.hpp"
+#include "../include/glm/gtc/type_ptr.hpp"
 #include "../include/glm/gtc/matrix_transform.hpp"
 #include <vector>
 
-#include "model.h"
+#include "Shader.h"
+#include "Material.h"
+
+#include "Model.h"
 
 using namespace std;
 
@@ -17,8 +20,8 @@ Model::Model() {
 	glGenBuffers(1, &this->normalBuffer);
 }
 
-void Model::setShaderProgram(GLuint shaderProgram) {
-	this->shaderProgram = shaderProgram;
+void Model::setShader(Shader shader) {
+	this->shader = shader;
 }
 
 void Model::translate(glm::vec3 t) {

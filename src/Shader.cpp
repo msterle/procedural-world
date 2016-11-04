@@ -3,20 +3,21 @@
 #include <string>
 #include <fstream>
 
-#include "shader.h"
+#include "Shader.h"
 
 // Debugging only
 #include <iostream>
 
 using namespace std;
 
-// Public methods
 
-ShaderProgram::ShaderProgram() {
+// Constructors
+
+Shader::Shader() {
 	
 }
 
-ShaderProgram::ShaderProgram(string vertexShaderPath, string fragmentShaderPath) {
+Shader::Shader(string vertexShaderPath, string fragmentShaderPath) {
 	// Compile shaders
 	GLuint vertexShaderRef = this->compileShader(VertexShader, vertexShaderPath);
 	GLuint fragmentShaderRef = this->compileShader(FragmentShader, fragmentShaderPath);
@@ -42,14 +43,17 @@ ShaderProgram::ShaderProgram(string vertexShaderPath, string fragmentShaderPath)
 	glUseProgram(this->programRef);
 }
 
-GLuint ShaderProgram::getProgramRef() {
+
+// Public methods
+
+GLuint Shader::getProgramRef() {
 	return this->programRef;
 }
 
 
 // Protected methods
 
-GLuint ShaderProgram::compileShader(Type shaderType, string path) {
+GLuint Shader::compileShader(Type shaderType, string path) {
 	string shaderTypeString = shaderType == VertexShader ? "VertexShader" : "FragmentShader";
 	// Read the shader code from the file
 	string shaderCode;

@@ -4,8 +4,8 @@
 #include <string>
 
 #include "glhelper.h"
-#include "world.h"
-#include "ui.h"
+#include "World.h"
+#include "UI.h"
 
 using namespace std;
 

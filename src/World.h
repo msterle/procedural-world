@@ -4,9 +4,9 @@
 #include "../include/glew.h"
 #include "../include/glfw3.h"
 
-#include "shader.h"
-#include "terrain.h"
-#include "camera.h"
+#include "Shader.h"
+#include "Terrain.h"
+#include "Camera.h"
 
 class World {
 public:
@@ -18,7 +18,7 @@ protected:
 	const char* TERRAIN_PATH_HEIGHTMAP = "/res/heightmap_lores.png";
 	const char* TERRAIN_PATH_COLOR = "/res/colour_lores.png";
 	GLFWwindow* window;
-	ShaderProgram shaderProgram;
+	Shader shader;
 	GLint uni_viewMat, uni_projMat;
 };
 

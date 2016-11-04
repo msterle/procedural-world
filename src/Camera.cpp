@@ -2,7 +2,7 @@
 #include "../include/glm/gtc/matrix_transform.hpp"
 #include <cmath>
 
-#include "camera.h"
+#include "Camera.h"
 
 using namespace std;
 

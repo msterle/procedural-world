@@ -1,10 +1,10 @@
 #include "../include/glew.h"
 #include "../include/glfw3.h"
 
-#include "ui.h"
+#include "UI.h"
 
-#include "world.h"
-#include "camera.h"
+#include "World.h"
+#include "Camera.h"
 
 using namespace std;
 

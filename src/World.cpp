@@ -3,11 +3,11 @@
 #include "../include/glfw3.h"
 #include "../include/glm/gtc/type_ptr.hpp"
 
-#include "shader.h"
-#include "terrain.h"
-#include "camera.h"
+#include "Shader.h"
+#include "Terrain.h"
+#include "Camera.h"
 
-#include "world.h"
+#include "World.h"
 
 // debugging only
 #include <iostream>
@@ -20,9 +20,9 @@ World::World() {
 	// Set up shaders
 	string vertexShaderPath = string(PROJECT_ROOT) + string("/src/shaders/lighting.vert");
 	string fragmentShaderPath = string(PROJECT_ROOT) + string("/src/shaders/lighting.frag");
-	this->shaderProgram = ShaderProgram(vertexShaderPath, fragmentShaderPath);
-	this->uni_viewMat = glGetUniformLocation(shaderProgram.getProgramRef(), "viewMat");
-	this->uni_projMat = glGetUniformLocation(shaderProgram.getProgramRef(), "projMat");
+	this->shader = Shader(vertexShaderPath, fragmentShaderPath);
+	this->uni_viewMat = glGetUniformLocation(shader.getProgramRef(), "viewMat");
+	this->uni_projMat = glGetUniformLocation(shader.getProgramRef(), "projMat");
 
 	// Set up terrain
 	/*
@@ -38,8 +38,8 @@ World::World() {
 	*/
 
 
-	this->terrain.setShaderProgram(shaderProgram.getProgramRef());
-	this->terrain.generateDiamondSquare(512, 0.5f);
+	this->terrain.setShader(shader);
+	this->terrain.generateDiamondSquare(128, 0.5f);
 	
 
 	// Set up camera
@@ -57,8 +57,10 @@ void World::draw() {
 	glUniformMatrix4fv(this->uni_viewMat, 1, GL_FALSE, glm::value_ptr(this->camera.getViewMat()));
 	glUniformMatrix4fv(this->uni_projMat, 1, GL_FALSE, glm::value_ptr(this->camera.getProjMat()));
 
-	GLuint LightPosCLoc = glGetUniformLocation(shaderProgram.getProgramRef(), "lightPositionC");
-	GLuint LightColorLoc = glGetUniformLocation(shaderProgram.getProgramRef(), "lightColor");
+	GLuint shaderProgram = this->shader.getProgramRef();
+
+	GLuint LightPosCLoc = glGetUniformLocation(shaderProgram, "lightPositionC");
+	GLuint LightColorLoc = glGetUniformLocation(shaderProgram, "lightColor");
 
 	glUniform4fv(LightPosCLoc, 1, glm::value_ptr(this->camera.getViewMat() * glm::vec4(5.0, 10.0, 20.0, 0)));
 	glUniform4fv(LightColorLoc, 1, glm::value_ptr(glm::vec4(1.0, 1.0, 1.0, 1.0)));
