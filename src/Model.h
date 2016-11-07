@@ -2,7 +2,8 @@
 #define MODEL_H
 
 #include <vector>
-#include "../include/glfw3.h"
+
+#include "../include/glm/gtc/type_ptr.hpp"
 
 #include "Shader.h"
 

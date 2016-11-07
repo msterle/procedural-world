@@ -156,6 +156,76 @@ void Terrain::generateDiamondSquare(int aproxWidth, float roughness) {
 	this->scale(glm::vec3(1.0f / width, maxHeight == minHeight ? 1 : 1.0f / (maxHeight - minHeight), 1.0f / width));
 	this->scale(glm::vec3(1, 0.25, 1));
 
+	this->scale(glm::vec3(128, 128, 128));
+
+	this->material = &Materials::pewter;
+
+	// bind buffers
+	glBindVertexArray(this->VAO);
+
+	// bind vertex buffer
+	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(glm::vec3), &this->vertices.front(), GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
+
+	// bind normal buffer
+	glBindBuffer(GL_ARRAY_BUFFER, this->normalBuffer);
+	glBufferData(GL_ARRAY_BUFFER, this->normals.size() * sizeof(glm::vec3), &this->normals.front(), GL_STATIC_DRAW);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	// bind index buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(GLuint), &this->indices.front(), GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+	
+	GLuint shaderProgram = this->shader.getProgramRef();
+
+	GLuint MaterialAmbientLoc = glGetUniformLocation(shaderProgram, "material.ambient");
+	GLuint MaterialDiffuseLoc = glGetUniformLocation(shaderProgram, "material.diffuse");
+	GLuint MaterialSpecularLoc = glGetUniformLocation(shaderProgram, "material.specular");
+	GLuint MaterialShininessLoc = glGetUniformLocation(shaderProgram, "material.shininess");
+
+	glUniform4fv(MaterialAmbientLoc, 1, glm::value_ptr(this->material->ambient));
+	glUniform4fv(MaterialDiffuseLoc, 1, glm::value_ptr(this->material->diffuse));
+	glUniform4fv(MaterialSpecularLoc, 1, glm::value_ptr(this->material->specular));
+	glUniform1f(MaterialShininessLoc, this->material->shininess);
+
+	GLuint useLightingLoc = glGetUniformLocation(shaderProgram, "useLighting");
+
+	glUniform1i(useLightingLoc, 1);
+}
+
+void Terrain::generatePlane(int width) {
+	this->vertices.clear();
+	this->vertexColors.clear();
+	this->vertices.resize(pow(width, 2));
+	for(int y = 0; y < width; y++) {
+		for(int x = 0; x < width; x++) {
+			this->vertices[x + y * width] = glm::vec3(x, 0, y);
+		}
+	}
+
+	this->normals = this->getNormals(width, width);
+
+	this->indices.clear();
+	for(int y = 0; y < width - 1; y++) {
+		for(int x = 0; x < width; x++) {
+			this->indices.push_back(x + y * width);
+			this->indices.push_back(x + (y + 1) * width);
+		}
+		// Restart primitive at end of row
+		if(y < width - 2) {
+			this->indices.push_back(65535);
+		}
+	}
+
+	this->translate(glm::vec3(-width / 2, 0, -width / 2));
+
 	this->material = &Materials::pewter;
 
 	// bind buffers

@@ -1,12 +1,17 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+#include <vector>
+
 #include "../include/glew.h"
 #include "../include/glfw3.h"
 
 #include "Shader.h"
 #include "Terrain.h"
 #include "Camera.h"
+#include "Tree.h"
+
+using namespace std;
 
 class World {
 public:
@@ -20,6 +25,7 @@ protected:
 	GLFWwindow* window;
 	Shader shader;
 	GLint uni_viewMat, uni_projMat;
+	vector<Tree> trees;
 };
 
 #endif

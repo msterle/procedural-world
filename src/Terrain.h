@@ -14,6 +14,7 @@ public:
 	void resampleHeightmap(int scale = 1);
 	void generateHills(int width, int number);
 	void generateDiamondSquare(int aproxWidth, float roughness);
+	void generatePlane(int width);
 	void draw();
 protected:
 	GLuint colorBuffer;

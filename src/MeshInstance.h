@@ -2,21 +2,22 @@
 #define MESHINSTANCE_H
 
 #include <vector>
+
 #include "../include/glm/gtc/type_ptr.hpp"
 
-class Mesh;
-struct Material;
+#include "Material.h"
 
 class MeshInstance {
 public:
-	MeshInstance(Mesh* mesh, Material* material);
-	void translate(glm::vec3 t);
-	void scale(glm::vec3 s);
-	void rotate(float angle, glm::vec3 axis);
-private:
-	Mesh* mesh;
-	Material* material;
-	glm::mat4 instanceMat;	
+	glm::mat4 instanceMat = glm::mat4(1);
+	Material material;
+	unsigned int modelIndex, meshId, instanceId;
+	MeshInstance(unsigned int modelIndex, unsigned int meshId, Material material);
+	MeshInstance* copy();
+	MeshInstance* translate(glm::vec3 t);
+	MeshInstance* scale(glm::vec3 s);
+	MeshInstance* rotate(float angle, glm::vec3 axis);
+	static unsigned int idCounter;
 };
 
 #endif

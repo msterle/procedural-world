@@ -1,6 +1,7 @@
 #ifndef GLHELPER_H
 #define GLHELPER_H
 
+#include "../include/glew.h"
 #include "../include/glfw3.h"
 
 namespace glhelper {

@@ -9,7 +9,7 @@
 using namespace std;
 
 namespace UI {
-	const float MOUSE_SENS_MOV = 0.005f;
+	const float MOUSE_SENS_MOV = 0.05f;
 	const float CAMERA_FOV = 45.0f; // camera field of view
 	World* world;
 	GLFWwindow* window;
@@ -39,8 +39,8 @@ namespace UI {
 		world->camera.perspective(
 			glm::radians(UI::CAMERA_FOV),
 			(float)width / (float)height,
-			0.1f, 
-			1000.0f
+			0.01f, 
+			100.0f
 			);
 	}
 

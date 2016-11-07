@@ -1,4 +1,5 @@
 #include <string>
+#include <vector>
 #include "../include/glew.h"
 #include "../include/glfw3.h"
 #include "../include/glm/gtc/type_ptr.hpp"
@@ -6,11 +7,15 @@
 #include "Shader.h"
 #include "Terrain.h"
 #include "Camera.h"
+#include "Tree.h"
+#include "ModelManager.h"
+#include "Material.h"
 
 #include "World.h"
 
 // debugging only
 #include <iostream>
+#include "../include/glm/gtx/string_cast.hpp"
 
 using namespace std;
 
@@ -18,7 +23,7 @@ using namespace std;
 
 World::World() {
 	// Set up shaders
-	string vertexShaderPath = string(PROJECT_ROOT) + string("/src/shaders/lighting.vert");
+	string vertexShaderPath = string(PROJECT_ROOT) + string("/src/shaders/instance.vert");
 	string fragmentShaderPath = string(PROJECT_ROOT) + string("/src/shaders/lighting.frag");
 	this->shader = Shader(vertexShaderPath, fragmentShaderPath);
 	this->uni_viewMat = glGetUniformLocation(shader.getProgramRef(), "viewMat");
@@ -37,15 +42,30 @@ World::World() {
 	this->terrain.generateHills(200, 200);
 	*/
 
-
+	/*
 	this->terrain.setShader(shader);
 	this->terrain.generateDiamondSquare(128, 0.5f);
+	*/
+
+	this->terrain.setShader(shader);
+	this->terrain.generatePlane(128);
 	
+	// set up objects
+	//this->trees.push_back(Tree());
+	ModelManager& mm = ModelManager::getInstance();
+
+	string objPath = string(PROJECT_ROOT) + string("/res/objects/cylinder16.obj");
+	Mesh* cylinderMesh = mm.newMesh(objPath);
+
+
+	ModelNew* tubeModel = mm.newModel();
+
+	MeshInstance* cylinderInstance = mm.newMeshInstance(tubeModel->getIndex(), cylinderMesh->getId(), Materials::copper);
+	cylinderInstance->translate(glm::vec3(0, 5, -2));
 
 	// Set up camera
-	this->camera.setPosition(glm::vec3(1, 1, 1));
-	this->camera.lookAt(glm::vec3(0, 0, 0));
-	int width, height;
+	this->camera.setPosition(glm::vec3(0, 2, 10));
+	this->camera.lookAt(glm::vec3(0, 2, -100));
 }
 
 void World::draw() {
@@ -67,4 +87,13 @@ void World::draw() {
 	
 	// Draw models
 	this->terrain.draw();
+
+	ModelManager& mm = ModelManager::getInstance();
+	mm.draw(this->shader);
+
+	/*
+	for(vector<Tree>::iterator it = this->trees.begin(); it != this->trees.end(); ++it) {
+		it->draw(this->shader);
+	}
+	*/
 }
