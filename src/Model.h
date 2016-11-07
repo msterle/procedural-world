@@ -2,27 +2,38 @@
 #define MODEL_H
 
 #include <vector>
-
+#include <list>
+#include <string>
+#include "../include/glew.h"
+#include "../include/glfw3.h"
 #include "../include/glm/gtc/type_ptr.hpp"
+#include "Vertex.h"
+#include "Mesh.h"
 
-#include "Shader.h"
-
-struct Material;
+class Shader;
 
 class Model {
+protected:
+	glm::mat4 modelMat;
+	list<Mesh> meshes;
 public:
 	Model();
-	void setShader(Shader shader);
+	Mesh* newMesh(vector<Vertex> vertices, GLenum drawMode = GL_TRIANGLES) {
+		meshes.push_back(Mesh(vertices, drawMode));
+		return &meshes.back();
+	}
+	Mesh* newMesh(vector<Vertex> vertices, vector<GLuint> indices, GLenum drawMode = GL_TRIANGLES) {
+		meshes.push_back(Mesh(vertices, indices, drawMode));
+		return &meshes.back();
+	}
+	Mesh* newMesh(string filePath) {
+		meshes.push_back(Mesh(filePath));
+		return &meshes.back();
+	}
 	void translate(glm::vec3 t);
 	void scale(glm::vec3 s);
 	void rotate(float angle, glm::vec3 axis);
-protected:
-	GLuint VAO, vertexBuffer, indexBuffer, normalBuffer;
-	Shader shader;
-	std::vector<glm::vec3> vertices, normals;
-	std::vector<unsigned int> indices;
-	glm::mat4 modelMat;
-	Material* material;
+	void draw(Shader shader);
 };
 
 #endif

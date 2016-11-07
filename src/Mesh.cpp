@@ -8,7 +8,6 @@
 #include "../include/glm/gtc/type_ptr.hpp"
 
 #include "Shader.h"
-#include "MeshInstance.h"
 
 #include "Mesh.h"
 
@@ -18,27 +17,24 @@
 using namespace std;
 
 
-//// Static member initializations
-
-unsigned int Mesh::idCounter = 0;
-
-
 //// Constructors
 
-Mesh::Mesh(vector<Vertex> vertices) {
-	this->isIndexed = false;
+Mesh::Mesh(vector<Vertex> vertices, GLenum drawMode) {
 	this->vertices = vertices;
-	this->init();
+	this->drawMode = drawMode;
+	isIndexed = false;
+	init();
 }
 
-Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices) {
-	this->isIndexed = true;
+Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, GLenum drawMode) {
 	this->vertices = vertices;
 	this->indices = indices;
-	this->init();
+	this->drawMode = drawMode;
+	isIndexed = true;
+	init();
 }
 
-Mesh::Mesh(const string& filePath) {
+Mesh::Mesh(string filePath) {
 	std::vector<unsigned int> vertexPositionIndices, vertexNormalIndices;
 	std::vector<glm::vec3> vertexPositions, vertexNormals;
 
@@ -98,50 +94,59 @@ Mesh::Mesh(const string& filePath) {
 			vertexNormals[vertexNormalIndices[i] - 1]
 		};
 		// add to our vector
-		this->vertices.push_back(vertex);
+		vertices.push_back(vertex);
 	}
 
-	this->isIndexed = false;
-	this->init();
+	isIndexed = false;
+	drawMode = GL_TRIANGLES;
+	init();
 }
 
 
 //// Public methods
 
-MeshInstance* Mesh::newInstance(unsigned int modelIndex, Material material) {
-	MeshInstance instance(modelIndex, this->meshId, material);
-	this->instances.push_back(instance);
-	return &(this->instances.back());
+
+
+MeshInstancePtr Mesh::newInstance() {
+	return newInstance(glm::mat4(1), Materials::pewter);
 }
 
-// TODO: optimize into one iteration?
-void Mesh::removeModel(unsigned int deleteModelIndex) {
-	this->instances.erase(remove_if(this->instances.begin(), this->instances.end(), 
-		[&deleteModelIndex](const MeshInstance& instance) {
-			return instance.modelIndex == deleteModelIndex;
-		}));
-	for(std::vector<MeshInstance>::iterator itInstance = this->instances.begin(); itInstance != this->instances.end(); ++itInstance) {
-		if(itInstance->modelIndex >= deleteModelIndex)
-			itInstance->modelIndex--;
-	}
+MeshInstancePtr Mesh::newInstance(glm::mat4 instanceMat) {
+	return newInstance(instanceMat, Materials::pewter);
 }
 
-void Mesh::draw(Shader shader) {
-	
+MeshInstancePtr Mesh::newInstance(Material material) {
+	return newInstance(glm::mat4(1), material);
+}
+MeshInstancePtr Mesh::newInstance(glm::mat4 instanceMat, Material material) {
+	MeshInstancePtr ptr(&instances, instances.size());
+	instances.push_back(MeshInstance(ptr, instanceMat, material));
+	return ptr;
+}
+
+// copy factory method
+MeshInstancePtr Mesh::newInstance(MeshInstancePtr orig) {
+	MeshInstancePtr ptr(&instances, instances.size());
+	instances.push_back(MeshInstance(ptr, orig->instanceMat, orig->material));
+	return ptr;
+}
+
+void Mesh::draw(Shader shader, glm::mat4 modelMat) {
+
 	GLuint shaderProgram = shader.getProgramRef();
 	GLint loc_modelMat = glGetUniformLocation(shaderProgram, "modelMat");
-	glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(glm::mat4()));
+	glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(modelMat));
 
-	glBindBuffer(GL_ARRAY_BUFFER, this->IBO);
-	glBufferData(GL_ARRAY_BUFFER, this->instances.size() * sizeof(MeshInstance), &this->instances.front(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ARRAY_BUFFER, instances.size() * sizeof(MeshInstance), &instances.front(), GL_STATIC_DRAW);
 
-	glBindVertexArray(this->VAO);
+	glBindVertexArray(VAO);
 
-	if(this->isIndexed) {
-		glDrawElementsInstanced(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, 0, this->instances.size());
+	if(isIndexed) {
+		glDrawElementsInstanced(drawMode, indices.size(), GL_UNSIGNED_INT, 0, instances.size());
 	}
 	else {
-		glDrawArraysInstanced(GL_TRIANGLES, 0, this->vertices.size(), this->instances.size());
+		glDrawArraysInstanced(drawMode, 0, vertices.size(), instances.size());
 	}
 	
 	glBindVertexArray(0);
@@ -152,20 +157,20 @@ void Mesh::draw(Shader shader) {
 
 void Mesh::init() {
 	// Generate VAO, VBO, EBO, IBO
-	glGenVertexArrays(1, &this->VAO);
-	glGenBuffers(1, &this->VBO);
-	if(this->isIndexed)
-		glGenBuffers(1, &this->EBO);
-	glGenBuffers(1, &this->IBO);
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	if(isIndexed)
+		glGenBuffers(1, &EBO);
+	glGenBuffers(1, &IBO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
-	glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(Vertex), &this->vertices.front(), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices.front(), GL_STATIC_DRAW);
 
 	// Bind buffers
-	glBindVertexArray(this->VAO);
-	if(this->isIndexed) {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(GLuint), &this->indices.front(), GL_STATIC_DRAW);
+	glBindVertexArray(VAO);
+	if(isIndexed) {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), &indices.front(), GL_STATIC_DRAW);
 	}
 
 	// set vertex attribute pointers
@@ -180,25 +185,54 @@ void Mesh::init() {
 
 	// instance matrix
 	GLsizei vec4Size = sizeof(glm::vec4);
-	glBindBuffer(GL_ARRAY_BUFFER, this->IBO);
+	GLsizei matOffset = offsetof(MeshInstance, instanceMat);
+	glBindBuffer(GL_ARRAY_BUFFER, IBO);
     
     glEnableVertexAttribArray(4);
-    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(MeshInstance), (GLvoid*)0);
+    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(MeshInstance), (GLvoid*)matOffset);
     glVertexAttribDivisor(4, 1);
     
     glEnableVertexAttribArray(5);
-    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(MeshInstance), (GLvoid*)(vec4Size));
+    glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, sizeof(MeshInstance), (GLvoid*)(matOffset + vec4Size));
     glVertexAttribDivisor(5, 1);
     
     glEnableVertexAttribArray(6);
-    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(MeshInstance), (GLvoid*)(2 * vec4Size));
+    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(MeshInstance), (GLvoid*)(matOffset + 2 * vec4Size));
     glVertexAttribDivisor(6, 1);
     
     glEnableVertexAttribArray(7);
-    glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(MeshInstance), (GLvoid*)(3 * vec4Size));
+    glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(MeshInstance), (GLvoid*)(matOffset + 3 * vec4Size));
     glVertexAttribDivisor(7, 1);
 
-	glBindVertexArray(0);
+    // instance material
+	GLsizei materialOffset = offsetof(MeshInstance, material);
+    
+    glEnableVertexAttribArray(8);
+    glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(MeshInstance), (GLvoid*)materialOffset);
+    glVertexAttribDivisor(8, 1);
+    
+    glEnableVertexAttribArray(9);
+    glVertexAttribPointer(9, 4, GL_FLOAT, GL_FALSE, sizeof(MeshInstance), (GLvoid*)(materialOffset + vec4Size));
+    glVertexAttribDivisor(9, 1);
+    
+    glEnableVertexAttribArray(10);
+    glVertexAttribPointer(10, 4, GL_FLOAT, GL_FALSE, sizeof(MeshInstance), (GLvoid*)(materialOffset + 2 * vec4Size));
+    glVertexAttribDivisor(10, 1);
+    
+    glEnableVertexAttribArray(11);
+    glVertexAttribPointer(11, 4, GL_FLOAT, GL_FALSE, sizeof(MeshInstance), (GLvoid*)(materialOffset + 3 * vec4Size));
+    glVertexAttribDivisor(11, 1);
 
-	this->meshId = Mesh::idCounter++;
+	glBindVertexArray(0);
+}
+
+
+//// MeshInstancePtr public methods
+
+MeshInstance MeshInstancePtr::operator*() {
+	return (*container)[offset];
+}
+
+MeshInstance* MeshInstancePtr::operator->() {
+	return &(*container)[offset];
 }

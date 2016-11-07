@@ -8,6 +8,7 @@
 #include <time.h>
 #include <algorithm>
 
+#include "Vertex.h"
 #include "Model.h"
 #include "Terrain.h"
 #include "Material.h"
@@ -21,9 +22,10 @@ using namespace std;
 // Public methods
 
 Terrain::Terrain() {
-	glGenBuffers(1, &this->colorBuffer);
+	//glGenBuffers(1, &this->colorBuffer);
 }
 
+/*
 void Terrain::buildFromHeightmap(string heightmapPath, string colorPath, int scale) {
 	this->heightImg = cimg_library::CImg<unsigned char>(heightmapPath.c_str());
 	this->colorImg = cimg_library::CImg<unsigned char>(colorPath.c_str());
@@ -32,7 +34,91 @@ void Terrain::buildFromHeightmap(string heightmapPath, string colorPath, int sca
 		cerr << "Error: input images not equal dimensions";
 		exit(-1);
 	}
-	this->resampleHeightmap(scale);	
+	// build vertices
+	this->vertices.clear();
+	this->vertexColors.clear();
+	int sourceWidth = this->heightImg.width(), sourceHeight = this->heightImg.width();
+	int width = scale * sourceWidth;
+	int height = scale * sourceHeight;
+	float yMax = 0;
+	for(int y = 0; y < height; y++) {
+		for(int x = 0; x < width; x++) {
+			// For each pixel add a vertex with pixel's x and y values, z determined
+			// from heightmap image's first channel value and color copied from color image
+			glm::vec3 vertex;
+			vertex.x = (float) x / (width - 1) - 0.5f;
+			vertex.z = (float) y / (height - 1) - 0.5f;
+			vertex.y = upsample(x, y, 0, this->heightImg, sourceWidth, sourceHeight, scale) / 255;
+			if(vertex.y > yMax)
+				yMax = vertex.y;
+			this->vertices.push_back(vertex);
+			
+			glm::vec3 vertexColor;
+			vertexColor.r = upsample(x, y, 0, this->colorImg, sourceWidth, sourceHeight, scale) / 255;
+			vertexColor.g = upsample(x, y, 1, this->colorImg, sourceWidth, sourceHeight, scale) / 255;
+			vertexColor.b = upsample(x, y, 2, this->colorImg, sourceWidth, sourceHeight, scale) / 255;
+			this->vertexColors.push_back(vertexColor);
+		}
+	}
+
+	// Center object on Y plane according to maximum y value
+	for(std::vector<glm::vec3>::iterator it = this->vertices.begin(); it != this->vertices.end(); ++it) {
+   		it->y -= yMax / 2;
+	}
+
+	this->normals = this->getNormals(width, width);
+
+	// build indices
+	this->indices.clear();
+	for(int y = 0; y < height - 1; y++) {
+		for(int x = 0; x < width; x++) {
+			this->indices.push_back(x + y * width);
+			this->indices.push_back(x + (y + 1) * width);
+		}
+		// Restart primitive at end of row
+		if(y < height - 2) {
+			this->indices.push_back(65535);
+		}
+	}
+
+	this->scale(glm::vec3(1, 0.5, 1));
+
+	// bind buffers
+	glBindVertexArray(this->VAO);
+
+	// bind vertex buffer
+	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(glm::vec3), &this->vertices.front(), GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
+
+	// bind normal buffer
+	glBindBuffer(GL_ARRAY_BUFFER, this->normalBuffer);
+	glBufferData(GL_ARRAY_BUFFER, this->normals.size() * sizeof(glm::vec3), &this->normals.front(), GL_STATIC_DRAW);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// bind color buffer
+	glBindBuffer(GL_ARRAY_BUFFER, this->colorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, this->vertexColors.size() * sizeof(glm::vec3), &this->vertexColors.front(), GL_STATIC_DRAW);
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	// bind index buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBuffer);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(GLuint), &this->indices.front(), GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+
+	GLuint shaderProgram = this->shader.getProgramRef();
+
+	GLuint useLightingLoc = glGetUniformLocation(shaderProgram, "useLighting");
+
+	glUniform1i(useLightingLoc, 0);
 }
 
 void Terrain::generateHills(int width, int number) {
@@ -199,32 +285,43 @@ void Terrain::generateDiamondSquare(int aproxWidth, float roughness) {
 
 	glUniform1i(useLightingLoc, 1);
 }
+*/
 
-void Terrain::generatePlane(int width) {
-	this->vertices.clear();
-	this->vertexColors.clear();
-	this->vertices.resize(pow(width, 2));
+void Terrain::generatePlane(float width, float length) {
+	vector<Vertex> vertices;
+	float x = width / 2, z = length / 2;
+	vertices.push_back(Vertex { glm::vec3(-x, 0, -z), glm::vec3(0, 1, 0) });
+	vertices.push_back(Vertex { glm::vec3(x, 0, -z), glm::vec3(0, 1, 0) });
+	vertices.push_back(Vertex { glm::vec3(-x, 0, z), glm::vec3(0, 1, 0) });
+	vertices.push_back(Vertex { glm::vec3(x, 0, z), glm::vec3(0, 1, 0) });
+
+	vector<GLuint> indices = { 0, 2, 1, 3 };
+
+	Mesh* mesh = newMesh(vertices, indices, GL_TRIANGLE_STRIP);
+	MeshInstancePtr ptr = mesh->newInstance(Materials::copper);
+}
+
+
+/*
 	for(int y = 0; y < width; y++) {
 		for(int x = 0; x < width; x++) {
-			this->vertices[x + y * width] = glm::vec3(x, 0, y);
+			vertices[x + y * width] = Vertex { glm::vec3(x, 0, y), glm::vec3(0, 1, 0) };
 		}
 	}
 
-	this->normals = this->getNormals(width, width);
-
-	this->indices.clear();
+	vector<GLuint> indices;
 	for(int y = 0; y < width - 1; y++) {
 		for(int x = 0; x < width; x++) {
-			this->indices.push_back(x + y * width);
-			this->indices.push_back(x + (y + 1) * width);
+			indices.push_back(x + y * width);
+			indices.push_back(x + (y + 1) * width);
 		}
 		// Restart primitive at end of row
 		if(y < width - 2) {
-			this->indices.push_back(65535);
+			indices.push_back(65535);
 		}
 	}
 
-	this->translate(glm::vec3(-width / 2, 0, -width / 2));
+	translate(glm::vec3(-width / 2, 0, -width / 2));
 
 	this->material = &Materials::pewter;
 
@@ -267,130 +364,11 @@ void Terrain::generatePlane(int width) {
 
 	glUniform1i(useLightingLoc, 1);
 }
+*/
 
-void Terrain::resampleHeightmap(int scale) {
-	// build vertices
-	this->vertices.clear();
-	this->vertexColors.clear();
-	int sourceWidth = this->heightImg.width(), sourceHeight = this->heightImg.width();
-	int width = scale * sourceWidth;
-	int height = scale * sourceHeight;
-	float yMax = 0;
-	for(int y = 0; y < height; y++) {
-		for(int x = 0; x < width; x++) {
-			// For each pixel add a vertex with pixel's x and y values, z determined
-			// from heightmap image's first channel value and color copied from color image
-			glm::vec3 vertex;
-			vertex.x = (float) x / (width - 1) - 0.5f;
-			vertex.z = (float) y / (height - 1) - 0.5f;
-			vertex.y = upsample(x, y, 0, this->heightImg, sourceWidth, sourceHeight, scale) / 255;
-			if(vertex.y > yMax)
-				yMax = vertex.y;
-			this->vertices.push_back(vertex);
-			
-			glm::vec3 vertexColor;
-			vertexColor.r = upsample(x, y, 0, this->colorImg, sourceWidth, sourceHeight, scale) / 255;
-			vertexColor.g = upsample(x, y, 1, this->colorImg, sourceWidth, sourceHeight, scale) / 255;
-			vertexColor.b = upsample(x, y, 2, this->colorImg, sourceWidth, sourceHeight, scale) / 255;
-			this->vertexColors.push_back(vertexColor);
-		}
-	}
-
-	// Center object on Y plane according to maximum y value
-	for(std::vector<glm::vec3>::iterator it = this->vertices.begin(); it != this->vertices.end(); ++it) {
-   		it->y -= yMax / 2;
-	}
-
-	this->normals = this->getNormals(width, width);
-
-	// build indices
-	this->indices.clear();
-	for(int y = 0; y < height - 1; y++) {
-		for(int x = 0; x < width; x++) {
-			this->indices.push_back(x + y * width);
-			this->indices.push_back(x + (y + 1) * width);
-		}
-		// Restart primitive at end of row
-		if(y < height - 2) {
-			this->indices.push_back(65535);
-		}
-	}
-
-	this->scale(glm::vec3(1, 0.5, 1));
-
-	// bind buffers
-	glBindVertexArray(this->VAO);
-
-	// bind vertex buffer
-	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, this->vertices.size() * sizeof(glm::vec3), &this->vertices.front(), GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
-
-	// bind normal buffer
-	glBindBuffer(GL_ARRAY_BUFFER, this->normalBuffer);
-	glBufferData(GL_ARRAY_BUFFER, this->normals.size() * sizeof(glm::vec3), &this->normals.front(), GL_STATIC_DRAW);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (GLvoid*)0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	// bind color buffer
-	glBindBuffer(GL_ARRAY_BUFFER, this->colorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, this->vertexColors.size() * sizeof(glm::vec3), &this->vertexColors.front(), GL_STATIC_DRAW);
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
-	// bind index buffer
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indices.size() * sizeof(GLuint), &this->indices.front(), GL_STATIC_DRAW);
-
-	glBindVertexArray(0);
-
-	GLuint shaderProgram = this->shader.getProgramRef();
-
-	GLuint useLightingLoc = glGetUniformLocation(shaderProgram, "useLighting");
-
-	glUniform1i(useLightingLoc, 0);
-}
-
-void Terrain::draw() {
-	/*
-	GLint loc_modelMat = glGetUniformLocation(this->shaderProgram, "model");
-	glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(this->modelMat));
-	glBindVertexArray(this->VAO);
-	glDrawElements(GL_TRIANGLE_STRIP, this->indices.size(), GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
-	*/
-	GLuint shaderProgram = this->shader.getProgramRef();
-	GLint loc_modelMat = glGetUniformLocation(shaderProgram, "modelMat");
-	glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(this->modelMat));
-	glBindVertexArray(this->VAO);
-	glDrawElements(GL_TRIANGLE_STRIP, this->indices.size(), GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
-}
-
+/*
 
 // Protected methods
-
-float Terrain::upsample(int x, int y, int c, const cimg_library::CImg<unsigned char>& image, int width, int height, int scale) {
-	// Weighted average of four surrounding source pixels
-	// note: requires image width & height to reduce overhead of calling CImg methods
-	// ex: in 4x4 upsampling (scale = 4), output pixel (1, 2) has weighted average of
-	// surrounding 4 input pixels A (0,0), B (1, 0), C(0, 1) and D (1, 1)
-	// 6/16 * A + 2/16 * B + 6/16 * C + 2/16 * D
-	int xmod = x % scale, ymod = y % scale;
-	int xLast = x / scale + 1 < width ? 1 : 0;
-	int yLast = y / scale + 1 < height ? 1 : 0;
-	// Optimized from operator() to
-	return (  (float) *image.data(x / scale,         y / scale,         0, c) * (scale - xmod) * (scale - ymod) 
-			+ (float) *image.data(x / scale + xLast, y / scale,         0, c) * xmod *           (scale - ymod) 
-			+ (float) *image.data(x / scale,         y / scale + yLast, 0, c) * (scale - xmod) * ymod 
-			+ (float) *image.data(x / scale + xLast, y / scale + yLast, 0, c) * xmod *           ymod ) 
-		/ (scale * scale);     // faster than pow(scale, 2)
-}
 
 void Terrain::subDiamondSquare(int width, int size, float roughness) {
 	if(size < 2)
@@ -438,6 +416,7 @@ void Terrain::subDiamondSquare(int width, int size, float roughness) {
 	this->subDiamondSquare(width, half, roughness);
 }
 
+
 vector<glm::vec3> Terrain::getNormals(int width, int height) {
 	vector<glm::vec3> normals(width * height);
 	for(int y = 0; y < height; y++) {
@@ -462,3 +441,4 @@ vector<glm::vec3> Terrain::getNormals(int width, int height) {
 	}
 	return normals;
 }
+*/

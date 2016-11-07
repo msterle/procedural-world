@@ -36,11 +36,10 @@ namespace UI {
 		// Initialize camera for window
 		int width, height;
 		glfwGetFramebufferSize(UI::window, &width, &height);
-		world->camera.perspective(
-			glm::radians(UI::CAMERA_FOV),
+		UI::world->camera.perspective(glm::radians(UI::CAMERA_FOV),
 			(float)width / (float)height,
-			0.01f, 
-			100.0f
+			0.01f,
+			1000.0f
 			);
 	}
 
@@ -90,15 +89,6 @@ namespace UI {
 			case GLFW_KEY_P:
 				glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 				break;
-			case GLFW_KEY_1:
-				UI::world->terrain.resampleHeightmap(1);
-				break;
-			case GLFW_KEY_2:
-				UI::world->terrain.resampleHeightmap(2);
-				break;
-			case GLFW_KEY_4:
-				UI::world->terrain.resampleHeightmap(4);
-				break;
 			}
 		}
 	}
@@ -134,7 +124,7 @@ namespace UI {
 		glViewport(0, 0, width, height);
 		UI::world->camera.perspective(glm::radians(UI::CAMERA_FOV),
 			(float)width / (float)height,
-			0.1f,
+			0.01f,
 			1000.0f
 			);
 	}

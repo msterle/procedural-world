@@ -14,24 +14,23 @@ using namespace std;
 // Public Methods
 
 Model::Model() {
-	glGenVertexArrays(1, &this->VAO);
-	glGenBuffers(1, &this->vertexBuffer);
-	glGenBuffers(1, &this->indexBuffer);
-	glGenBuffers(1, &this->normalBuffer);
-}
-
-void Model::setShader(Shader shader) {
-	this->shader = shader;
+	modelMat = glm::mat4(1);
 }
 
 void Model::translate(glm::vec3 t) {
-	this->modelMat = glm::translate(glm::mat4(), t) * this->modelMat;
+	modelMat = glm::translate(glm::mat4(1), t) * modelMat;
 }
 
 void Model::scale(glm::vec3 s) {
-	this->modelMat = glm::scale(glm::mat4(), s) * this->modelMat;
+	modelMat = glm::scale(glm::mat4(1), s) * modelMat;
 }
 
 void Model::rotate(float angle, glm::vec3 axis) {
-	this->modelMat = glm::rotate(glm::mat4(), angle, axis) * this->modelMat;
+	modelMat = glm::rotate(glm::mat4(1), angle, axis) * modelMat;
+}
+
+void Model::draw(Shader shader) {
+	for(list<Mesh>::iterator it = meshes.begin(); it != meshes.end(); it++) {
+		it->draw(shader, modelMat);
+	}
 }

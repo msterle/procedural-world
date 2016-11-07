@@ -25,7 +25,6 @@ int main() {
 	}
 
 	// Cleanup before exit
-	delete world;
 	glfwTerminate();
 	return 0;
 }

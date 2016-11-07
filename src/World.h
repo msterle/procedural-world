@@ -9,7 +9,6 @@
 #include "Shader.h"
 #include "Terrain.h"
 #include "Camera.h"
-#include "Tree.h"
 
 using namespace std;
 
@@ -25,7 +24,7 @@ protected:
 	GLFWwindow* window;
 	Shader shader;
 	GLint uni_viewMat, uni_projMat;
-	vector<Tree> trees;
+	list<Model*> models;
 };
 
 #endif

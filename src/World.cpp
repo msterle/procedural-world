@@ -7,9 +7,8 @@
 #include "Shader.h"
 #include "Terrain.h"
 #include "Camera.h"
-#include "Tree.h"
-#include "ModelManager.h"
 #include "Material.h"
+#include "Model.h"
 
 #include "World.h"
 
@@ -47,9 +46,21 @@ World::World() {
 	this->terrain.generateDiamondSquare(128, 0.5f);
 	*/
 
-	this->terrain.setShader(shader);
-	this->terrain.generatePlane(128);
+	this->terrain.generatePlane(128, 128);
 	
+	Model* model = new Model();
+	models.push_back(model);
+
+	string objPath = string(PROJECT_ROOT) + string("/res/objects/cylinder16.obj");
+	Mesh* mesh = model->newMesh(objPath);
+	//mesh->newInstance(Materials::pewter);
+	MeshInstancePtr instancePtr = mesh->newInstance(Materials::gold);
+	model->rotate(glm::pi<float>() / 4, glm::vec3(0, 0, 1));
+	model->translate(glm::vec3(0, 2, 0));
+	instancePtr->scale(glm::vec3(0.5, 2, 0.5));
+	mesh->newInstance(instancePtr)->translate(glm::vec3(3, 0, -1));
+	
+	/*
 	// set up objects
 	//this->trees.push_back(Tree());
 	ModelManager& mm = ModelManager::getInstance();
@@ -62,10 +73,13 @@ World::World() {
 
 	MeshInstance* cylinderInstance = mm.newMeshInstance(tubeModel->getIndex(), cylinderMesh->getId(), Materials::copper);
 	cylinderInstance->translate(glm::vec3(0, 5, -2));
+	*/
+
+
 
 	// Set up camera
-	this->camera.setPosition(glm::vec3(0, 2, 10));
-	this->camera.lookAt(glm::vec3(0, 2, -100));
+	this->camera.setPosition(glm::vec3(5, 5, 5));
+	this->camera.lookAt(glm::vec3(0, 0, 0));
 }
 
 void World::draw() {
@@ -84,12 +98,21 @@ void World::draw() {
 
 	glUniform4fv(LightPosCLoc, 1, glm::value_ptr(this->camera.getViewMat() * glm::vec4(5.0, 10.0, 20.0, 0)));
 	glUniform4fv(LightColorLoc, 1, glm::value_ptr(glm::vec4(1.0, 1.0, 1.0, 1.0)));
+
+	GLuint useLightingLoc = glGetUniformLocation(shaderProgram, "useLighting");
+	glUniform1i(useLightingLoc, 1);
 	
 	// Draw models
-	this->terrain.draw();
+	this->terrain.draw(shader);
 
+	for(list<Model*>::iterator it = this->models.begin(); it != this->models.end(); it++) {
+		(*it)->draw(shader);
+	}
+
+	/*
 	ModelManager& mm = ModelManager::getInstance();
 	mm.draw(this->shader);
+	*/
 
 	/*
 	for(vector<Tree>::iterator it = this->trees.begin(); it != this->trees.end(); ++it) {

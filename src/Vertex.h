@@ -5,6 +5,7 @@
 
 struct Vertex {
 	glm::vec3 position, normal;
+	//Vertex(glm::vec3 position, glm::vec3 normal) : position(position), normal(normal) {}
 };
 
 #endif

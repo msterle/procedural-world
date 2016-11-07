@@ -24,7 +24,7 @@ MeshInstance::MeshInstance(unsigned int modelIndex, unsigned int meshId, Materia
 	this->modelIndex = modelIndex;
 	this->meshId = meshId;
 	this->material = material;
-	this->instanceId = MeshInstance::idCounter++;\
+	this->instanceId = MeshInstance::idCounter++;
 }
 
 
