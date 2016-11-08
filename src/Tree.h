@@ -4,23 +4,33 @@
 #include <vector>
 #include <string>
 
-#include "MeshInstance.h"
 #include "Shader.h"
 #include "Material.h"
 #include "Mesh.h"
+#include "Model.h"
+#include "LSystem.h"
+#include "Turtle.h"
 
 using namespace std;
 
 
-class Tree {
+class Tree : public Model {
+protected:
+	typedef void (callback_t)(void*);
+	LSystem<callback_t> lsys;
+	struct lsysData {
+		static void forward(void* v_self);
+		static void left(void* v_self);
+		static void right(void* v_self);
+		static void push(void* v_self);
+		static void pop(void* v_self);
+		static void noop(void* v_self) {}
+	};
+	Turtle turtle;
+	Mesh* cylinderMesh;
+	float angle;
 public:
-	Tree();
-	void draw(Shader shader);
-private:
-	Mesh* mesh;
-	bool loadOBJ(const char * path);
-	glm::mat4 modelMat;
-	Material* material;
+	Tree(float angle = 20);
 };
 
 #endif

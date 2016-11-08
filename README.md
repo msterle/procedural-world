@@ -26,4 +26,3 @@
 - fix cmake root directory
 - 'set as startup project' for MSVC
 - transform normals
-- ModelManager - pointer to unique pointer, shared pointers, unique pointers or return IDs/indices instead of pointers

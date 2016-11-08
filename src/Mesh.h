@@ -44,6 +44,7 @@ public:
 	MeshInstancePtr newInstance(MeshInstancePtr orig);
 	//void deleteInstance(MeshInstancePtr instance);
 	void draw(Shader shader, glm::mat4 modelMat);
+	int getNumInstances() { return instances.size(); }
 };
 
 // turn into template?
@@ -90,6 +91,10 @@ public:
 	}
 	MeshInstancePtr rotate(float angle, glm::vec3 axis) {
 		instanceMat = glm::rotate(glm::mat4(1), angle, axis) * instanceMat;
+		return parent;
+	}
+	MeshInstancePtr applyMatrix(glm::mat4 transform) {
+		instanceMat = transform * instanceMat;
 		return parent;
 	}
 };
