@@ -30,7 +30,7 @@ protected:
 	Mesh* cylinderMesh;
 	float angle;
 public:
-	Tree(float angle = 20);
+	Tree(float n);
 };
 
 #endif

@@ -21,7 +21,7 @@ using namespace std;
 
 // Constructor
 
-Tree::Tree(float angle) : angle(angle) {
+Tree::Tree(float n) : angle(20) {
 	lsys = LSystem<callback_t>(
 		"X",
 		LSystem<callback_t>::Grammar {
@@ -77,10 +77,10 @@ Tree::Tree(float angle) : angle(angle) {
 			}
 		});
 
-	string objPath = string(PROJECT_ROOT) + string("/res/objects/cylinder16.obj");
+	string objPath = string(PROJECT_ROOT) + string("/res/meshes/cylinder8.obj");
 	cylinderMesh = newMesh(objPath);
 
-	lsys.iterate(5);
+	lsys.iterate(n);
 	lsys.run();
 	cout << "instances: " << meshes.front().getNumInstances() << endl;
 }
@@ -93,22 +93,25 @@ void Tree::lsysData::forward(void* v_self) {
 	self->turtle.forward(1);
 	// place new segment behind
 	MeshInstancePtr segment = self->cylinderMesh->newInstance(Materials::pewter);
-	segment->translate(glm::vec3(0, -1, 0)); // set origin to top of cylinder
-	segment->scale(glm::vec3(1, 0.5, 1)); // scale cylinder, set height = 1
+	segment->scale(glm::vec3(1, 1, 1)); // set height
+	segment->rotate(glm::radians(90.0f), glm::vec3(1, 0, 0)); // rotate to facing +Z to match turtle start orientation
+	cout << "Tree: " << glm::to_string(self->turtle.getMatrix()) << endl;
 	segment->applyMatrix(self->turtle.getMatrix()); // transform according to turtle
-	self->turtle.scale(glm::vec3(0.95, 0.99, 0.95)); // shrink turtle
+	self->turtle.scale(glm::vec3(0.95, 0.95, 0.99)); // shrink turtle
 }
 
 void Tree::lsysData::left(void* v_self) {
 	Tree* self = (Tree*)v_self;
 	// rotate turtle
-	self->turtle.rotate(glm::pi<float>() / 180 * self->angle, glm::vec3(1, 0, 0));
+	//self->turtle.rotate(glm::pi<float>() / 180 * self->angle, glm::vec3(1, 0, 0));
+	self->turtle.turn(glm::radians(self->angle));
 }
 
 void Tree::lsysData::right(void* v_self) {
 	Tree* self = (Tree*)v_self;
 	// rotate turtle
-	self->turtle.rotate(-glm::pi<float>() / 180 * self->angle, glm::vec3(1, 0, 0));
+	//self->turtle.rotate(glm::pi<float>() / 180 * self->angle, glm::vec3(1, 0, 0));
+	self->turtle.turn(-glm::radians(self->angle));
 }
 
 void Tree::lsysData::push(void* v_self) {

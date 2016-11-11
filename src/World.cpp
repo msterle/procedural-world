@@ -10,6 +10,7 @@
 #include "Material.h"
 #include "Model.h"
 #include "Tree.h"
+#include "ParaTree.h"
 
 #include "World.h"
 
@@ -29,25 +30,21 @@ World::World() {
 	this->uni_viewMat = glGetUniformLocation(shader.getProgramRef(), "viewMat");
 	this->uni_projMat = glGetUniformLocation(shader.getProgramRef(), "projMat");
 
-	this->terrain.generatePlane(128, 128);
+	this->terrain.generatePlane(1000, 1000);
 
-	Tree* tree = new Tree(28);
-	this->models.push_back(tree);
+	// basic l-system tree
+	//Tree* tree = new Tree(2);
+	//this->models.push_back(tree);
+
+	// parametric l-system tree
+	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2);
+	this->models.push_back(ptree);
 
 	// Set up camera
-	this->camera.setPosition(glm::vec3(50, 10, 50));
-	this->camera.lookAt(glm::vec3(0, 20, 0));
-}
+	this->camera.setPosition(glm::vec3(8, 2, 15));
+	this->camera.lookAt(glm::vec3(0, 5.5, 0));
 
-void World::draw() {
-	// Clear the colorbuffer
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Bind transformation matrices to shader program
-	glUniformMatrix4fv(this->uni_viewMat, 1, GL_FALSE, glm::value_ptr(this->camera.getViewMat()));
-	glUniformMatrix4fv(this->uni_projMat, 1, GL_FALSE, glm::value_ptr(this->camera.getProjMat()));
-
+	// init constant uniforms
 	GLuint shaderProgram = this->shader.getProgramRef();
 
 	GLuint LightPosCLoc = glGetUniformLocation(shaderProgram, "lightPositionC");
@@ -58,6 +55,17 @@ void World::draw() {
 
 	GLuint useLightingLoc = glGetUniformLocation(shaderProgram, "useLighting");
 	glUniform1i(useLightingLoc, 1);
+
+}
+
+void World::draw() {
+	// Clear the colorbuffer
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Bind transformation matrices to shader program
+	glUniformMatrix4fv(this->uni_viewMat, 1, GL_FALSE, glm::value_ptr(this->camera.getViewMat()));
+	glUniformMatrix4fv(this->uni_projMat, 1, GL_FALSE, glm::value_ptr(this->camera.getProjMat()));
 	
 	// Draw models
 	this->terrain.draw(shader);

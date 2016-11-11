@@ -32,8 +32,8 @@ uniform mat4 viewMat;
 uniform mat4 projMat;
 
 void main() {
-    v2f_positionC = viewMat * modelMat * vec4(in_position, 1);
-    v2f_normalC = viewMat * modelMat * vec4(in_normal, 0);
+    v2f_positionC = viewMat * modelMat * in_instanceMat * vec4(in_position, 1);
+    v2f_normalC = viewMat * modelMat * in_instanceMat * vec4(in_normal, 0);
     v2f_color = vec4(in_color, 1);
     v2f_material.ambient = in_materialAmbient;
     v2f_material.diffuse = in_materialDiffuse;
