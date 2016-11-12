@@ -1,0 +1,182 @@
+\hypertarget{class_mesh_instance}{}\section{Mesh\+Instance Class Reference}
+\label{class_mesh_instance}\index{Mesh\+Instance@{Mesh\+Instance}}
+
+
+{\ttfamily \#include $<$Mesh.\+h$>$}
+
+
+
+Collaboration diagram for Mesh\+Instance\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=240pt]{class_mesh_instance__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_mesh_instance_a0433e083188a2bef4f193032bba3b21f}{Mesh\+Instance} (\hyperlink{class_mesh_instance_ptr}{Mesh\+Instance\+Ptr} \hyperlink{class_mesh_instance_ad248a44f589cbeb5a8ec8748afebdcd8}{parent}, glm\+::mat4 \hyperlink{class_mesh_instance_a4ed7a3e07affd6862213ff054caa1b30}{instance\+Mat}, \hyperlink{struct_material}{Material} \hyperlink{class_mesh_instance_adba237cd83810b3afa89f1b911997e17}{material})
+\item 
+\hyperlink{class_mesh_instance_a9489df3dba59756832ad3789d6ae6b19}{Mesh\+Instance} (\hyperlink{class_mesh_instance_ptr}{Mesh\+Instance\+Ptr} \hyperlink{class_mesh_instance_ad248a44f589cbeb5a8ec8748afebdcd8}{parent})
+\item 
+\hyperlink{class_mesh_instance_ptr}{Mesh\+Instance\+Ptr} \hyperlink{class_mesh_instance_a0fa7328a13f39ddecefbd791bb8a60d4}{translate} (glm\+::vec3 t)
+\item 
+\hyperlink{class_mesh_instance_ptr}{Mesh\+Instance\+Ptr} \hyperlink{class_mesh_instance_a2f326744ece4345c59cfa56823693440}{scale} (glm\+::vec3 s)
+\item 
+\hyperlink{class_mesh_instance_ptr}{Mesh\+Instance\+Ptr} \hyperlink{class_mesh_instance_a63c843a137a99cdb24a06c8d3951c8a5}{rotate} (float angle, glm\+::vec3 axis)
+\item 
+\hyperlink{class_mesh_instance_ptr}{Mesh\+Instance\+Ptr} \hyperlink{class_mesh_instance_a76c43b6e1efab3b95027fdf7fc17a97d}{apply\+Matrix} (glm\+::mat4 transform)
+\item 
+\hyperlink{class_mesh_instance_a130ba9587f476a8897f704eaed1ebded}{Mesh\+Instance} (unsigned int \hyperlink{class_mesh_instance_a969bc28f038cda422be9efe24c308b58}{model\+Index}, unsigned int \hyperlink{class_mesh_instance_aec954bfbb05fd9d2e4da020ca61b8c35}{mesh\+Id}, \hyperlink{struct_material}{Material} \hyperlink{class_mesh_instance_adba237cd83810b3afa89f1b911997e17}{material})
+\item 
+\hyperlink{class_mesh_instance}{Mesh\+Instance} $\ast$ \hyperlink{class_mesh_instance_afdb729a6fbb69dcbf75dd926344cecac}{copy} ()
+\item 
+\hyperlink{class_mesh_instance}{Mesh\+Instance} $\ast$ \hyperlink{class_mesh_instance_a61840ca9d6395ea62a2ea230306e0ed6}{translate} (glm\+::vec3 t)
+\item 
+\hyperlink{class_mesh_instance}{Mesh\+Instance} $\ast$ \hyperlink{class_mesh_instance_a4968f7898f2eaa54921b08313fc79d31}{scale} (glm\+::vec3 s)
+\item 
+\hyperlink{class_mesh_instance}{Mesh\+Instance} $\ast$ \hyperlink{class_mesh_instance_a26db238575ab880fdc81d128051e6011}{rotate} (float angle, glm\+::vec3 axis)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+glm\+::mat4 \hyperlink{class_mesh_instance_a4ed7a3e07affd6862213ff054caa1b30}{instance\+Mat} = glm\+::mat4(1)
+\item 
+\hyperlink{struct_material}{Material} \hyperlink{class_mesh_instance_adba237cd83810b3afa89f1b911997e17}{material}
+\item 
+unsigned int \hyperlink{class_mesh_instance_a969bc28f038cda422be9efe24c308b58}{model\+Index}
+\item 
+unsigned int \hyperlink{class_mesh_instance_aec954bfbb05fd9d2e4da020ca61b8c35}{mesh\+Id}
+\item 
+unsigned int \hyperlink{class_mesh_instance_ad3ce9b979b94b94c79d082009f2d62c7}{instance\+Id}
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static unsigned int \hyperlink{class_mesh_instance_abded40a314dd0d8954d22bd24cdb6de8}{id\+Counter}
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_mesh_instance_ptr}{Mesh\+Instance\+Ptr} \hyperlink{class_mesh_instance_ad248a44f589cbeb5a8ec8748afebdcd8}{parent}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Mesh\+Instance@{Mesh\+Instance}!Mesh\+Instance@{Mesh\+Instance}}
+\index{Mesh\+Instance@{Mesh\+Instance}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{Mesh\+Instance(\+Mesh\+Instance\+Ptr parent, glm\+::mat4 instance\+Mat, Material material)}{MeshInstance(MeshInstancePtr parent, glm::mat4 instanceMat, Material material)}}]{\setlength{\rightskip}{0pt plus 5cm}Mesh\+Instance\+::\+Mesh\+Instance (
+\begin{DoxyParamCaption}
+\item[{{\bf Mesh\+Instance\+Ptr}}]{parent, }
+\item[{glm\+::mat4}]{instance\+Mat, }
+\item[{{\bf Material}}]{material}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_mesh_instance_a0433e083188a2bef4f193032bba3b21f}{}\label{class_mesh_instance_a0433e083188a2bef4f193032bba3b21f}
+\index{Mesh\+Instance@{Mesh\+Instance}!Mesh\+Instance@{Mesh\+Instance}}
+\index{Mesh\+Instance@{Mesh\+Instance}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{Mesh\+Instance(\+Mesh\+Instance\+Ptr parent)}{MeshInstance(MeshInstancePtr parent)}}]{\setlength{\rightskip}{0pt plus 5cm}Mesh\+Instance\+::\+Mesh\+Instance (
+\begin{DoxyParamCaption}
+\item[{{\bf Mesh\+Instance\+Ptr}}]{parent}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_mesh_instance_a9489df3dba59756832ad3789d6ae6b19}{}\label{class_mesh_instance_a9489df3dba59756832ad3789d6ae6b19}
+\index{Mesh\+Instance@{Mesh\+Instance}!Mesh\+Instance@{Mesh\+Instance}}
+\index{Mesh\+Instance@{Mesh\+Instance}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{Mesh\+Instance(unsigned int model\+Index, unsigned int mesh\+Id, Material material)}{MeshInstance(unsigned int modelIndex, unsigned int meshId, Material material)}}]{\setlength{\rightskip}{0pt plus 5cm}Mesh\+Instance\+::\+Mesh\+Instance (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{model\+Index, }
+\item[{unsigned int}]{mesh\+Id, }
+\item[{{\bf Material}}]{material}
+\end{DoxyParamCaption}
+)}\hypertarget{class_mesh_instance_a130ba9587f476a8897f704eaed1ebded}{}\label{class_mesh_instance_a130ba9587f476a8897f704eaed1ebded}
+
+
+\subsection{Member Function Documentation}
+\index{Mesh\+Instance@{Mesh\+Instance}!apply\+Matrix@{apply\+Matrix}}
+\index{apply\+Matrix@{apply\+Matrix}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{apply\+Matrix(glm\+::mat4 transform)}{applyMatrix(glm::mat4 transform)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance\+Ptr} Mesh\+Instance\+::apply\+Matrix (
+\begin{DoxyParamCaption}
+\item[{glm\+::mat4}]{transform}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_mesh_instance_a76c43b6e1efab3b95027fdf7fc17a97d}{}\label{class_mesh_instance_a76c43b6e1efab3b95027fdf7fc17a97d}
+\index{Mesh\+Instance@{Mesh\+Instance}!copy@{copy}}
+\index{copy@{copy}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{copy()}{copy()}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance}$\ast$ Mesh\+Instance\+::copy (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_mesh_instance_afdb729a6fbb69dcbf75dd926344cecac}{}\label{class_mesh_instance_afdb729a6fbb69dcbf75dd926344cecac}
+\index{Mesh\+Instance@{Mesh\+Instance}!rotate@{rotate}}
+\index{rotate@{rotate}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{rotate(float angle, glm\+::vec3 axis)}{rotate(float angle, glm::vec3 axis)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance}$\ast$ Mesh\+Instance\+::rotate (
+\begin{DoxyParamCaption}
+\item[{float}]{angle, }
+\item[{glm\+::vec3}]{axis}
+\end{DoxyParamCaption}
+)}\hypertarget{class_mesh_instance_a26db238575ab880fdc81d128051e6011}{}\label{class_mesh_instance_a26db238575ab880fdc81d128051e6011}
+\index{Mesh\+Instance@{Mesh\+Instance}!rotate@{rotate}}
+\index{rotate@{rotate}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{rotate(float angle, glm\+::vec3 axis)}{rotate(float angle, glm::vec3 axis)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance\+Ptr} Mesh\+Instance\+::rotate (
+\begin{DoxyParamCaption}
+\item[{float}]{angle, }
+\item[{glm\+::vec3}]{axis}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_mesh_instance_a63c843a137a99cdb24a06c8d3951c8a5}{}\label{class_mesh_instance_a63c843a137a99cdb24a06c8d3951c8a5}
+\index{Mesh\+Instance@{Mesh\+Instance}!scale@{scale}}
+\index{scale@{scale}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{scale(glm\+::vec3 s)}{scale(glm::vec3 s)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance}$\ast$ Mesh\+Instance\+::scale (
+\begin{DoxyParamCaption}
+\item[{glm\+::vec3}]{s}
+\end{DoxyParamCaption}
+)}\hypertarget{class_mesh_instance_a4968f7898f2eaa54921b08313fc79d31}{}\label{class_mesh_instance_a4968f7898f2eaa54921b08313fc79d31}
+\index{Mesh\+Instance@{Mesh\+Instance}!scale@{scale}}
+\index{scale@{scale}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{scale(glm\+::vec3 s)}{scale(glm::vec3 s)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance\+Ptr} Mesh\+Instance\+::scale (
+\begin{DoxyParamCaption}
+\item[{glm\+::vec3}]{s}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_mesh_instance_a2f326744ece4345c59cfa56823693440}{}\label{class_mesh_instance_a2f326744ece4345c59cfa56823693440}
+\index{Mesh\+Instance@{Mesh\+Instance}!translate@{translate}}
+\index{translate@{translate}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{translate(glm\+::vec3 t)}{translate(glm::vec3 t)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance}$\ast$ Mesh\+Instance\+::translate (
+\begin{DoxyParamCaption}
+\item[{glm\+::vec3}]{t}
+\end{DoxyParamCaption}
+)}\hypertarget{class_mesh_instance_a61840ca9d6395ea62a2ea230306e0ed6}{}\label{class_mesh_instance_a61840ca9d6395ea62a2ea230306e0ed6}
+\index{Mesh\+Instance@{Mesh\+Instance}!translate@{translate}}
+\index{translate@{translate}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{translate(glm\+::vec3 t)}{translate(glm::vec3 t)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance\+Ptr} Mesh\+Instance\+::translate (
+\begin{DoxyParamCaption}
+\item[{glm\+::vec3}]{t}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_mesh_instance_a0fa7328a13f39ddecefbd791bb8a60d4}{}\label{class_mesh_instance_a0fa7328a13f39ddecefbd791bb8a60d4}
+
+
+\subsection{Member Data Documentation}
+\index{Mesh\+Instance@{Mesh\+Instance}!id\+Counter@{id\+Counter}}
+\index{id\+Counter@{id\+Counter}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{id\+Counter}{idCounter}}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int Mesh\+Instance\+::id\+Counter\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{class_mesh_instance_abded40a314dd0d8954d22bd24cdb6de8}{}\label{class_mesh_instance_abded40a314dd0d8954d22bd24cdb6de8}
+\index{Mesh\+Instance@{Mesh\+Instance}!instance\+Id@{instance\+Id}}
+\index{instance\+Id@{instance\+Id}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{instance\+Id}{instanceId}}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int Mesh\+Instance\+::instance\+Id}\hypertarget{class_mesh_instance_ad3ce9b979b94b94c79d082009f2d62c7}{}\label{class_mesh_instance_ad3ce9b979b94b94c79d082009f2d62c7}
+\index{Mesh\+Instance@{Mesh\+Instance}!instance\+Mat@{instance\+Mat}}
+\index{instance\+Mat@{instance\+Mat}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{instance\+Mat}{instanceMat}}]{\setlength{\rightskip}{0pt plus 5cm}glm\+::mat4 Mesh\+Instance\+::instance\+Mat = glm\+::mat4(1)}\hypertarget{class_mesh_instance_a4ed7a3e07affd6862213ff054caa1b30}{}\label{class_mesh_instance_a4ed7a3e07affd6862213ff054caa1b30}
+\index{Mesh\+Instance@{Mesh\+Instance}!material@{material}}
+\index{material@{material}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{material}{material}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Material} Mesh\+Instance\+::material}\hypertarget{class_mesh_instance_adba237cd83810b3afa89f1b911997e17}{}\label{class_mesh_instance_adba237cd83810b3afa89f1b911997e17}
+\index{Mesh\+Instance@{Mesh\+Instance}!mesh\+Id@{mesh\+Id}}
+\index{mesh\+Id@{mesh\+Id}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{mesh\+Id}{meshId}}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int Mesh\+Instance\+::mesh\+Id}\hypertarget{class_mesh_instance_aec954bfbb05fd9d2e4da020ca61b8c35}{}\label{class_mesh_instance_aec954bfbb05fd9d2e4da020ca61b8c35}
+\index{Mesh\+Instance@{Mesh\+Instance}!model\+Index@{model\+Index}}
+\index{model\+Index@{model\+Index}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{model\+Index}{modelIndex}}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int Mesh\+Instance\+::model\+Index}\hypertarget{class_mesh_instance_a969bc28f038cda422be9efe24c308b58}{}\label{class_mesh_instance_a969bc28f038cda422be9efe24c308b58}
+\index{Mesh\+Instance@{Mesh\+Instance}!parent@{parent}}
+\index{parent@{parent}!Mesh\+Instance@{Mesh\+Instance}}
+\subsubsection[{\texorpdfstring{parent}{parent}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance\+Ptr} Mesh\+Instance\+::parent\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_mesh_instance_ad248a44f589cbeb5a8ec8748afebdcd8}{}\label{class_mesh_instance_ad248a44f589cbeb5a8ec8748afebdcd8}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{_mesh_8h}{Mesh.\+h}\item 
+src/\hyperlink{_mesh_instance_8h}{Mesh\+Instance.\+h}\end{DoxyCompactItemize}

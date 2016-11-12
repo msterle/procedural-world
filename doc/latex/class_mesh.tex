@@ -1,0 +1,179 @@
+\hypertarget{class_mesh}{}\section{Mesh Class Reference}
+\label{class_mesh}\index{Mesh@{Mesh}}
+
+
+{\ttfamily \#include $<$Mesh.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_mesh_afa90b3528266a8937f40943df3af7fa7}{Mesh} (vector$<$ \hyperlink{struct_vertex}{Vertex} $>$ \hyperlink{class_mesh_abe5c05c224e47ba1e8b6393759798a9b}{vertices}, G\+Lenum \hyperlink{class_mesh_a258588a1f2686e27238f87841ec1da8f}{draw\+Mode}=G\+L\+\_\+\+T\+R\+I\+A\+N\+G\+L\+ES)
+\item 
+\hyperlink{class_mesh_a1b1b4d82dcb889b40d04aa3e15fec312}{Mesh} (vector$<$ \hyperlink{struct_vertex}{Vertex} $>$ \hyperlink{class_mesh_abe5c05c224e47ba1e8b6393759798a9b}{vertices}, vector$<$ G\+Luint $>$ \hyperlink{class_mesh_a233e40975b5ddafda502c8c31b77db2c}{indices}, G\+Lenum \hyperlink{class_mesh_a258588a1f2686e27238f87841ec1da8f}{draw\+Mode}=G\+L\+\_\+\+T\+R\+I\+A\+N\+G\+L\+ES)
+\item 
+\hyperlink{class_mesh_a1ca4486a1735d3cc171ee20c1d5178ce}{Mesh} (string file\+Path)
+\item 
+\hyperlink{class_mesh_instance_ptr}{Mesh\+Instance\+Ptr} \hyperlink{class_mesh_a36f1eafa576a15ffd27fb8c9cd780dff}{new\+Instance} ()
+\item 
+\hyperlink{class_mesh_instance_ptr}{Mesh\+Instance\+Ptr} \hyperlink{class_mesh_aa9e75b5b191927611dfc2581dda8114c}{new\+Instance} (glm\+::mat4 instance\+Mat)
+\item 
+\hyperlink{class_mesh_instance_ptr}{Mesh\+Instance\+Ptr} \hyperlink{class_mesh_a38063f2a7ed69bc48965b13ed851ae78}{new\+Instance} (\hyperlink{struct_material}{Material} material)
+\item 
+\hyperlink{class_mesh_instance_ptr}{Mesh\+Instance\+Ptr} \hyperlink{class_mesh_a1b0545939e30667c969561c97971dbdf}{new\+Instance} (glm\+::mat4 instance\+Mat, \hyperlink{struct_material}{Material} material)
+\item 
+\hyperlink{class_mesh_instance_ptr}{Mesh\+Instance\+Ptr} \hyperlink{class_mesh_ac61315be3238a91889d126daa230749b}{new\+Instance} (\hyperlink{class_mesh_instance_ptr}{Mesh\+Instance\+Ptr} orig)
+\item 
+void \hyperlink{class_mesh_a310a62733c1d6512e49067daa747eb6b}{draw} (\hyperlink{class_shader}{Shader} shader, glm\+::mat4 model\+Mat)
+\item 
+int \hyperlink{class_mesh_a612e62d5f06a66d4bc0e2331e169966d}{get\+Num\+Instances} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_mesh_ab5df5ad9aabcb888d69fbdef9de7305b}{init} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{class_mesh_a942e224876dfbfb383aed5b4b361e36b}{is\+Indexed}
+\item 
+G\+Lenum \hyperlink{class_mesh_a258588a1f2686e27238f87841ec1da8f}{draw\+Mode}
+\item 
+G\+Luint \hyperlink{class_mesh_a09b989b9d4df8ae595d7e80e091a4a5b}{V\+AO}
+\item 
+G\+Luint \hyperlink{class_mesh_a0d28b2c6fee628a13f43cae3f858569b}{V\+BO}
+\item 
+G\+Luint \hyperlink{class_mesh_a894c6723c0172f4e38b2509582abfa6c}{E\+BO}
+\item 
+G\+Luint \hyperlink{class_mesh_ac1bab02ab0a8dacff1f1bcf9dbb446e1}{I\+BO}
+\item 
+vector$<$ \hyperlink{struct_vertex}{Vertex} $>$ \hyperlink{class_mesh_abe5c05c224e47ba1e8b6393759798a9b}{vertices}
+\item 
+vector$<$ G\+Luint $>$ \hyperlink{class_mesh_a233e40975b5ddafda502c8c31b77db2c}{indices}
+\item 
+vector$<$ \hyperlink{class_mesh_instance}{Mesh\+Instance} $>$ \hyperlink{class_mesh_afa47c6543ce338b1749d5da89f17f699}{instances}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Mesh@{Mesh}!Mesh@{Mesh}}
+\index{Mesh@{Mesh}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{Mesh(vector$<$ Vertex $>$ vertices, G\+Lenum draw\+Mode=\+G\+L\+\_\+\+T\+R\+I\+A\+N\+G\+L\+E\+S)}{Mesh(vector< Vertex > vertices, GLenum drawMode=GL_TRIANGLES)}}]{\setlength{\rightskip}{0pt plus 5cm}Mesh\+::\+Mesh (
+\begin{DoxyParamCaption}
+\item[{vector$<$ {\bf Vertex} $>$}]{vertices, }
+\item[{G\+Lenum}]{draw\+Mode = {\ttfamily GL\+\_\+TRIANGLES}}
+\end{DoxyParamCaption}
+)}\hypertarget{class_mesh_afa90b3528266a8937f40943df3af7fa7}{}\label{class_mesh_afa90b3528266a8937f40943df3af7fa7}
+\index{Mesh@{Mesh}!Mesh@{Mesh}}
+\index{Mesh@{Mesh}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{Mesh(vector$<$ Vertex $>$ vertices, vector$<$ G\+Luint $>$ indices, G\+Lenum draw\+Mode=\+G\+L\+\_\+\+T\+R\+I\+A\+N\+G\+L\+E\+S)}{Mesh(vector< Vertex > vertices, vector< GLuint > indices, GLenum drawMode=GL_TRIANGLES)}}]{\setlength{\rightskip}{0pt plus 5cm}Mesh\+::\+Mesh (
+\begin{DoxyParamCaption}
+\item[{vector$<$ {\bf Vertex} $>$}]{vertices, }
+\item[{vector$<$ G\+Luint $>$}]{indices, }
+\item[{G\+Lenum}]{draw\+Mode = {\ttfamily GL\+\_\+TRIANGLES}}
+\end{DoxyParamCaption}
+)}\hypertarget{class_mesh_a1b1b4d82dcb889b40d04aa3e15fec312}{}\label{class_mesh_a1b1b4d82dcb889b40d04aa3e15fec312}
+\index{Mesh@{Mesh}!Mesh@{Mesh}}
+\index{Mesh@{Mesh}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{Mesh(string file\+Path)}{Mesh(string filePath)}}]{\setlength{\rightskip}{0pt plus 5cm}Mesh\+::\+Mesh (
+\begin{DoxyParamCaption}
+\item[{string}]{file\+Path}
+\end{DoxyParamCaption}
+)}\hypertarget{class_mesh_a1ca4486a1735d3cc171ee20c1d5178ce}{}\label{class_mesh_a1ca4486a1735d3cc171ee20c1d5178ce}
+
+
+\subsection{Member Function Documentation}
+\index{Mesh@{Mesh}!draw@{draw}}
+\index{draw@{draw}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{draw(\+Shader shader, glm\+::mat4 model\+Mat)}{draw(Shader shader, glm::mat4 modelMat)}}]{\setlength{\rightskip}{0pt plus 5cm}void Mesh\+::draw (
+\begin{DoxyParamCaption}
+\item[{{\bf Shader}}]{shader, }
+\item[{glm\+::mat4}]{model\+Mat}
+\end{DoxyParamCaption}
+)}\hypertarget{class_mesh_a310a62733c1d6512e49067daa747eb6b}{}\label{class_mesh_a310a62733c1d6512e49067daa747eb6b}
+\index{Mesh@{Mesh}!get\+Num\+Instances@{get\+Num\+Instances}}
+\index{get\+Num\+Instances@{get\+Num\+Instances}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{get\+Num\+Instances()}{getNumInstances()}}]{\setlength{\rightskip}{0pt plus 5cm}int Mesh\+::get\+Num\+Instances (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_mesh_a612e62d5f06a66d4bc0e2331e169966d}{}\label{class_mesh_a612e62d5f06a66d4bc0e2331e169966d}
+\index{Mesh@{Mesh}!init@{init}}
+\index{init@{init}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{init()}{init()}}]{\setlength{\rightskip}{0pt plus 5cm}void Mesh\+::init (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_mesh_ab5df5ad9aabcb888d69fbdef9de7305b}{}\label{class_mesh_ab5df5ad9aabcb888d69fbdef9de7305b}
+\index{Mesh@{Mesh}!new\+Instance@{new\+Instance}}
+\index{new\+Instance@{new\+Instance}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{new\+Instance()}{newInstance()}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance\+Ptr} Mesh\+::new\+Instance (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_mesh_a36f1eafa576a15ffd27fb8c9cd780dff}{}\label{class_mesh_a36f1eafa576a15ffd27fb8c9cd780dff}
+\index{Mesh@{Mesh}!new\+Instance@{new\+Instance}}
+\index{new\+Instance@{new\+Instance}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{new\+Instance(glm\+::mat4 instance\+Mat)}{newInstance(glm::mat4 instanceMat)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance\+Ptr} Mesh\+::new\+Instance (
+\begin{DoxyParamCaption}
+\item[{glm\+::mat4}]{instance\+Mat}
+\end{DoxyParamCaption}
+)}\hypertarget{class_mesh_aa9e75b5b191927611dfc2581dda8114c}{}\label{class_mesh_aa9e75b5b191927611dfc2581dda8114c}
+\index{Mesh@{Mesh}!new\+Instance@{new\+Instance}}
+\index{new\+Instance@{new\+Instance}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{new\+Instance(\+Material material)}{newInstance(Material material)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance\+Ptr} Mesh\+::new\+Instance (
+\begin{DoxyParamCaption}
+\item[{{\bf Material}}]{material}
+\end{DoxyParamCaption}
+)}\hypertarget{class_mesh_a38063f2a7ed69bc48965b13ed851ae78}{}\label{class_mesh_a38063f2a7ed69bc48965b13ed851ae78}
+\index{Mesh@{Mesh}!new\+Instance@{new\+Instance}}
+\index{new\+Instance@{new\+Instance}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{new\+Instance(glm\+::mat4 instance\+Mat, Material material)}{newInstance(glm::mat4 instanceMat, Material material)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance\+Ptr} Mesh\+::new\+Instance (
+\begin{DoxyParamCaption}
+\item[{glm\+::mat4}]{instance\+Mat, }
+\item[{{\bf Material}}]{material}
+\end{DoxyParamCaption}
+)}\hypertarget{class_mesh_a1b0545939e30667c969561c97971dbdf}{}\label{class_mesh_a1b0545939e30667c969561c97971dbdf}
+\index{Mesh@{Mesh}!new\+Instance@{new\+Instance}}
+\index{new\+Instance@{new\+Instance}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{new\+Instance(\+Mesh\+Instance\+Ptr orig)}{newInstance(MeshInstancePtr orig)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance\+Ptr} Mesh\+::new\+Instance (
+\begin{DoxyParamCaption}
+\item[{{\bf Mesh\+Instance\+Ptr}}]{orig}
+\end{DoxyParamCaption}
+)}\hypertarget{class_mesh_ac61315be3238a91889d126daa230749b}{}\label{class_mesh_ac61315be3238a91889d126daa230749b}
+
+
+\subsection{Member Data Documentation}
+\index{Mesh@{Mesh}!draw\+Mode@{draw\+Mode}}
+\index{draw\+Mode@{draw\+Mode}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{draw\+Mode}{drawMode}}]{\setlength{\rightskip}{0pt plus 5cm}G\+Lenum Mesh\+::draw\+Mode\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_mesh_a258588a1f2686e27238f87841ec1da8f}{}\label{class_mesh_a258588a1f2686e27238f87841ec1da8f}
+\index{Mesh@{Mesh}!E\+BO@{E\+BO}}
+\index{E\+BO@{E\+BO}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{E\+BO}{EBO}}]{\setlength{\rightskip}{0pt plus 5cm}G\+Luint Mesh\+::\+E\+BO\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_mesh_a894c6723c0172f4e38b2509582abfa6c}{}\label{class_mesh_a894c6723c0172f4e38b2509582abfa6c}
+\index{Mesh@{Mesh}!I\+BO@{I\+BO}}
+\index{I\+BO@{I\+BO}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{I\+BO}{IBO}}]{\setlength{\rightskip}{0pt plus 5cm}G\+Luint Mesh\+::\+I\+BO\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_mesh_ac1bab02ab0a8dacff1f1bcf9dbb446e1}{}\label{class_mesh_ac1bab02ab0a8dacff1f1bcf9dbb446e1}
+\index{Mesh@{Mesh}!indices@{indices}}
+\index{indices@{indices}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{indices}{indices}}]{\setlength{\rightskip}{0pt plus 5cm}vector$<$G\+Luint$>$ Mesh\+::indices\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_mesh_a233e40975b5ddafda502c8c31b77db2c}{}\label{class_mesh_a233e40975b5ddafda502c8c31b77db2c}
+\index{Mesh@{Mesh}!instances@{instances}}
+\index{instances@{instances}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{instances}{instances}}]{\setlength{\rightskip}{0pt plus 5cm}vector$<${\bf Mesh\+Instance}$>$ Mesh\+::instances\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_mesh_afa47c6543ce338b1749d5da89f17f699}{}\label{class_mesh_afa47c6543ce338b1749d5da89f17f699}
+\index{Mesh@{Mesh}!is\+Indexed@{is\+Indexed}}
+\index{is\+Indexed@{is\+Indexed}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{is\+Indexed}{isIndexed}}]{\setlength{\rightskip}{0pt plus 5cm}bool Mesh\+::is\+Indexed\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_mesh_a942e224876dfbfb383aed5b4b361e36b}{}\label{class_mesh_a942e224876dfbfb383aed5b4b361e36b}
+\index{Mesh@{Mesh}!V\+AO@{V\+AO}}
+\index{V\+AO@{V\+AO}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{V\+AO}{VAO}}]{\setlength{\rightskip}{0pt plus 5cm}G\+Luint Mesh\+::\+V\+AO\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_mesh_a09b989b9d4df8ae595d7e80e091a4a5b}{}\label{class_mesh_a09b989b9d4df8ae595d7e80e091a4a5b}
+\index{Mesh@{Mesh}!V\+BO@{V\+BO}}
+\index{V\+BO@{V\+BO}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{V\+BO}{VBO}}]{\setlength{\rightskip}{0pt plus 5cm}G\+Luint Mesh\+::\+V\+BO\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_mesh_a0d28b2c6fee628a13f43cae3f858569b}{}\label{class_mesh_a0d28b2c6fee628a13f43cae3f858569b}
+\index{Mesh@{Mesh}!vertices@{vertices}}
+\index{vertices@{vertices}!Mesh@{Mesh}}
+\subsubsection[{\texorpdfstring{vertices}{vertices}}]{\setlength{\rightskip}{0pt plus 5cm}vector$<${\bf Vertex}$>$ Mesh\+::vertices\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_mesh_abe5c05c224e47ba1e8b6393759798a9b}{}\label{class_mesh_abe5c05c224e47ba1e8b6393759798a9b}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{_mesh_8h}{Mesh.\+h}\item 
+src/\hyperlink{_mesh_8cpp}{Mesh.\+cpp}\end{DoxyCompactItemize}

@@ -1,0 +1,95 @@
+\hypertarget{class_shader}{}\section{Shader Class Reference}
+\label{class_shader}\index{Shader@{Shader}}
+
+
+{\ttfamily \#include $<$Shader.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_shader_a0d654ebaca4e0555197c0724c6d30610}{Shader} ()
+\item 
+\hyperlink{class_shader_a9176ebab5432933a04212973338cbbbb}{Shader} (std\+::string vertex\+Shader\+Path, std\+::string fragment\+Shader\+Path)
+\item 
+G\+Luint \hyperlink{class_shader_a7b5d15634abef2671085a38b73e86e58}{get\+Program\+Ref} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{class_shader_abdbec99e399193b12d229d51566323fd}{Type} \{ \hyperlink{class_shader_abdbec99e399193b12d229d51566323fdada97e96eb0013c1ab78a9fc843869daa}{Vertex\+Shader}, 
+\hyperlink{class_shader_abdbec99e399193b12d229d51566323fda482dd8ff1d0dcce735a602aaded5253d}{Fragment\+Shader}
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Static Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static G\+Luint \hyperlink{class_shader_a6a43849889abbbe31c7384929e0d37c4}{compile\+Shader} (\hyperlink{class_shader_abdbec99e399193b12d229d51566323fd}{Type} type, std\+::string path)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+G\+Luint \hyperlink{class_shader_ac565e02af616d8b73ade58edb2f26ca5}{program\+Ref}
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Enumeration Documentation}
+\index{Shader@{Shader}!Type@{Type}}
+\index{Type@{Type}!Shader@{Shader}}
+\subsubsection[{\texorpdfstring{Type}{Type}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Shader\+::\+Type}\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_shader_abdbec99e399193b12d229d51566323fd}{}\label{class_shader_abdbec99e399193b12d229d51566323fd}
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{Vertex\+Shader@{Vertex\+Shader}!Shader@{Shader}}\index{Shader@{Shader}!Vertex\+Shader@{Vertex\+Shader}}\item[{\em 
+Vertex\+Shader\hypertarget{class_shader_abdbec99e399193b12d229d51566323fdada97e96eb0013c1ab78a9fc843869daa}{}\label{class_shader_abdbec99e399193b12d229d51566323fdada97e96eb0013c1ab78a9fc843869daa}
+}]\index{Fragment\+Shader@{Fragment\+Shader}!Shader@{Shader}}\index{Shader@{Shader}!Fragment\+Shader@{Fragment\+Shader}}\item[{\em 
+Fragment\+Shader\hypertarget{class_shader_abdbec99e399193b12d229d51566323fda482dd8ff1d0dcce735a602aaded5253d}{}\label{class_shader_abdbec99e399193b12d229d51566323fda482dd8ff1d0dcce735a602aaded5253d}
+}]\end{description}
+\end{Desc}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Shader@{Shader}!Shader@{Shader}}
+\index{Shader@{Shader}!Shader@{Shader}}
+\subsubsection[{\texorpdfstring{Shader()}{Shader()}}]{\setlength{\rightskip}{0pt plus 5cm}Shader\+::\+Shader (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_shader_a0d654ebaca4e0555197c0724c6d30610}{}\label{class_shader_a0d654ebaca4e0555197c0724c6d30610}
+\index{Shader@{Shader}!Shader@{Shader}}
+\index{Shader@{Shader}!Shader@{Shader}}
+\subsubsection[{\texorpdfstring{Shader(std\+::string vertex\+Shader\+Path, std\+::string fragment\+Shader\+Path)}{Shader(std::string vertexShaderPath, std::string fragmentShaderPath)}}]{\setlength{\rightskip}{0pt plus 5cm}Shader\+::\+Shader (
+\begin{DoxyParamCaption}
+\item[{std\+::string}]{vertex\+Shader\+Path, }
+\item[{std\+::string}]{fragment\+Shader\+Path}
+\end{DoxyParamCaption}
+)}\hypertarget{class_shader_a9176ebab5432933a04212973338cbbbb}{}\label{class_shader_a9176ebab5432933a04212973338cbbbb}
+
+
+\subsection{Member Function Documentation}
+\index{Shader@{Shader}!compile\+Shader@{compile\+Shader}}
+\index{compile\+Shader@{compile\+Shader}!Shader@{Shader}}
+\subsubsection[{\texorpdfstring{compile\+Shader(\+Type type, std\+::string path)}{compileShader(Type type, std::string path)}}]{\setlength{\rightskip}{0pt plus 5cm}G\+Luint Shader\+::compile\+Shader (
+\begin{DoxyParamCaption}
+\item[{{\bf Type}}]{type, }
+\item[{std\+::string}]{path}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}\hypertarget{class_shader_a6a43849889abbbe31c7384929e0d37c4}{}\label{class_shader_a6a43849889abbbe31c7384929e0d37c4}
+\index{Shader@{Shader}!get\+Program\+Ref@{get\+Program\+Ref}}
+\index{get\+Program\+Ref@{get\+Program\+Ref}!Shader@{Shader}}
+\subsubsection[{\texorpdfstring{get\+Program\+Ref()}{getProgramRef()}}]{\setlength{\rightskip}{0pt plus 5cm}G\+Luint Shader\+::get\+Program\+Ref (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_shader_a7b5d15634abef2671085a38b73e86e58}{}\label{class_shader_a7b5d15634abef2671085a38b73e86e58}
+
+
+\subsection{Member Data Documentation}
+\index{Shader@{Shader}!program\+Ref@{program\+Ref}}
+\index{program\+Ref@{program\+Ref}!Shader@{Shader}}
+\subsubsection[{\texorpdfstring{program\+Ref}{programRef}}]{\setlength{\rightskip}{0pt plus 5cm}G\+Luint Shader\+::program\+Ref\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_shader_ac565e02af616d8b73ade58edb2f26ca5}{}\label{class_shader_ac565e02af616d8b73ade58edb2f26ca5}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{_shader_8h}{Shader.\+h}\item 
+src/\hyperlink{_shader_8cpp}{Shader.\+cpp}\end{DoxyCompactItemize}

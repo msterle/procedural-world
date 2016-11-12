@@ -1,0 +1,158 @@
+\hypertarget{class_model_manager}{}\section{Model\+Manager Class Reference}
+\label{class_model_manager}\index{Model\+Manager@{Model\+Manager}}
+
+
+{\ttfamily \#include $<$Model\+Manager.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_model_new}{Model\+New} $\ast$ \hyperlink{class_model_manager_adfde1d928ecc4b045aaca986b7921af4}{new\+Model} ()
+\item 
+\hyperlink{class_mesh}{Mesh} $\ast$ \hyperlink{class_model_manager_a508fce5dc8e782d38b3cf1fdbdb7ac4f}{new\+Mesh} (vector$<$ \hyperlink{struct_vertex}{Vertex} $>$ vertices)
+\item 
+void \hyperlink{class_model_manager_a44a142640c43cf2f4aab49dbb70c034e}{delete\+Model} (unsigned int model\+Index)
+\item 
+\hyperlink{class_mesh}{Mesh} $\ast$ \hyperlink{class_model_manager_a881a1d136c05a9e7208c92c7109ae46a}{new\+Mesh} (vector$<$ \hyperlink{struct_vertex}{Vertex} $>$ vertices, vector$<$ G\+Luint $>$ indices)
+\item 
+\hyperlink{class_mesh}{Mesh} $\ast$ \hyperlink{class_model_manager_a103637a3eb4240f9f1958e5c4b59f650}{new\+Mesh} (const string \&file\+Path)
+\item 
+\hyperlink{class_mesh_instance}{Mesh\+Instance} $\ast$ \hyperlink{class_model_manager_a5620a615f11fc4db7f536b9add1766d9}{new\+Mesh\+Instance} (unsigned int model\+Index, unsigned int mesh\+Id, \hyperlink{struct_material}{Material} material)
+\item 
+\hyperlink{class_mesh_instance}{Mesh\+Instance} $\ast$ \hyperlink{class_model_manager_aa1ccd7701ef0e4cc0531c667f153bce3}{new\+Mesh\+Instance} (\hyperlink{class_mesh_instance}{Mesh\+Instance} $\ast$original)
+\item 
+void \hyperlink{class_model_manager_af10dd7af64cb4b4e5f5a0668e6f34c17}{remove\+Mesh\+Instances\+By\+Model\+Index} (unsigned int model\+Index)
+\item 
+void \hyperlink{class_model_manager_a0ab4bcae0008b117f70979d4d8492a92}{draw} (\hyperlink{class_shader}{Shader} shader)
+\item 
+void \hyperlink{class_model_manager_a2a5e7ca1dd578fb47aa74f013bb1c9b4}{operator=} (\hyperlink{class_model_manager}{Model\+Manager} const \&)=delete
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{class_model_manager}{Model\+Manager} \& \hyperlink{class_model_manager_a8850340474edc23aa69480e5145eab50}{get\+Instance} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_model_manager_a9b0d22b1baf59c5b566e82fcd8ca424a}{Model\+Manager} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+G\+Luint \hyperlink{class_model_manager_afe939e70ae80fdb5374ee838296d70c3}{U\+BO}
+\item 
+vector$<$ \hyperlink{class_mesh}{Mesh} $>$ \hyperlink{class_model_manager_a590d65c16270ce28822004da4ab668cb}{meshes}
+\item 
+vector$<$ \hyperlink{class_model_new}{Model\+New} $>$ \hyperlink{class_model_manager_a66b312e1eed8fae4aab899135ea810bd}{models}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Model\+Manager@{Model\+Manager}!Model\+Manager@{Model\+Manager}}
+\index{Model\+Manager@{Model\+Manager}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{Model\+Manager()}{ModelManager()}}]{\setlength{\rightskip}{0pt plus 5cm}Model\+Manager\+::\+Model\+Manager (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [protected]}}\hypertarget{class_model_manager_a9b0d22b1baf59c5b566e82fcd8ca424a}{}\label{class_model_manager_a9b0d22b1baf59c5b566e82fcd8ca424a}
+
+
+\subsection{Member Function Documentation}
+\index{Model\+Manager@{Model\+Manager}!delete\+Model@{delete\+Model}}
+\index{delete\+Model@{delete\+Model}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{delete\+Model(unsigned int model\+Index)}{deleteModel(unsigned int modelIndex)}}]{\setlength{\rightskip}{0pt plus 5cm}void Model\+Manager\+::delete\+Model (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{model\+Index}
+\end{DoxyParamCaption}
+)}\hypertarget{class_model_manager_a44a142640c43cf2f4aab49dbb70c034e}{}\label{class_model_manager_a44a142640c43cf2f4aab49dbb70c034e}
+\index{Model\+Manager@{Model\+Manager}!draw@{draw}}
+\index{draw@{draw}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{draw(\+Shader shader)}{draw(Shader shader)}}]{\setlength{\rightskip}{0pt plus 5cm}void Model\+Manager\+::draw (
+\begin{DoxyParamCaption}
+\item[{{\bf Shader}}]{shader}
+\end{DoxyParamCaption}
+)}\hypertarget{class_model_manager_a0ab4bcae0008b117f70979d4d8492a92}{}\label{class_model_manager_a0ab4bcae0008b117f70979d4d8492a92}
+\index{Model\+Manager@{Model\+Manager}!get\+Instance@{get\+Instance}}
+\index{get\+Instance@{get\+Instance}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{get\+Instance()}{getInstance()}}]{\setlength{\rightskip}{0pt plus 5cm}static {\bf Model\+Manager}\& Model\+Manager\+::get\+Instance (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}\hypertarget{class_model_manager_a8850340474edc23aa69480e5145eab50}{}\label{class_model_manager_a8850340474edc23aa69480e5145eab50}
+\index{Model\+Manager@{Model\+Manager}!new\+Mesh@{new\+Mesh}}
+\index{new\+Mesh@{new\+Mesh}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{new\+Mesh(vector$<$ Vertex $>$ vertices)}{newMesh(vector< Vertex > vertices)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh}$\ast$ Model\+Manager\+::new\+Mesh (
+\begin{DoxyParamCaption}
+\item[{vector$<$ {\bf Vertex} $>$}]{vertices}
+\end{DoxyParamCaption}
+)}\hypertarget{class_model_manager_a508fce5dc8e782d38b3cf1fdbdb7ac4f}{}\label{class_model_manager_a508fce5dc8e782d38b3cf1fdbdb7ac4f}
+\index{Model\+Manager@{Model\+Manager}!new\+Mesh@{new\+Mesh}}
+\index{new\+Mesh@{new\+Mesh}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{new\+Mesh(vector$<$ Vertex $>$ vertices, vector$<$ G\+Luint $>$ indices)}{newMesh(vector< Vertex > vertices, vector< GLuint > indices)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh}$\ast$ Model\+Manager\+::new\+Mesh (
+\begin{DoxyParamCaption}
+\item[{vector$<$ {\bf Vertex} $>$}]{vertices, }
+\item[{vector$<$ G\+Luint $>$}]{indices}
+\end{DoxyParamCaption}
+)}\hypertarget{class_model_manager_a881a1d136c05a9e7208c92c7109ae46a}{}\label{class_model_manager_a881a1d136c05a9e7208c92c7109ae46a}
+\index{Model\+Manager@{Model\+Manager}!new\+Mesh@{new\+Mesh}}
+\index{new\+Mesh@{new\+Mesh}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{new\+Mesh(const string \&file\+Path)}{newMesh(const string &filePath)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh}$\ast$ Model\+Manager\+::new\+Mesh (
+\begin{DoxyParamCaption}
+\item[{const string \&}]{file\+Path}
+\end{DoxyParamCaption}
+)}\hypertarget{class_model_manager_a103637a3eb4240f9f1958e5c4b59f650}{}\label{class_model_manager_a103637a3eb4240f9f1958e5c4b59f650}
+\index{Model\+Manager@{Model\+Manager}!new\+Mesh\+Instance@{new\+Mesh\+Instance}}
+\index{new\+Mesh\+Instance@{new\+Mesh\+Instance}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{new\+Mesh\+Instance(unsigned int model\+Index, unsigned int mesh\+Id, Material material)}{newMeshInstance(unsigned int modelIndex, unsigned int meshId, Material material)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance}$\ast$ Model\+Manager\+::new\+Mesh\+Instance (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{model\+Index, }
+\item[{unsigned int}]{mesh\+Id, }
+\item[{{\bf Material}}]{material}
+\end{DoxyParamCaption}
+)}\hypertarget{class_model_manager_a5620a615f11fc4db7f536b9add1766d9}{}\label{class_model_manager_a5620a615f11fc4db7f536b9add1766d9}
+\index{Model\+Manager@{Model\+Manager}!new\+Mesh\+Instance@{new\+Mesh\+Instance}}
+\index{new\+Mesh\+Instance@{new\+Mesh\+Instance}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{new\+Mesh\+Instance(\+Mesh\+Instance $\ast$original)}{newMeshInstance(MeshInstance *original)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh\+Instance}$\ast$ Model\+Manager\+::new\+Mesh\+Instance (
+\begin{DoxyParamCaption}
+\item[{{\bf Mesh\+Instance} $\ast$}]{original}
+\end{DoxyParamCaption}
+)}\hypertarget{class_model_manager_aa1ccd7701ef0e4cc0531c667f153bce3}{}\label{class_model_manager_aa1ccd7701ef0e4cc0531c667f153bce3}
+\index{Model\+Manager@{Model\+Manager}!new\+Model@{new\+Model}}
+\index{new\+Model@{new\+Model}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{new\+Model()}{newModel()}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Model\+New}$\ast$ Model\+Manager\+::new\+Model (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_model_manager_adfde1d928ecc4b045aaca986b7921af4}{}\label{class_model_manager_adfde1d928ecc4b045aaca986b7921af4}
+\index{Model\+Manager@{Model\+Manager}!operator=@{operator=}}
+\index{operator=@{operator=}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{operator=(\+Model\+Manager const \&)=delete}{operator=(ModelManager const &)=delete}}]{\setlength{\rightskip}{0pt plus 5cm}void Model\+Manager\+::operator= (
+\begin{DoxyParamCaption}
+\item[{{\bf Model\+Manager} const \&}]{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [delete]}}\hypertarget{class_model_manager_a2a5e7ca1dd578fb47aa74f013bb1c9b4}{}\label{class_model_manager_a2a5e7ca1dd578fb47aa74f013bb1c9b4}
+\index{Model\+Manager@{Model\+Manager}!remove\+Mesh\+Instances\+By\+Model\+Index@{remove\+Mesh\+Instances\+By\+Model\+Index}}
+\index{remove\+Mesh\+Instances\+By\+Model\+Index@{remove\+Mesh\+Instances\+By\+Model\+Index}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{remove\+Mesh\+Instances\+By\+Model\+Index(unsigned int model\+Index)}{removeMeshInstancesByModelIndex(unsigned int modelIndex)}}]{\setlength{\rightskip}{0pt plus 5cm}void Model\+Manager\+::remove\+Mesh\+Instances\+By\+Model\+Index (
+\begin{DoxyParamCaption}
+\item[{unsigned int}]{model\+Index}
+\end{DoxyParamCaption}
+)}\hypertarget{class_model_manager_af10dd7af64cb4b4e5f5a0668e6f34c17}{}\label{class_model_manager_af10dd7af64cb4b4e5f5a0668e6f34c17}
+
+
+\subsection{Member Data Documentation}
+\index{Model\+Manager@{Model\+Manager}!meshes@{meshes}}
+\index{meshes@{meshes}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{meshes}{meshes}}]{\setlength{\rightskip}{0pt plus 5cm}vector$<${\bf Mesh}$>$ Model\+Manager\+::meshes\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_model_manager_a590d65c16270ce28822004da4ab668cb}{}\label{class_model_manager_a590d65c16270ce28822004da4ab668cb}
+\index{Model\+Manager@{Model\+Manager}!models@{models}}
+\index{models@{models}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{models}{models}}]{\setlength{\rightskip}{0pt plus 5cm}vector$<${\bf Model\+New}$>$ Model\+Manager\+::models\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_model_manager_a66b312e1eed8fae4aab899135ea810bd}{}\label{class_model_manager_a66b312e1eed8fae4aab899135ea810bd}
+\index{Model\+Manager@{Model\+Manager}!U\+BO@{U\+BO}}
+\index{U\+BO@{U\+BO}!Model\+Manager@{Model\+Manager}}
+\subsubsection[{\texorpdfstring{U\+BO}{UBO}}]{\setlength{\rightskip}{0pt plus 5cm}G\+Luint Model\+Manager\+::\+U\+BO\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_model_manager_afe939e70ae80fdb5374ee838296d70c3}{}\label{class_model_manager_afe939e70ae80fdb5374ee838296d70c3}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{_model_manager_8h}{Model\+Manager.\+h}\end{DoxyCompactItemize}

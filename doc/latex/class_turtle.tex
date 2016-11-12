@@ -1,0 +1,159 @@
+\hypertarget{class_turtle}{}\section{Turtle Class Reference}
+\label{class_turtle}\index{Turtle@{Turtle}}
+
+
+{\ttfamily \#include $<$Turtle.\+h$>$}
+
+
+
+Collaboration diagram for Turtle\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=225pt]{class_turtle__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{struct_turtle_1_1_transformation_set}{Transformation\+Set}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_turtle_a1610c37c2e750169f25b074e62db755d}{Turtle} ()
+\item 
+void \hyperlink{class_turtle_a52f47f3d3f660de0f425eb15f51f57a9}{scale} (glm\+::vec3 s)
+\item 
+void \hyperlink{class_turtle_a6365b6bf9e1b63ad7067623704f96b7b}{rotate} (float angle, glm\+::vec3 axis)
+\item 
+void \hyperlink{class_turtle_a7247837e1e7f34053ceba1a8ba35f792}{turn} (float angle)
+\item 
+void \hyperlink{class_turtle_af612347a6ccf6020a86e14b0bad76d29}{pitch} (float angle)
+\item 
+void \hyperlink{class_turtle_a12f15e7d93be8f46c4af5b2815cad994}{roll} (float angle)
+\item 
+void \hyperlink{class_turtle_ad02ab2d43a59a84c79ecee57dbe7d1dc}{forward} (float t)
+\item 
+void \hyperlink{class_turtle_a83d7165e83a6a4c82e54f4e918163eab}{set\+Length} (float l)
+\item 
+void \hyperlink{class_turtle_ab106e2a57335119d0f307d19633f682b}{set\+Width} (float w)
+\item 
+glm\+::mat4 \hyperlink{class_turtle_a29c13ff42b394345c21dad4c84022bcc}{get\+Matrix} ()
+\item 
+void \hyperlink{class_turtle_a9562a857f3d87a742a28f2b3bca4995c}{push} ()
+\item 
+void \hyperlink{class_turtle_a1967bcd0701b9fbab2d312194a575703}{pop} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{struct_turtle_1_1_transformation_set}{Turtle\+::\+Transformation\+Set} \hyperlink{class_turtle_a1c9daa775c36e1a3414522488780f686}{trans\+Components}
+\item 
+stack$<$ \hyperlink{struct_turtle_1_1_transformation_set}{Transformation\+Set} $>$ \hyperlink{class_turtle_ab881dbccdf3460b344ff3bd724d1cf06}{trans\+Stack}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Turtle@{Turtle}!Turtle@{Turtle}}
+\index{Turtle@{Turtle}!Turtle@{Turtle}}
+\subsubsection[{\texorpdfstring{Turtle()}{Turtle()}}]{\setlength{\rightskip}{0pt plus 5cm}Turtle\+::\+Turtle (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_turtle_a1610c37c2e750169f25b074e62db755d}{}\label{class_turtle_a1610c37c2e750169f25b074e62db755d}
+
+
+\subsection{Member Function Documentation}
+\index{Turtle@{Turtle}!forward@{forward}}
+\index{forward@{forward}!Turtle@{Turtle}}
+\subsubsection[{\texorpdfstring{forward(float t)}{forward(float t)}}]{\setlength{\rightskip}{0pt plus 5cm}void Turtle\+::forward (
+\begin{DoxyParamCaption}
+\item[{float}]{t}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_turtle_ad02ab2d43a59a84c79ecee57dbe7d1dc}{}\label{class_turtle_ad02ab2d43a59a84c79ecee57dbe7d1dc}
+\index{Turtle@{Turtle}!get\+Matrix@{get\+Matrix}}
+\index{get\+Matrix@{get\+Matrix}!Turtle@{Turtle}}
+\subsubsection[{\texorpdfstring{get\+Matrix()}{getMatrix()}}]{\setlength{\rightskip}{0pt plus 5cm}glm\+::mat4 Turtle\+::get\+Matrix (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_turtle_a29c13ff42b394345c21dad4c84022bcc}{}\label{class_turtle_a29c13ff42b394345c21dad4c84022bcc}
+\index{Turtle@{Turtle}!pitch@{pitch}}
+\index{pitch@{pitch}!Turtle@{Turtle}}
+\subsubsection[{\texorpdfstring{pitch(float angle)}{pitch(float angle)}}]{\setlength{\rightskip}{0pt plus 5cm}void Turtle\+::pitch (
+\begin{DoxyParamCaption}
+\item[{float}]{angle}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_turtle_af612347a6ccf6020a86e14b0bad76d29}{}\label{class_turtle_af612347a6ccf6020a86e14b0bad76d29}
+\index{Turtle@{Turtle}!pop@{pop}}
+\index{pop@{pop}!Turtle@{Turtle}}
+\subsubsection[{\texorpdfstring{pop()}{pop()}}]{\setlength{\rightskip}{0pt plus 5cm}void Turtle\+::pop (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_turtle_a1967bcd0701b9fbab2d312194a575703}{}\label{class_turtle_a1967bcd0701b9fbab2d312194a575703}
+\index{Turtle@{Turtle}!push@{push}}
+\index{push@{push}!Turtle@{Turtle}}
+\subsubsection[{\texorpdfstring{push()}{push()}}]{\setlength{\rightskip}{0pt plus 5cm}void Turtle\+::push (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_turtle_a9562a857f3d87a742a28f2b3bca4995c}{}\label{class_turtle_a9562a857f3d87a742a28f2b3bca4995c}
+\index{Turtle@{Turtle}!roll@{roll}}
+\index{roll@{roll}!Turtle@{Turtle}}
+\subsubsection[{\texorpdfstring{roll(float angle)}{roll(float angle)}}]{\setlength{\rightskip}{0pt plus 5cm}void Turtle\+::roll (
+\begin{DoxyParamCaption}
+\item[{float}]{angle}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_turtle_a12f15e7d93be8f46c4af5b2815cad994}{}\label{class_turtle_a12f15e7d93be8f46c4af5b2815cad994}
+\index{Turtle@{Turtle}!rotate@{rotate}}
+\index{rotate@{rotate}!Turtle@{Turtle}}
+\subsubsection[{\texorpdfstring{rotate(float angle, glm\+::vec3 axis)}{rotate(float angle, glm::vec3 axis)}}]{\setlength{\rightskip}{0pt plus 5cm}void Turtle\+::rotate (
+\begin{DoxyParamCaption}
+\item[{float}]{angle, }
+\item[{glm\+::vec3}]{axis}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_turtle_a6365b6bf9e1b63ad7067623704f96b7b}{}\label{class_turtle_a6365b6bf9e1b63ad7067623704f96b7b}
+\index{Turtle@{Turtle}!scale@{scale}}
+\index{scale@{scale}!Turtle@{Turtle}}
+\subsubsection[{\texorpdfstring{scale(glm\+::vec3 s)}{scale(glm::vec3 s)}}]{\setlength{\rightskip}{0pt plus 5cm}void Turtle\+::scale (
+\begin{DoxyParamCaption}
+\item[{glm\+::vec3}]{s}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_turtle_a52f47f3d3f660de0f425eb15f51f57a9}{}\label{class_turtle_a52f47f3d3f660de0f425eb15f51f57a9}
+\index{Turtle@{Turtle}!set\+Length@{set\+Length}}
+\index{set\+Length@{set\+Length}!Turtle@{Turtle}}
+\subsubsection[{\texorpdfstring{set\+Length(float l)}{setLength(float l)}}]{\setlength{\rightskip}{0pt plus 5cm}void Turtle\+::set\+Length (
+\begin{DoxyParamCaption}
+\item[{float}]{l}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_turtle_a83d7165e83a6a4c82e54f4e918163eab}{}\label{class_turtle_a83d7165e83a6a4c82e54f4e918163eab}
+\index{Turtle@{Turtle}!set\+Width@{set\+Width}}
+\index{set\+Width@{set\+Width}!Turtle@{Turtle}}
+\subsubsection[{\texorpdfstring{set\+Width(float w)}{setWidth(float w)}}]{\setlength{\rightskip}{0pt plus 5cm}void Turtle\+::set\+Width (
+\begin{DoxyParamCaption}
+\item[{float}]{w}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_turtle_ab106e2a57335119d0f307d19633f682b}{}\label{class_turtle_ab106e2a57335119d0f307d19633f682b}
+\index{Turtle@{Turtle}!turn@{turn}}
+\index{turn@{turn}!Turtle@{Turtle}}
+\subsubsection[{\texorpdfstring{turn(float angle)}{turn(float angle)}}]{\setlength{\rightskip}{0pt plus 5cm}void Turtle\+::turn (
+\begin{DoxyParamCaption}
+\item[{float}]{angle}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_turtle_a7247837e1e7f34053ceba1a8ba35f792}{}\label{class_turtle_a7247837e1e7f34053ceba1a8ba35f792}
+
+
+\subsection{Member Data Documentation}
+\index{Turtle@{Turtle}!trans\+Components@{trans\+Components}}
+\index{trans\+Components@{trans\+Components}!Turtle@{Turtle}}
+\subsubsection[{\texorpdfstring{trans\+Components}{transComponents}}]{\setlength{\rightskip}{0pt plus 5cm}struct {\bf Turtle\+::\+Transformation\+Set}  Turtle\+::trans\+Components\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_turtle_a1c9daa775c36e1a3414522488780f686}{}\label{class_turtle_a1c9daa775c36e1a3414522488780f686}
+\index{Turtle@{Turtle}!trans\+Stack@{trans\+Stack}}
+\index{trans\+Stack@{trans\+Stack}!Turtle@{Turtle}}
+\subsubsection[{\texorpdfstring{trans\+Stack}{transStack}}]{\setlength{\rightskip}{0pt plus 5cm}stack$<${\bf Transformation\+Set}$>$ Turtle\+::trans\+Stack\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_turtle_ab881dbccdf3460b344ff3bd724d1cf06}{}\label{class_turtle_ab881dbccdf3460b344ff3bd724d1cf06}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{_turtle_8h}{Turtle.\+h}\end{DoxyCompactItemize}

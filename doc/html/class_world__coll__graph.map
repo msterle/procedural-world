@@ -1,0 +1,6 @@
+<map id="World" name="World">
+<area shape="rect" id="node2" href="$class_shader.html" title="Shader" alt="" coords="5,81,68,108"/>
+<area shape="rect" id="node3" href="$class_camera.html" title="Camera" alt="" coords="92,81,160,108"/>
+<area shape="rect" id="node4" href="$class_terrain.html" title="Terrain" alt="" coords="184,81,247,108"/>
+<area shape="rect" id="node5" href="$class_model.html" title="Model" alt="" coords="187,5,244,32"/>
+</map>

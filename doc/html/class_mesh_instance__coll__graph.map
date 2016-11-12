@@ -1,0 +1,4 @@
+<map id="MeshInstance" name="MeshInstance">
+<area shape="rect" id="node2" href="$struct_material.html" title="Material" alt="" coords="5,5,73,32"/>
+<area shape="rect" id="node3" href="$class_mesh_instance_ptr.html" title="MeshInstancePtr" alt="" coords="97,5,219,32"/>
+</map>

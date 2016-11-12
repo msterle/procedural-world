@@ -1,0 +1,178 @@
+\hypertarget{class_p_l_s}{}\section{P\+LS Class Reference}
+\label{class_p_l_s}\index{P\+LS@{P\+LS}}
+
+
+{\ttfamily \#include $<$P\+L\+S.\+h$>$}
+
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{class_p_l_s_1_1_module}{Module}
+\item 
+class \hyperlink{class_p_l_s_1_1_param}{Param}
+\item 
+class \hyperlink{class_p_l_s_1_1_production}{Production}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_p_l_s_a47c6fa2278f0d4a2f885484950211a5b}{P\+LS} (std\+::list$<$ \hyperlink{class_p_l_s_1_1_module}{Module} $>$ \hyperlink{class_p_l_s_a5de46c72cd9ef4006f7f1ed43ac028c1}{axiom}, std\+::unordered\+\_\+map$<$ char, \hyperlink{class_p_l_s_1_1_production}{Production} $>$ \hyperlink{class_p_l_s_a2bdf324e0d0ed4e1c3265d4029f83f0b}{productions}, std\+::unordered\+\_\+map$<$ char, \hyperlink{class_p_l_s_a2c9371dd235f3c41295d15c92ac9f33b}{fvoid\+\_\+t} $>$ \hyperlink{class_p_l_s_a5d7bf41cb569c111be4899bd7904a0da}{actions})
+\item 
+\hyperlink{class_p_l_s_a99f207f5849c3c1420da017e611d415a}{P\+LS} ()
+\item 
+void \hyperlink{class_p_l_s_a62156c4202b8cd20d4ba37306a57af87}{iterate} ()
+\item 
+void \hyperlink{class_p_l_s_ac87b2a52213e0e0a7fd0bcb969a68f8d}{iterate} (int n)
+\item 
+void \hyperlink{class_p_l_s_a72c26ad73b282abac9137978dcff21cb}{run} ()
+\item 
+std\+::list$<$ \hyperlink{class_p_l_s_1_1_module}{Module} $>$ \hyperlink{class_p_l_s_a26085d4c74f3ccddd6241cc9548e0d2a}{get\+Value} ()
+\item 
+unsigned int \hyperlink{class_p_l_s_aed7eff9d6f21452608d9f007f7ddaf26}{get\+Generation} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static float \hyperlink{class_p_l_s_a7a289ddec2b417d62e6137b798e1258f}{pass} (float a)
+\item 
+static float \hyperlink{class_p_l_s_a0437a3e9ba5cd3682573165ccc1fbf9c}{mult} (float a, float b)
+\item 
+static bool \hyperlink{class_p_l_s_ac8298e4b5940dae6c48e1dc042d4d8aa}{gteq} (float a, float b)
+\end{DoxyCompactItemize}
+\subsection*{Protected Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\+::function$<$ float(float, float, float, float, float)$>$ \hyperlink{class_p_l_s_a001f46380d29f9a3703cc78ee928b244}{ffloat\+\_\+t}
+\item 
+typedef std\+::function$<$ bool(float, float, float, float, float)$>$ \hyperlink{class_p_l_s_ae518559a64636a22c6e5f5eaa82cc420}{fbool\+\_\+t}
+\item 
+typedef std\+::function$<$ void(float, float, float, float, float)$>$ \hyperlink{class_p_l_s_a2c9371dd235f3c41295d15c92ac9f33b}{fvoid\+\_\+t}
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::list$<$ \hyperlink{class_p_l_s_1_1_module}{Module} $>$ \hyperlink{class_p_l_s_a5de46c72cd9ef4006f7f1ed43ac028c1}{axiom}
+\item 
+std\+::unordered\+\_\+map$<$ char, \hyperlink{class_p_l_s_1_1_production}{Production} $>$ \hyperlink{class_p_l_s_a2bdf324e0d0ed4e1c3265d4029f83f0b}{productions}
+\item 
+std\+::unordered\+\_\+map$<$ char, \hyperlink{class_p_l_s_a2c9371dd235f3c41295d15c92ac9f33b}{fvoid\+\_\+t} $>$ \hyperlink{class_p_l_s_a5d7bf41cb569c111be4899bd7904a0da}{actions}
+\item 
+std\+::list$<$ \hyperlink{class_p_l_s_1_1_module}{Module} $>$ \hyperlink{class_p_l_s_adf032e0f090c28370850ee026375f826}{value}
+\item 
+unsigned int \hyperlink{class_p_l_s_a056f4e66546bc58aaa68f68b6ac0e902}{generation}
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Typedef Documentation}
+\index{P\+LS@{P\+LS}!fbool\+\_\+t@{fbool\+\_\+t}}
+\index{fbool\+\_\+t@{fbool\+\_\+t}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{fbool\+\_\+t}{fbool_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\+::function$<$bool(float, float, float, float, float)$>$ {\bf P\+L\+S\+::fbool\+\_\+t}\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_p_l_s_ae518559a64636a22c6e5f5eaa82cc420}{}\label{class_p_l_s_ae518559a64636a22c6e5f5eaa82cc420}
+\index{P\+LS@{P\+LS}!ffloat\+\_\+t@{ffloat\+\_\+t}}
+\index{ffloat\+\_\+t@{ffloat\+\_\+t}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{ffloat\+\_\+t}{ffloat_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\+::function$<$float(float, float, float, float, float)$>$ {\bf P\+L\+S\+::ffloat\+\_\+t}\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_p_l_s_a001f46380d29f9a3703cc78ee928b244}{}\label{class_p_l_s_a001f46380d29f9a3703cc78ee928b244}
+\index{P\+LS@{P\+LS}!fvoid\+\_\+t@{fvoid\+\_\+t}}
+\index{fvoid\+\_\+t@{fvoid\+\_\+t}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{fvoid\+\_\+t}{fvoid_t}}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\+::function$<$void(float, float, float, float, float)$>$ {\bf P\+L\+S\+::fvoid\+\_\+t}\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_p_l_s_a2c9371dd235f3c41295d15c92ac9f33b}{}\label{class_p_l_s_a2c9371dd235f3c41295d15c92ac9f33b}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{P\+LS@{P\+LS}!P\+LS@{P\+LS}}
+\index{P\+LS@{P\+LS}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{P\+L\+S(std\+::list$<$ Module $>$ axiom, std\+::unordered\+\_\+map$<$ char, Production $>$ productions, std\+::unordered\+\_\+map$<$ char, fvoid\+\_\+t $>$ actions)}{PLS(std::list< Module > axiom, std::unordered_map< char, Production > productions, std::unordered_map< char, fvoid_t > actions)}}]{\setlength{\rightskip}{0pt plus 5cm}P\+L\+S\+::\+P\+LS (
+\begin{DoxyParamCaption}
+\item[{std\+::list$<$ {\bf Module} $>$}]{axiom, }
+\item[{std\+::unordered\+\_\+map$<$ char, {\bf Production} $>$}]{productions, }
+\item[{std\+::unordered\+\_\+map$<$ char, {\bf fvoid\+\_\+t} $>$}]{actions}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_p_l_s_a47c6fa2278f0d4a2f885484950211a5b}{}\label{class_p_l_s_a47c6fa2278f0d4a2f885484950211a5b}
+\index{P\+LS@{P\+LS}!P\+LS@{P\+LS}}
+\index{P\+LS@{P\+LS}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{P\+L\+S()}{PLS()}}]{\setlength{\rightskip}{0pt plus 5cm}P\+L\+S\+::\+P\+LS (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_p_l_s_a99f207f5849c3c1420da017e611d415a}{}\label{class_p_l_s_a99f207f5849c3c1420da017e611d415a}
+
+
+\subsection{Member Function Documentation}
+\index{P\+LS@{P\+LS}!get\+Generation@{get\+Generation}}
+\index{get\+Generation@{get\+Generation}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{get\+Generation()}{getGeneration()}}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int P\+L\+S\+::get\+Generation (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_p_l_s_aed7eff9d6f21452608d9f007f7ddaf26}{}\label{class_p_l_s_aed7eff9d6f21452608d9f007f7ddaf26}
+\index{P\+LS@{P\+LS}!get\+Value@{get\+Value}}
+\index{get\+Value@{get\+Value}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{get\+Value()}{getValue()}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::list$<${\bf Module}$>$ P\+L\+S\+::get\+Value (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_p_l_s_a26085d4c74f3ccddd6241cc9548e0d2a}{}\label{class_p_l_s_a26085d4c74f3ccddd6241cc9548e0d2a}
+\index{P\+LS@{P\+LS}!gteq@{gteq}}
+\index{gteq@{gteq}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{gteq(float a, float b)}{gteq(float a, float b)}}]{\setlength{\rightskip}{0pt plus 5cm}static bool P\+L\+S\+::gteq (
+\begin{DoxyParamCaption}
+\item[{float}]{a, }
+\item[{float}]{b}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}\hypertarget{class_p_l_s_ac8298e4b5940dae6c48e1dc042d4d8aa}{}\label{class_p_l_s_ac8298e4b5940dae6c48e1dc042d4d8aa}
+\index{P\+LS@{P\+LS}!iterate@{iterate}}
+\index{iterate@{iterate}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{iterate()}{iterate()}}]{\setlength{\rightskip}{0pt plus 5cm}void P\+L\+S\+::iterate (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_p_l_s_a62156c4202b8cd20d4ba37306a57af87}{}\label{class_p_l_s_a62156c4202b8cd20d4ba37306a57af87}
+\index{P\+LS@{P\+LS}!iterate@{iterate}}
+\index{iterate@{iterate}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{iterate(int n)}{iterate(int n)}}]{\setlength{\rightskip}{0pt plus 5cm}void P\+L\+S\+::iterate (
+\begin{DoxyParamCaption}
+\item[{int}]{n}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_p_l_s_ac87b2a52213e0e0a7fd0bcb969a68f8d}{}\label{class_p_l_s_ac87b2a52213e0e0a7fd0bcb969a68f8d}
+\index{P\+LS@{P\+LS}!mult@{mult}}
+\index{mult@{mult}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{mult(float a, float b)}{mult(float a, float b)}}]{\setlength{\rightskip}{0pt plus 5cm}static float P\+L\+S\+::mult (
+\begin{DoxyParamCaption}
+\item[{float}]{a, }
+\item[{float}]{b}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}\hypertarget{class_p_l_s_a0437a3e9ba5cd3682573165ccc1fbf9c}{}\label{class_p_l_s_a0437a3e9ba5cd3682573165ccc1fbf9c}
+\index{P\+LS@{P\+LS}!pass@{pass}}
+\index{pass@{pass}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{pass(float a)}{pass(float a)}}]{\setlength{\rightskip}{0pt plus 5cm}static float P\+L\+S\+::pass (
+\begin{DoxyParamCaption}
+\item[{float}]{a}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}\hypertarget{class_p_l_s_a7a289ddec2b417d62e6137b798e1258f}{}\label{class_p_l_s_a7a289ddec2b417d62e6137b798e1258f}
+\index{P\+LS@{P\+LS}!run@{run}}
+\index{run@{run}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{run()}{run()}}]{\setlength{\rightskip}{0pt plus 5cm}void P\+L\+S\+::run (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_p_l_s_a72c26ad73b282abac9137978dcff21cb}{}\label{class_p_l_s_a72c26ad73b282abac9137978dcff21cb}
+
+
+\subsection{Member Data Documentation}
+\index{P\+LS@{P\+LS}!actions@{actions}}
+\index{actions@{actions}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{actions}{actions}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::unordered\+\_\+map$<$char, {\bf fvoid\+\_\+t}$>$ P\+L\+S\+::actions\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_p_l_s_a5d7bf41cb569c111be4899bd7904a0da}{}\label{class_p_l_s_a5d7bf41cb569c111be4899bd7904a0da}
+\index{P\+LS@{P\+LS}!axiom@{axiom}}
+\index{axiom@{axiom}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{axiom}{axiom}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::list$<${\bf Module}$>$ P\+L\+S\+::axiom\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_p_l_s_a5de46c72cd9ef4006f7f1ed43ac028c1}{}\label{class_p_l_s_a5de46c72cd9ef4006f7f1ed43ac028c1}
+\index{P\+LS@{P\+LS}!generation@{generation}}
+\index{generation@{generation}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{generation}{generation}}]{\setlength{\rightskip}{0pt plus 5cm}unsigned int P\+L\+S\+::generation\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_p_l_s_a056f4e66546bc58aaa68f68b6ac0e902}{}\label{class_p_l_s_a056f4e66546bc58aaa68f68b6ac0e902}
+\index{P\+LS@{P\+LS}!productions@{productions}}
+\index{productions@{productions}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{productions}{productions}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::unordered\+\_\+map$<$char, {\bf Production}$>$ P\+L\+S\+::productions\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_p_l_s_a2bdf324e0d0ed4e1c3265d4029f83f0b}{}\label{class_p_l_s_a2bdf324e0d0ed4e1c3265d4029f83f0b}
+\index{P\+LS@{P\+LS}!value@{value}}
+\index{value@{value}!P\+LS@{P\+LS}}
+\subsubsection[{\texorpdfstring{value}{value}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::list$<${\bf Module}$>$ P\+L\+S\+::value\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_p_l_s_adf032e0f090c28370850ee026375f826}{}\label{class_p_l_s_adf032e0f090c28370850ee026375f826}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{_p_l_s_8h}{P\+L\+S.\+h}\end{DoxyCompactItemize}

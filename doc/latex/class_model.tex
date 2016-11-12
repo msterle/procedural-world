@@ -1,0 +1,122 @@
+\hypertarget{class_model}{}\section{Model Class Reference}
+\label{class_model}\index{Model@{Model}}
+
+
+{\ttfamily \#include $<$Model.\+h$>$}
+
+
+
+Inheritance diagram for Model\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=256pt]{class_model__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_model_ae3b375de5f6df4faf74a95d64748e048}{Model} ()
+\item 
+\hyperlink{class_mesh}{Mesh} $\ast$ \hyperlink{class_model_a0389a9deaec401c6050eddecfebd4eff}{new\+Mesh} (vector$<$ \hyperlink{struct_vertex}{Vertex} $>$ vertices, G\+Lenum draw\+Mode=G\+L\+\_\+\+T\+R\+I\+A\+N\+G\+L\+ES)
+\item 
+\hyperlink{class_mesh}{Mesh} $\ast$ \hyperlink{class_model_a1616abd0e910e0e8a9e37fe23d143ed5}{new\+Mesh} (vector$<$ \hyperlink{struct_vertex}{Vertex} $>$ vertices, vector$<$ G\+Luint $>$ indices, G\+Lenum draw\+Mode=G\+L\+\_\+\+T\+R\+I\+A\+N\+G\+L\+ES)
+\item 
+\hyperlink{class_mesh}{Mesh} $\ast$ \hyperlink{class_model_a5a54b1ec74ea98423c205d3fee7c744f}{new\+Mesh} (string file\+Path)
+\item 
+void \hyperlink{class_model_a967023af0128ffc4bb8609332234daea}{translate} (glm\+::vec3 t)
+\item 
+void \hyperlink{class_model_ac1cc7957271031bba837ba93e7f581e2}{scale} (glm\+::vec3 s)
+\item 
+void \hyperlink{class_model_a427830f435c2eb86481808d09b9fbe2d}{rotate} (float angle, glm\+::vec3 axis)
+\item 
+void \hyperlink{class_model_a083354971a2e7e1f4ac3efac85362f85}{draw} (\hyperlink{class_shader}{Shader} shader)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+glm\+::mat4 \hyperlink{class_model_ad822f014d9b52f776d888b282d1924df}{model\+Mat}
+\item 
+list$<$ \hyperlink{class_mesh}{Mesh} $>$ \hyperlink{class_model_a4b0be9742b35855d9444179ab26f616f}{meshes}
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Model@{Model}!Model@{Model}}
+\index{Model@{Model}!Model@{Model}}
+\subsubsection[{\texorpdfstring{Model()}{Model()}}]{\setlength{\rightskip}{0pt plus 5cm}Model\+::\+Model (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_model_ae3b375de5f6df4faf74a95d64748e048}{}\label{class_model_ae3b375de5f6df4faf74a95d64748e048}
+
+
+\subsection{Member Function Documentation}
+\index{Model@{Model}!draw@{draw}}
+\index{draw@{draw}!Model@{Model}}
+\subsubsection[{\texorpdfstring{draw(\+Shader shader)}{draw(Shader shader)}}]{\setlength{\rightskip}{0pt plus 5cm}void Model\+::draw (
+\begin{DoxyParamCaption}
+\item[{{\bf Shader}}]{shader}
+\end{DoxyParamCaption}
+)}\hypertarget{class_model_a083354971a2e7e1f4ac3efac85362f85}{}\label{class_model_a083354971a2e7e1f4ac3efac85362f85}
+\index{Model@{Model}!new\+Mesh@{new\+Mesh}}
+\index{new\+Mesh@{new\+Mesh}!Model@{Model}}
+\subsubsection[{\texorpdfstring{new\+Mesh(vector$<$ Vertex $>$ vertices, G\+Lenum draw\+Mode=\+G\+L\+\_\+\+T\+R\+I\+A\+N\+G\+L\+E\+S)}{newMesh(vector< Vertex > vertices, GLenum drawMode=GL_TRIANGLES)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh}$\ast$ Model\+::new\+Mesh (
+\begin{DoxyParamCaption}
+\item[{vector$<$ {\bf Vertex} $>$}]{vertices, }
+\item[{G\+Lenum}]{draw\+Mode = {\ttfamily GL\+\_\+TRIANGLES}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_model_a0389a9deaec401c6050eddecfebd4eff}{}\label{class_model_a0389a9deaec401c6050eddecfebd4eff}
+\index{Model@{Model}!new\+Mesh@{new\+Mesh}}
+\index{new\+Mesh@{new\+Mesh}!Model@{Model}}
+\subsubsection[{\texorpdfstring{new\+Mesh(vector$<$ Vertex $>$ vertices, vector$<$ G\+Luint $>$ indices, G\+Lenum draw\+Mode=\+G\+L\+\_\+\+T\+R\+I\+A\+N\+G\+L\+E\+S)}{newMesh(vector< Vertex > vertices, vector< GLuint > indices, GLenum drawMode=GL_TRIANGLES)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh}$\ast$ Model\+::new\+Mesh (
+\begin{DoxyParamCaption}
+\item[{vector$<$ {\bf Vertex} $>$}]{vertices, }
+\item[{vector$<$ G\+Luint $>$}]{indices, }
+\item[{G\+Lenum}]{draw\+Mode = {\ttfamily GL\+\_\+TRIANGLES}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_model_a1616abd0e910e0e8a9e37fe23d143ed5}{}\label{class_model_a1616abd0e910e0e8a9e37fe23d143ed5}
+\index{Model@{Model}!new\+Mesh@{new\+Mesh}}
+\index{new\+Mesh@{new\+Mesh}!Model@{Model}}
+\subsubsection[{\texorpdfstring{new\+Mesh(string file\+Path)}{newMesh(string filePath)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Mesh}$\ast$ Model\+::new\+Mesh (
+\begin{DoxyParamCaption}
+\item[{string}]{file\+Path}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_model_a5a54b1ec74ea98423c205d3fee7c744f}{}\label{class_model_a5a54b1ec74ea98423c205d3fee7c744f}
+\index{Model@{Model}!rotate@{rotate}}
+\index{rotate@{rotate}!Model@{Model}}
+\subsubsection[{\texorpdfstring{rotate(float angle, glm\+::vec3 axis)}{rotate(float angle, glm::vec3 axis)}}]{\setlength{\rightskip}{0pt plus 5cm}void Model\+::rotate (
+\begin{DoxyParamCaption}
+\item[{float}]{angle, }
+\item[{glm\+::vec3}]{axis}
+\end{DoxyParamCaption}
+)}\hypertarget{class_model_a427830f435c2eb86481808d09b9fbe2d}{}\label{class_model_a427830f435c2eb86481808d09b9fbe2d}
+\index{Model@{Model}!scale@{scale}}
+\index{scale@{scale}!Model@{Model}}
+\subsubsection[{\texorpdfstring{scale(glm\+::vec3 s)}{scale(glm::vec3 s)}}]{\setlength{\rightskip}{0pt plus 5cm}void Model\+::scale (
+\begin{DoxyParamCaption}
+\item[{glm\+::vec3}]{s}
+\end{DoxyParamCaption}
+)}\hypertarget{class_model_ac1cc7957271031bba837ba93e7f581e2}{}\label{class_model_ac1cc7957271031bba837ba93e7f581e2}
+\index{Model@{Model}!translate@{translate}}
+\index{translate@{translate}!Model@{Model}}
+\subsubsection[{\texorpdfstring{translate(glm\+::vec3 t)}{translate(glm::vec3 t)}}]{\setlength{\rightskip}{0pt plus 5cm}void Model\+::translate (
+\begin{DoxyParamCaption}
+\item[{glm\+::vec3}]{t}
+\end{DoxyParamCaption}
+)}\hypertarget{class_model_a967023af0128ffc4bb8609332234daea}{}\label{class_model_a967023af0128ffc4bb8609332234daea}
+
+
+\subsection{Member Data Documentation}
+\index{Model@{Model}!meshes@{meshes}}
+\index{meshes@{meshes}!Model@{Model}}
+\subsubsection[{\texorpdfstring{meshes}{meshes}}]{\setlength{\rightskip}{0pt plus 5cm}list$<${\bf Mesh}$>$ Model\+::meshes\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_model_a4b0be9742b35855d9444179ab26f616f}{}\label{class_model_a4b0be9742b35855d9444179ab26f616f}
+\index{Model@{Model}!model\+Mat@{model\+Mat}}
+\index{model\+Mat@{model\+Mat}!Model@{Model}}
+\subsubsection[{\texorpdfstring{model\+Mat}{modelMat}}]{\setlength{\rightskip}{0pt plus 5cm}glm\+::mat4 Model\+::model\+Mat\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{class_model_ad822f014d9b52f776d888b282d1924df}{}\label{class_model_ad822f014d9b52f776d888b282d1924df}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/\hyperlink{_model_8h}{Model.\+h}\item 
+src/\hyperlink{_model_8cpp}{Model.\+cpp}\end{DoxyCompactItemize}
