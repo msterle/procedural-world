@@ -17,7 +17,7 @@ protected:
 	glm::mat4 modelMat;
 	list<Mesh> meshes;
 public:
-	Model();
+	Model() : modelMat(glm::mat4(1)) { }
 	Mesh* newMesh(vector<Vertex> vertices, GLenum drawMode = GL_TRIANGLES) {
 		meshes.push_back(Mesh(vertices, drawMode));
 		return &meshes.back();

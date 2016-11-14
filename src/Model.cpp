@@ -13,10 +13,6 @@ using namespace std;
 
 // Public Methods
 
-Model::Model() {
-	modelMat = glm::mat4(1);
-}
-
 void Model::translate(glm::vec3 t) {
 	modelMat = glm::translate(glm::mat4(1), t) * modelMat;
 }

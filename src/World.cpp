@@ -30,7 +30,7 @@ World::World() {
 	this->uni_viewMat = glGetUniformLocation(shader.getProgramRef(), "viewMat");
 	this->uni_projMat = glGetUniformLocation(shader.getProgramRef(), "projMat");
 
-	this->terrain.generatePlane(1000, 1000);
+	this->terrain.generateDiamondSquare(128, 128);
 
 	// basic l-system tree
 	//Tree* tree = new Tree(2);
@@ -40,9 +40,20 @@ World::World() {
 	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2);
 	this->models.push_back(ptree);
 
+	// place tree at ground level
+	glm::vec3 treePos(0, 0, 0);
+	ptree->translate(glm::vec3(
+		treePos.x, 
+		terrain.getYAtXZWorld(treePos.x, treePos.z), 
+		treePos.z));
+
 	// Set up camera
-	this->camera.setPosition(glm::vec3(8, 2, 15));
-	this->camera.lookAt(glm::vec3(0, 5.5, 0));
+	glm::vec3 cameraPos(8, 2, 15);
+	this->camera.setPosition(glm::vec3(
+		cameraPos.x, 
+		terrain.getYAtXZWorld(cameraPos.x, cameraPos.z) + cameraPos.y, 
+		cameraPos.z));
+	this->camera.lookAt(glm::vec3(0, this->camera.getPosition().y + 3.5, 0));
 
 	// init constant uniforms
 	GLuint shaderProgram = this->shader.getProgramRef();
@@ -55,7 +66,6 @@ World::World() {
 
 	GLuint useLightingLoc = glGetUniformLocation(shaderProgram, "useLighting");
 	glUniform1i(useLightingLoc, 1);
-
 }
 
 void World::draw() {
@@ -69,7 +79,6 @@ void World::draw() {
 	
 	// Draw models
 	this->terrain.draw(shader);
-
 	for(list<Model*>::iterator it = this->models.begin(); it != this->models.end(); it++) {
 		(*it)->draw(shader);
 	}

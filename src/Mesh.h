@@ -45,6 +45,7 @@ public:
 	//void deleteInstance(MeshInstancePtr instance);
 	void draw(Shader shader, glm::mat4 modelMat);
 	int getNumInstances() { return instances.size(); }
+	vector<Vertex> getVertices() { return vertices; }
 };
 
 // turn into template?
