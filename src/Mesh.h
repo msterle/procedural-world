@@ -98,6 +98,7 @@ public:
 		instanceMat = transform * instanceMat;
 		return parent;
 	}
+	glm::mat4 getInstanceMat() { return instanceMat; }
 };
 
 #endif
