@@ -2,9 +2,9 @@
 #include "../include/glew.h"
 #include "../include/glfw3.h"
 
-#include "glhelper.h"
+#include "helpers.h"
 
-GLFWwindow* glhelper::initGL() {
+GLFWwindow* GLHelper::initGL() {
 	//// GLFW setup
 
 	std::cout << "Starting GLFW context, OpenGL " << OPENGL_VERSION_MAJOR << "." << OPENGL_VERSION_MINOR << std::endl;
@@ -64,6 +64,6 @@ GLFWwindow* glhelper::initGL() {
 }
 
 // Error handling callback
-void glhelper::glfw_error_callback(int error, const char* description) {
+void GLHelper::glfw_error_callback(int error, const char* description) {
 	std::cerr << "GLFW error: " << description << std::endl;
 }

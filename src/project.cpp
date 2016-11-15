@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-#include "glhelper.h"
+#include "helpers.h"
 #include "World.h"
 #include "UI.h"
 
@@ -11,7 +11,7 @@ using namespace std;
 
 int main() {
 	//// Program setup
-	GLFWwindow* window = glhelper::initGL();
+	GLFWwindow* window = GLHelper::initGL();
 	World* world = new World();
 	UI::init(world, window);
 	UI::setActive(UI::Explore);
@@ -19,7 +19,7 @@ int main() {
 	// Main loop
 	while(!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		world->draw();
+		world->draw(window);
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}

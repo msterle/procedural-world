@@ -39,8 +39,6 @@ Shader::Shader(string vertexShaderPath, string fragmentShaderPath) {
 	}
 	glDeleteShader(vertexShaderRef);
 	glDeleteShader(fragmentShaderRef);
-
-	glUseProgram(this->programRef);
 }
 
 

@@ -7,12 +7,6 @@ struct Material {
     float shininess;
 };
 
-const int MY_ARRAY_SIZE = 512;
-
-layout (std140) uniform modelMatsBlock {
-	mat4 modelMats [MY_ARRAY_SIZE];
-};
-
 layout (location = 0)	in vec3 in_position;
 layout (location = 1)	in vec3 in_normal;
 layout (location = 2)	in vec3 in_color;
