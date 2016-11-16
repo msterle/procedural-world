@@ -35,7 +35,7 @@ public:
 	void scale(glm::vec3 s);
 	void rotate(float angle, glm::vec3 axis);
 	void draw(Shader shader);
-	list<Mesh> meshes getMeshes() { return meshes; }
+	list<Mesh> getMeshes() { return meshes; }
 };
 
 #endif
