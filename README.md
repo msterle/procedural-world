@@ -3,6 +3,10 @@
 - https://github.com/tomdalling/opengl-series
 - https://github.com/BennyQBD/3DGameEngine
 
+## Lighting
+
+- [Learn OpenGL - Shadow Mapping](http://learnopengl.com/#!Advanced-Lighting/Shadows/Shadow-Mapping)
+
 ## Instancing
 
 - [Learn OpenGL - Instancing](http://learnopengl.com/#!Advanced-OpenGL/Instancing)

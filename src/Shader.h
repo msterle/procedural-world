@@ -10,6 +10,7 @@ public:
 	Shader();
 	Shader(std::string vertexShaderPath, std::string fragmentShaderPath);
 	GLuint getProgramRef();
+	void use() { glUseProgram(this->programRef); }
 protected:
 	enum Type { VertexShader, FragmentShader };
 	GLuint programRef;

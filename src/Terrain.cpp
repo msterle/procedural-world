@@ -214,10 +214,10 @@ void Terrain::generateDiamondSquare(int aproxWidth, float roughness) {
 	vector<Vertex> vertices(pow(width, 2));
 	
 	// set initial corner values
-	vertices[0].position = glm::vec3(0, ((float)rand() / RAND_MAX - 0.5) * (width - 1) * roughness, 0);
-	vertices[width - 1].position = glm::vec3(width - 1, ((float)rand() / RAND_MAX - 0.5) * (width - 1) * roughness, 0);
-	vertices[width * (width - 1)].position = glm::vec3(0, ((float)rand() / RAND_MAX - 0.5) * (width - 1) * roughness, width - 1);
-	vertices[width * width - 1].position = glm::vec3(width - 1, ((float)rand() / RAND_MAX - 0.5) * (width - 1) * roughness, width - 1);
+	vertices[0].position = glm::vec3(0, (float)rand() / RAND_MAX * (width - 1) * roughness, 0);
+	vertices[width - 1].position = glm::vec3(width - 1, (float)rand() / RAND_MAX * (width - 1) * roughness, 0);
+	vertices[width * (width - 1)].position = glm::vec3(0, (float)rand() / RAND_MAX * (width - 1) * roughness, width - 1);
+	vertices[width * width - 1].position = glm::vec3(width - 1, (float)rand() / RAND_MAX * (width - 1) * roughness, width - 1);
 	
 	// enter recursive generation algorithm
 	recurseDiamondSquare(&vertices, width, width - 1, roughness);
@@ -251,8 +251,7 @@ void Terrain::generateDiamondSquare(int aproxWidth, float roughness) {
 		}
 	}
 	instancePtr->translate(glm::vec3(-width / 2, 0, -width / 2));
-	float yScale = maxHeight == minHeight ? 1 : 0.25f / (maxHeight - minHeight);
-	instancePtr->scale(glm::vec3(2.0f / width, yScale, 2.0f / width));
+	instancePtr->scale(glm::vec3(2.0f / width, 2.0f / width, 2.0f / width));
 
 	// scale model to width
 	scale(glm::vec3(width / 2, width / 2, width / 2));

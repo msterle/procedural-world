@@ -15,6 +15,7 @@
 #include "Material.h"
 #include "LSystem.h"
 #include "Turtle.h"
+#include "helpers.h"
 
 using namespace std;
 
@@ -77,7 +78,7 @@ Tree::Tree(float n) : angle(20) {
 			}
 		});
 
-	string objPath = string(PROJECT_ROOT) + string("/res/meshes/cylinder8.obj");
+	string objPath = PathHelper::model("cylinder8.obj");
 	cylinderMesh = newMesh(objPath);
 
 	lsys.iterate(n);

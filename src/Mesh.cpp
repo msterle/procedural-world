@@ -132,11 +132,6 @@ MeshInstancePtr Mesh::newInstance(MeshInstancePtr orig) {
 }
 
 void Mesh::draw(Shader shader, glm::mat4 modelMat) {
-
-	GLuint shaderProgram = shader.getProgramRef();
-	GLint loc_modelMat = glGetUniformLocation(shaderProgram, "modelMat");
-	glUniformMatrix4fv(loc_modelMat, 1, GL_FALSE, glm::value_ptr(modelMat));
-
 	glBindBuffer(GL_ARRAY_BUFFER, IBO);
 	glBufferData(GL_ARRAY_BUFFER, instances.size() * sizeof(MeshInstance), &instances.front(), GL_STATIC_DRAW);
 

@@ -16,6 +16,7 @@
 #include "Material.h"
 #include "PLS.h"
 #include "Turtle.h"
+#include "helpers.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -113,7 +114,7 @@ ParaTree::ParaTree(ParaTree::TreeParams treeParams) {
 // protected methods
 
 void ParaTree::generate(unsigned int n) {
-	string objPath = string(PROJECT_ROOT) + string("/res/meshes/cylinder8.obj");
+	string objPath = PathHelper::model("cylinder8.obj");
 	cylinderMesh = newMesh(objPath);
 
 	// generate tree
