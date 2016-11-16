@@ -31,7 +31,7 @@ protected:
 	const char* TERRAIN_PATH_HEIGHTMAP = "/res/heightmap_lores.png";
 	const char* TERRAIN_PATH_COLOR = "/res/colour_lores.png";
 	Shader primaryShader, shadowShader;
-	GLint loc_viewMat, loc_projMat, loc_lightMat;
+	GLint loc_viewPos, loc_viewMat, loc_projMat, loc_lightMat;
 	list<Model*> models;
 	Light light;
 	GLuint shadowDepthFBO, shadowDepthTex;

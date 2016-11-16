@@ -16,21 +16,22 @@ layout (location = 9)	in vec4 in_materialDiffuse;
 layout (location = 10)	in vec4 in_materialSpecular;
 layout (location = 11)	in float in_materialShininess;
 
-out vec4 v2f_positionC; // Position in camera space.
+out vec4 v2f_position; // Position in world space.
 out vec4 v2f_positionL; // position in light space
-out vec4 v2f_normalC;   // normal in camera space.
+out vec4 v2f_normal;   // normal in world space.
 out vec4 v2f_color;
 out Material v2f_material;
 
 uniform mat4 modelMat;
+uniform mat4 normalMat;
 uniform mat4 viewMat;
 uniform mat4 projMat;
 uniform mat4 lightMat;
 
 void main() {
-    v2f_positionC = viewMat * modelMat * in_instanceMat * vec4(in_position, 1);
+    v2f_position = modelMat * in_instanceMat * vec4(in_position, 1);
     v2f_positionL = lightMat * modelMat * in_instanceMat * vec4(in_position, 1);
-    v2f_normalC = viewMat * modelMat * in_instanceMat * vec4(in_normal, 0);
+    v2f_normal = normalMat * in_instanceMat * vec4(in_normal, 0);
     v2f_color = vec4(in_color, 1);
     v2f_material.ambient = in_materialAmbient;
     v2f_material.diffuse = in_materialDiffuse;

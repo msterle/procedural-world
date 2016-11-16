@@ -27,7 +27,7 @@ void RenderQuad();
 
 World::World() {
 	// set up terrain
-	terrain.generateDiamondSquare(128, 128);
+	terrain.generateDiamondSquare(128, 0.25);
 
 	// set up trees
 	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2);
@@ -53,11 +53,12 @@ World::World() {
 	// primary shader
 	primaryShader = Shader(PathHelper::shader("instance.vert"), 
 		PathHelper::shader("lighting.frag"));
+	loc_viewPos = glGetUniformLocation(primaryShader.getProgramRef(), "viewPos");
 	loc_viewMat = glGetUniformLocation(primaryShader.getProgramRef(), "viewMat");
 	loc_projMat = glGetUniformLocation(primaryShader.getProgramRef(), "projMat");
 	primaryShader.use();
-	glUniform4fv(glGetUniformLocation(primaryShader.getProgramRef(), "lightPositionC"), 
-		1, glm::value_ptr(camera.getViewMat() * glm::vec4(light.position, 1)));
+	glUniform4fv(glGetUniformLocation(primaryShader.getProgramRef(), "lightPosition"), 
+		1, glm::value_ptr(glm::vec4(light.position, 1)));
 	glUniform4fv(glGetUniformLocation(primaryShader.getProgramRef(), "lightColor"), 
 		1, glm::value_ptr(light.color));
 	glUniform1i(glGetUniformLocation(primaryShader.getProgramRef(), "useLighting"), 1);
@@ -93,6 +94,7 @@ World::World() {
 }
 
 void World::draw(GLFWwindow* window) {
+	/*
 	//// Render shadow map
 	// Bind world uniforms
 	shadowShader.use();
@@ -108,6 +110,7 @@ void World::draw(GLFWwindow* window) {
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	*/
 
 	//// Render main
 	// reset viewport
@@ -121,6 +124,7 @@ void World::draw(GLFWwindow* window) {
 
 	// Bind world uniforms
 	primaryShader.use();
+	glUniform4fv(loc_viewPos, 1, glm::value_ptr(glm::vec4(camera.getPosition(), 1.0)));
 	glUniformMatrix4fv(loc_viewMat, 1, GL_FALSE, glm::value_ptr(camera.getViewMat()));
 	glUniformMatrix4fv(loc_projMat, 1, GL_FALSE, glm::value_ptr(camera.getProjMat()));
 	
