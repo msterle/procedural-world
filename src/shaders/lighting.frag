@@ -18,14 +18,29 @@ uniform vec4 viewPos;
 uniform vec4 lightPosition;  // light position in camera space
 uniform vec4 lightColor;
 uniform sampler2D shadowDepthTex;
+uniform int shadowSamples;
 
 out vec4 out_color;
+
+float shadowBias = 0.005;
 
 float ShadowCalculation(vec4 fragPosLightSpace) {
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     projCoords = projCoords * 0.5 + 0.5;
     float closestDepth = texture(shadowDepthTex, projCoords.xy).r;
-    float shadow = projCoords.z > closestDepth  ? 1.0 : 0.0;
+    float currentDepth = projCoords.z;
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowDepthTex, 0);
+    for(int x = -shadowSamples; x <= shadowSamples; ++x) {
+        for(int y = -shadowSamples; y <= shadowSamples; ++y) {
+            float pcfDepth = texture(shadowDepthTex, projCoords.xy + vec2(x, y) * texelSize).r; 
+            shadow += currentDepth - shadowBias > pcfDepth ? 1.0 : 0.0;        
+        }    
+    }
+    shadow /= pow(shadowSamples * 2 + 1, 2);
+    //shadow = currentDepth - shadowBias > closestDepth ? 1.0 : 0.0;
+    if(projCoords.z > 1.0)
+        shadow = 0.0;
     return shadow;
 }
 

@@ -30,7 +30,7 @@ uniform mat4 lightMat;
 
 void main() {
     v2f_position = modelMat * in_instanceMat * vec4(in_position, 1);
-    v2f_positionL = lightMat * modelMat * in_instanceMat * vec4(in_position, 1);
+    v2f_positionL = lightMat * v2f_position;
     v2f_normal = normalMat * in_instanceMat * vec4(in_normal, 0);
     v2f_color = vec4(in_color, 1);
     v2f_material.ambient = in_materialAmbient;
