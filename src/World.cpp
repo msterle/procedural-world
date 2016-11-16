@@ -52,8 +52,8 @@ World::World() {
 
 	//// set up shaders
 	// primary shader
-	primaryShader = Shader(PathHelper::shader("instance.vert"), 
-		PathHelper::shader("lighting.frag"));
+	primaryShader = Shader(PathHelper::shader("primary.vert"), 
+		PathHelper::shader("primary.frag"));
 	loc_viewPos = glGetUniformLocation(primaryShader.getProgramRef(), "viewPos");
 	loc_viewMat = glGetUniformLocation(primaryShader.getProgramRef(), "viewMat");
 	loc_projMat = glGetUniformLocation(primaryShader.getProgramRef(), "projMat");

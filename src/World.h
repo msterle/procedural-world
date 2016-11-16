@@ -13,8 +13,6 @@
 
 using namespace std;
 
-const GLuint SHADOW_WIDTH = 2048, SHADOW_HEIGHT = 2048;
-
 struct Light {
 	glm::vec3 position;
 	glm::vec4 color;
