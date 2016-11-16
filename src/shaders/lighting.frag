@@ -17,8 +17,17 @@ uniform bool useLighting;
 uniform vec4 viewPos;
 uniform vec4 lightPosition;  // light position in camera space
 uniform vec4 lightColor;
+uniform sampler2D shadowDepthTex;
 
 out vec4 out_color;
+
+float ShadowCalculation(vec4 fragPosLightSpace) {
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    float closestDepth = texture(shadowDepthTex, projCoords.xy).r;
+    float shadow = projCoords.z > closestDepth  ? 1.0 : 0.0;
+    return shadow;
+}
 
 void main() {
     if(useLighting) {
@@ -33,8 +42,9 @@ void main() {
         vec4 Specular = pow(max(dot(H, N), 0), v2f_material.shininess) * lightColor * v2f_material.specular;
         
         // combine light components
-        //out_color = Diffuse;
-        out_color = max(Diffuse + Specular, v2f_material.ambient);
+        float shadow = ShadowCalculation(v2f_positionL);
+        vec4 lighting = max((Diffuse + Specular) * (1.0 - shadow), v2f_material.ambient);
+        out_color = lighting;
     }
     else {
         //out_color = v2f_color;
