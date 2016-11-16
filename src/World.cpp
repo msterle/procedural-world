@@ -115,23 +115,22 @@ void World::draw(GLFWwindow* window) {
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+	glViewport(0, 0, width, height);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	depthShader.use();
+	glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, shadowDepthTex);
+	RenderQuad();
+
+	/*
 	//// Render main
 	// reset viewport
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	depthShader.use();
-	
-	// bind shadow texture
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, shadowDepthTex);
-
-
-	
-	RenderQuad();
-	/*
 
 	// Bind world uniforms
 	primaryShader.use();
