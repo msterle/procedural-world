@@ -8,6 +8,7 @@ struct Material {
 };
 
 in vec4 v2f_positionC;  // position in camera space
+in vec4 v2f_positionL;  // position in light space
 in vec4 v2f_normalC;    // normal in camera space
 in vec4 v2f_color;
 in Material v2f_material;
@@ -31,7 +32,8 @@ void main() {
         vec4 Specular = pow(max(dot(H, N), 0), v2f_material.shininess) * lightColor * v2f_material.specular;
         
         // combine light components
-        out_color = max(Diffuse + Specular, v2f_material.ambient);
+        out_color = Diffuse + Specular + v2f_material.ambient;
+        //out_color = max(Diffuse + Specular, v2f_material.ambient);
     }
     else {
         //out_color = v2f_color;
