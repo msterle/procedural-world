@@ -51,7 +51,7 @@ public:
 // turn into template?
 class MeshInstancePtr {
 public:
-	typedef typename vector<MeshInstance>::size_type size_type;
+	typedef vector<MeshInstance>::size_type size_type;
 protected:
 	bool isNull;
 	vector<MeshInstance>* container;

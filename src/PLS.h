@@ -44,7 +44,7 @@ public:
 		// no parameters
 		Module(char symbol) : symbol(symbol), params() { }
 		// single parameter
-		Module(char symbol, Param param) : symbol(symbol), params{param} { }
+		Module(char symbol, Param param) : symbol(symbol), params(std::vector<Param>(1, param)) { }
 		// vector of parameters
 		Module(char symbol, std::vector<Param> params) : symbol(symbol), params(params) { }
 		// return copy with evaluated functional parameters

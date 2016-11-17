@@ -30,6 +30,61 @@ Tree::Tree(float n) : angle(20) {
 			{
 				'X',
 				LSystem<callback_t>::Rule {
+					"F-[[X]+X]+F[+FX]-X",
+					Tree::lsysData::noop,
+					(void*)this
+				}
+			},
+			{
+				'F',
+				LSystem<callback_t>::Rule {
+					"FF",
+					Tree::lsysData::forward,
+					(void*)this
+				}
+			},
+			// constants
+			{
+				'+',
+				LSystem<callback_t>::Rule {
+					"+",
+					lsysData::right,
+					(void*)this
+				}
+			},
+			{
+				'-',
+				LSystem<callback_t>::Rule {
+					"-",
+					Tree::lsysData::left,
+					(void*)this
+				}
+			},
+			{
+				'[',
+				LSystem<callback_t>::Rule {
+					"[",
+					Tree::lsysData::push,
+					(void*)this
+				}
+			},
+			{
+				']',
+				LSystem<callback_t>::Rule {
+					"]",
+					Tree::lsysData::pop,
+					(void*)this
+				}
+			}
+		});
+	/*
+	lsys = LSystem<callback_t>(
+		"X",
+		LSystem<callback_t>::Grammar {
+			// variables
+			{
+				'X',
+				LSystem<callback_t>::Rule {
 					.replace = "F-[[X]+X]+F[+FX]-X",
 					.action = Tree::lsysData::noop,
 					.actionArg = (void*)this
@@ -77,6 +132,7 @@ Tree::Tree(float n) : angle(20) {
 				}
 			}
 		});
+	*/
 
 	string objPath = PathHelper::model("cylinder8.obj");
 	cylinderMesh = newMesh(objPath);
