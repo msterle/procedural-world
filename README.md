@@ -8,6 +8,7 @@
 - [Learn OpenGL - Shadow Mapping](http://learnopengl.com/#!Advanced-Lighting/Shadows/Shadow-Mapping)
 - http://fabiensanglard.net/shadowmappingVSM/
 - http://http.developer.nvidia.com/GPUGems3/gpugems3_ch08.html
+- http://developer.download.nvidia.com/SDK/10.5/direct3d/Source/VarianceShadowMapping/Doc/VarianceShadowMapping.pdf
 
 ## Instancing
 

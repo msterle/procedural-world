@@ -63,8 +63,8 @@ World::World() {
 	glUniform4fv(glGetUniformLocation(primaryShader.getProgramRef(), "lightColor"), 
 		1, glm::value_ptr(light.color));
 	glUniform1i(glGetUniformLocation(primaryShader.getProgramRef(), "useLighting"), 1);
-	glUniform1i(glGetUniformLocation(primaryShader.getProgramRef(), "shadowSamples"), 
-		params.shadowSamples);
+	glUniform1i(glGetUniformLocation(primaryShader.getProgramRef(), "PCFSamples"), 
+		params.PCFSamples);
 
 	// shadowmap shader
 	shadowShader = Shader(PathHelper::shader("shadow.vert"), 
