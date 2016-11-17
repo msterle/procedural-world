@@ -10,6 +10,8 @@
 #include "Shader.h"
 #include "Terrain.h"
 #include "Camera.h"
+#include "Texture.h"
+#include "FrameBuffer.h"
 
 using namespace std;
 
@@ -37,7 +39,8 @@ protected:
 	GLint loc_viewPos, loc_viewMat, loc_projMat, loc_lightMatShadow, loc_lightMatPrimary;
 	list<Model*> models;
 	Light light;
-	GLuint shadowDepthFBO, shadowDepthTex;
+	FrameBuffer depthFBO;
+	Texture depthTex;
 };
 
 #endif

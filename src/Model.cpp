@@ -28,9 +28,9 @@ void Model::rotate(float angle, glm::vec3 axis) {
 void Model::draw(Shader shader) {
 	glm::mat4 normalMat = glm::mat3(glm::transpose(glm::inverse(modelMat)));
 	shader.use();
-	glUniformMatrix4fv(glGetUniformLocation(shader.getProgramRef(), "modelMat"), 
+	glUniformMatrix4fv(glGetUniformLocation(shader.getRef(), "modelMat"), 
 		1, GL_FALSE, glm::value_ptr(modelMat));
-	glUniformMatrix4fv(glGetUniformLocation(shader.getProgramRef(), "normalMat"), 
+	glUniformMatrix4fv(glGetUniformLocation(shader.getRef(), "normalMat"), 
 		1, GL_FALSE, glm::value_ptr(normalMat));
 	for(list<Mesh>::iterator it = meshes.begin(); it != meshes.end(); it++) {
 		it->draw(shader, modelMat);

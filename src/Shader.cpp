@@ -23,29 +23,22 @@ Shader::Shader(string vertexShaderPath, string fragmentShaderPath) {
 	GLuint fragmentShaderRef = this->compileShader(FragmentShader, fragmentShaderPath);
 	
 	// Link shaders
-	this->programRef = glCreateProgram();
-	glAttachShader(this->programRef, vertexShaderRef);
-	glAttachShader(this->programRef, fragmentShaderRef);
-	glLinkProgram(this->programRef);
+	this->programID = glCreateProgram();
+	glAttachShader(this->programID, vertexShaderRef);
+	glAttachShader(this->programID, fragmentShaderRef);
+	glLinkProgram(this->programID);
 
 	// Check for linking errors
 	GLint success;
 	GLchar infoLog[512];
-	glGetProgramiv(this->programRef, GL_LINK_STATUS, &success);
+	glGetProgramiv(this->programID, GL_LINK_STATUS, &success);
 	if (!success) {
-		glGetProgramInfoLog(this->programRef, 512, NULL, infoLog);
+		glGetProgramInfoLog(this->programID, 512, NULL, infoLog);
 		cerr << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << endl;
 		exit(-1);
 	}
 	glDeleteShader(vertexShaderRef);
 	glDeleteShader(fragmentShaderRef);
-}
-
-
-// Public methods
-
-GLuint Shader::getProgramRef() {
-	return this->programRef;
 }
 
 

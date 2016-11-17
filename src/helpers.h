@@ -16,23 +16,6 @@ namespace GLHelper {
 	}
 }
 
-namespace TextureHelper {
-	struct Border {
-		GLfloat components[4];
-		Border(GLfloat c) : components{c, c, c, c} { }
-	};
-	enum FilterMode {NEAREST, LINEAR, MIPMAP};
-	void setWrap(GLuint tex, GLenum wrap);
-	void setBorder(GLuint tex, Border border);
-	void setFilterMode(GLuint tex, FilterMode filter);
-	GLuint newTexture2D(GLint internalFormat, GLsizei width, GLsizei height, 
-			GLenum format, GLenum type, GLenum wrap = GL_REPEAT, 
-			Border border = Border(0), FilterMode filter = NEAREST);
-	GLuint newFrameBufferColor(GLuint tex);
-	GLuint newFrameBufferDepth(GLuint tex);
-	GLuint newFrameBuffer(GLuint colorTex, GLuint depthTex);
-}
-
 namespace PathHelper {
 	inline std::string root() { return std::string(PROJECT_ROOT); }
 	inline std::string absolute(std::string path = "") { return root() + '/' + path; }

@@ -12,6 +12,8 @@
 #include "Tree.h"
 #include "ParaTree.h"
 #include "helpers.h"
+#include "Texture.h"
+#include "FrameBuffer.h"
 
 #include "World.h"
 
@@ -53,31 +55,27 @@ World::World() {
 	// primary shader
 	primaryShader = Shader(PathHelper::shader("primary.vert"), 
 		PathHelper::shader("primary.frag"));
-	loc_viewPos = glGetUniformLocation(primaryShader.getProgramRef(), "viewPos");
-	loc_viewMat = glGetUniformLocation(primaryShader.getProgramRef(), "viewMat");
-	loc_projMat = glGetUniformLocation(primaryShader.getProgramRef(), "projMat");
-	loc_lightMatPrimary = glGetUniformLocation(primaryShader.getProgramRef(), "lightMat");
+	loc_viewPos = glGetUniformLocation(primaryShader.getRef(), "viewPos");
+	loc_viewMat = glGetUniformLocation(primaryShader.getRef(), "viewMat");
+	loc_projMat = glGetUniformLocation(primaryShader.getRef(), "projMat");
+	loc_lightMatPrimary = glGetUniformLocation(primaryShader.getRef(), "lightMat");
 	primaryShader.use();
-	glUniform4fv(glGetUniformLocation(primaryShader.getProgramRef(), "lightPosition"), 
+	glUniform4fv(glGetUniformLocation(primaryShader.getRef(), "lightPosition"), 
 		1, glm::value_ptr(glm::vec4(light.position, 1)));
-	glUniform4fv(glGetUniformLocation(primaryShader.getProgramRef(), "lightColor"), 
+	glUniform4fv(glGetUniformLocation(primaryShader.getRef(), "lightColor"), 
 		1, glm::value_ptr(light.color));
-	glUniform1i(glGetUniformLocation(primaryShader.getProgramRef(), "useLighting"), 1);
-	glUniform1i(glGetUniformLocation(primaryShader.getProgramRef(), "PCFSamples"), 
+	glUniform1i(glGetUniformLocation(primaryShader.getRef(), "useLighting"), 1);
+	glUniform1i(glGetUniformLocation(primaryShader.getRef(), "PCFSamples"), 
 		params.PCFSamples);
 
 	// shadowmap shader
 	shadowShader = Shader(PathHelper::shader("shadow.vert"), 
 		PathHelper::shader("shadow.frag"));
-	loc_lightMatShadow = glGetUniformLocation(shadowShader.getProgramRef(), "lightMat");
-	glGenFramebuffers(1, &shadowDepthFBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, shadowDepthFBO);
-	glGenTextures(1, &shadowDepthTex);
-	glBindTexture(GL_TEXTURE_2D, shadowDepthTex);
+	loc_lightMatShadow = glGetUniformLocation(shadowShader.getRef(), "lightMat");
 	
-	shadowDepthTex = TextureHelper::newTexture2D(GL_RG32F, params.shadowWidth, 
-		params.shadowHeight, GL_RG, GL_FLOAT, GL_CLAMP_TO_BORDER, TextureHelper::Border(1));
-	shadowDepthFBO = TextureHelper::newFrameBufferColor(shadowDepthTex);
+	depthTex = Texture(GL_RG32F, params.shadowWidth, 
+		params.shadowHeight, GL_RG, GL_FLOAT, GL_CLAMP_TO_BORDER, Texture::Border(1));
+	depthFBO = FrameBuffer(depthTex);
 }
 
 void World::draw(GLFWwindow* window) {
@@ -95,7 +93,7 @@ void World::draw(GLFWwindow* window) {
 	shadowShader.use();
 	glUniformMatrix4fv(loc_lightMatShadow, 1, GL_FALSE, glm::value_ptr(light.lightMat));
 	glViewport(0, 0, params.shadowWidth, params.shadowHeight);
-	glBindFramebuffer(GL_FRAMEBUFFER, shadowDepthFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO.getRef());
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     glCullFace(GL_FRONT);
 
@@ -115,7 +113,7 @@ void World::draw(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// DEBUG
-	//DebugHelper::renderTex(shadowDepthTex);
+	//DebugHelper::renderTex(depthTex.getRef());
 
 	//// Render main
 	// Bind world uniforms
@@ -126,7 +124,7 @@ void World::draw(GLFWwindow* window) {
 	glUniformMatrix4fv(loc_lightMatPrimary, 1, GL_FALSE, glm::value_ptr(light.lightMat));
 
 	glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, shadowDepthTex);
+    glBindTexture(GL_TEXTURE_2D, depthTex.getRef());
 	
 	// Draw models
 	terrain.draw(primaryShader);

@@ -7,13 +7,16 @@
 
 class Shader {
 public:
+	enum Type { VertexShader, FragmentShader };
+protected:
+	GLuint programID;
+public:
 	Shader();
 	Shader(std::string vertexShaderPath, std::string fragmentShaderPath);
-	GLuint getProgramRef();
-	void use() { glUseProgram(this->programRef); }
+	void deleteShader() { if(programID != 0) glDeleteProgram(programID); }
+	GLuint getRef() { return programID; }
+	void use() { glUseProgram(programID); }
 protected:
-	enum Type { VertexShader, FragmentShader };
-	GLuint programRef;
 	static GLuint compileShader(Type type, std::string path);
 };
 

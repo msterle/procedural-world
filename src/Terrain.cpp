@@ -116,7 +116,7 @@ void Terrain::buildFromHeightmap(string heightmapPath, string colorPath, int sca
 
 	glBindVertexArray(0);
 
-	GLuint shaderProgram = this->shader.getProgramRef();
+	GLuint shaderProgram = this->shader.getRef();
 
 	GLuint useLightingLoc = glGetUniformLocation(shaderProgram, "useLighting");
 
@@ -188,7 +188,7 @@ void Terrain::generateHills(int width, int number) {
 
 	glBindVertexArray(0);
 	
-	GLuint shaderProgram = this->shader.getProgramRef();
+	GLuint shaderProgram = this->shader.getRef();
 
 	GLuint MaterialAmbientLoc = glGetUniformLocation(shaderProgram, "material.ambient");
 	GLuint MaterialDiffuseLoc = glGetUniformLocation(shaderProgram, "material.diffuse");
@@ -355,7 +355,7 @@ float Terrain::getYAtXZWorld(float x, float z) {
 
 	glBindVertexArray(0);
 	
-	GLuint shaderProgram = this->shader.getProgramRef();
+	GLuint shaderProgram = this->shader.getRef();
 
 	GLuint MaterialAmbientLoc = glGetUniformLocation(shaderProgram, "material.ambient");
 	GLuint MaterialDiffuseLoc = glGetUniformLocation(shaderProgram, "material.diffuse");
