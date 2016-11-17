@@ -26,9 +26,9 @@ public:
 	Terrain terrain;
 	Camera camera;
 	struct {
-		GLuint shadowWidth = 2048;
-		GLuint shadowHeight = 2048;
-		GLuint shadowSamples = 0;
+		GLuint shadowWidth = 1024;
+		GLuint shadowHeight = 1024;
+		GLuint shadowSamples = 1;
 	} params;
 protected:
 	const char* TERRAIN_PATH_HEIGHTMAP = "/res/heightmap_lores.png";

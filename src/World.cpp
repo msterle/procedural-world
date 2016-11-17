@@ -25,7 +25,7 @@ using namespace std;
 
 World::World() {
 	// set up terrain
-	terrain.generateDiamondSquare(128, 0.25);
+	terrain.generateDiamondSquare(100, 0.1, 0.25);
 
 	// set up trees
 	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2);
@@ -45,10 +45,8 @@ World::World() {
 	camera.lookAt(glm::vec3(0, camera.getPosition().y + 3.5, 0));
 
 	// set up light
+	glm::vec3 centerPos(0, terrain.getYAtXZWorld(0, 0), 0);
 	light = {glm::vec3(250.0, 1000.0, 500.0), glm::vec4(1.0, 1.0, 1.0, 1.0)};
-	light.lightMat = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, -50.0f, 50.0f)
-		* glm::lookAt(glm::normalize(light.position), glm::vec3(0), glm::vec3(0, 1, 0));
-	glUniformMatrix4fv(loc_lightMatShadow, 1, GL_FALSE, glm::value_ptr(light.lightMat));
 
 	//// set up shaders
 	// primary shader
@@ -64,8 +62,6 @@ World::World() {
 	glUniform4fv(glGetUniformLocation(primaryShader.getProgramRef(), "lightColor"), 
 		1, glm::value_ptr(light.color));
 	glUniform1i(glGetUniformLocation(primaryShader.getProgramRef(), "useLighting"), 1);
-	glUniformMatrix4fv(glGetUniformLocation(primaryShader.getProgramRef(), "lightMat"), 
-		1, GL_FALSE, glm::value_ptr(light.lightMat));
 	glUniform1i(glGetUniformLocation(primaryShader.getProgramRef(), "shadowSamples"), 
 		params.shadowSamples);
 
@@ -97,6 +93,10 @@ World::World() {
 }
 
 void World::draw(GLFWwindow* window) {
+	glm::vec3 cameraPos = camera.getPosition();
+	light.lightMat = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -50.0f, 50.0f)
+		* glm::lookAt(glm::normalize(light.position) + cameraPos, cameraPos, glm::vec3(0, 1, 0));
+
 	//// Render shadow map
 	shadowShader.use();
 	glUniformMatrix4fv(loc_lightMatShadow, 1, GL_FALSE, glm::value_ptr(light.lightMat));
