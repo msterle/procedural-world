@@ -27,6 +27,7 @@ namespace GLHelper {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPENGL_VERSION_MINOR);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+		glfwWindowHint(GLFW_SAMPLES, 4); // antialiasing
 
 		// Create a GLFWwindow object that we can use for GLFW's functions
 		GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "COMP 371 Project", nullptr, nullptr);
@@ -68,6 +69,9 @@ namespace GLHelper {
 		glEnable(GL_PRIMITIVE_RESTART);
 		// Define restart index
 		glPrimitiveRestartIndex(65535);
+
+		// antialiasing
+		glEnable(GL_MULTISAMPLE);
 
 		return window;
 	}

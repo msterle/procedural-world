@@ -30,7 +30,7 @@ int main() {
 			fps = (float)frameCount / cumTime;
 			cumTime = 0;
 			frameCount = 0;
-			//cout << "FPS: " << fps << endl;
+			cout << "FPS: " << fps << endl;
 		}
 		glfwPollEvents();
 		world->draw(window);
