@@ -25,11 +25,12 @@ int main() {
 		lastTime = curTime;
 		curTime = glfwGetTime();
 		deltaTime = curTime - lastTime;
-		cumtime += deltaTime;
-		if(++frameCount >= 60) {
-			fps = frameCount / cumTime;
-			cumTime = 0
+		cumTime += deltaTime;
+		if(++frameCount >= 30) {
+			fps = (float)frameCount / cumTime;
+			cumTime = 0;
 			frameCount = 0;
+			//cout << "FPS: " << fps << endl;
 		}
 		glfwPollEvents();
 		world->draw(window);

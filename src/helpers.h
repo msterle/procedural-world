@@ -9,7 +9,11 @@ namespace GLHelper {
 	const int OPENGL_VERSION_MAJOR = 3, OPENGL_VERSION_MINOR = 3;
 	const GLuint WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
 	
-	GLFWwindow* initGL() {
+	inline void glfw_error_callback(int error, const char* description) {
+		std::cerr << "GLFW error: " << description << std::endl;
+	}
+
+	inline GLFWwindow* initGL() {
 		//// GLFW setup
 
 		std::cout << "Starting GLFW context, OpenGL " << OPENGL_VERSION_MAJOR << "." << OPENGL_VERSION_MINOR << std::endl;
@@ -66,10 +70,6 @@ namespace GLHelper {
 		glPrimitiveRestartIndex(65535);
 
 		return window;
-	}
-
-	void glfw_error_callback(int error, const char* description) {
-		std::cerr << "GLFW error: " << description << std::endl;
 	}
 }
 
