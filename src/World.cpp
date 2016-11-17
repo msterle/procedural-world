@@ -25,7 +25,8 @@ using namespace std;
 
 World::World() {
 	// set up terrain
-	terrain.generateDiamondSquare(100, 0.1, 0.25);
+	//terrain.generateDiamondSquare(100, 0.1, 0.25);
+	terrain.generatePlane(500, 500);
 
 	// set up trees
 	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2);
@@ -73,36 +74,29 @@ World::World() {
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowDepthFBO);
 	glGenTextures(1, &shadowDepthTex);
 	glBindTexture(GL_TEXTURE_2D, shadowDepthTex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, params.shadowWidth, params.shadowHeight, 
-		0, GL_RGBA, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER); 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
-	// uncomment to check if shadow area covers visible area
-	//GLfloat borderColor[] = { 0.0, 0.0, 0.0, 0.0 };
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, shadowDepthTex, 0); 
-	glDrawBuffer(GL_NONE);
-	glReadBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0); 
-	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		cout << "Framebuffer error" << endl;
+	
+	shadowDepthTex = TextureHelper::newTexture2D(GL_RG32F, params.shadowWidth, 
+		params.shadowHeight, GL_RG, GL_FLOAT, GL_CLAMP_TO_BORDER, TextureHelper::Border(1));
+	shadowDepthFBO = TextureHelper::newFrameBufferColor(shadowDepthTex);
 }
 
 void World::draw(GLFWwindow* window) {
 	glm::vec3 cameraPos = camera.getPosition();
+
+	// DEBUG
+	/*
 	light.lightMat = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -50.0f, 50.0f)
 		* glm::lookAt(glm::normalize(light.position) + cameraPos, cameraPos, glm::vec3(0, 1, 0));
+	*/
+	light.lightMat = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -50.0f, 50.0f)
+		* glm::lookAt(glm::normalize(light.position), glm::vec3(0), glm::vec3(0, 1, 0));
 
 	//// Render shadow map
 	shadowShader.use();
 	glUniformMatrix4fv(loc_lightMatShadow, 1, GL_FALSE, glm::value_ptr(light.lightMat));
 	glViewport(0, 0, params.shadowWidth, params.shadowHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowDepthFBO);
-    glClear(GL_DEPTH_BUFFER_BIT);
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     glCullFace(GL_FRONT);
 
 	// Draw models
@@ -114,13 +108,16 @@ void World::draw(GLFWwindow* window) {
 	glCullFace(GL_BACK);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	//// Render main
 	// reset viewport
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// DEBUG
+	//DebugHelper::renderTex(shadowDepthTex);
+
+	//// Render main
 	// Bind world uniforms
 	primaryShader.use();
 	glUniform4fv(loc_viewPos, 1, glm::value_ptr(glm::vec4(camera.getPosition(), 1.0)));

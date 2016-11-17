@@ -271,8 +271,8 @@ void Terrain::generatePlane(float width, float length) {
 
 	vector<GLuint> indices = { 0, 2, 1, 3 };
 
-	Mesh* mesh = newMesh(vertices, indices, GL_TRIANGLE_STRIP);
-	MeshInstancePtr ptr = mesh->newInstance(Materials::copper);
+	mesh = newMesh(vertices, indices, GL_TRIANGLE_STRIP);
+	instancePtr = mesh->newInstance(Materials::copper);
 }
 
 float Terrain::getYAtXZWorld(float x, float z) {
