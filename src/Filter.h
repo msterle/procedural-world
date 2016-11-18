@@ -11,6 +11,7 @@
 
 class Texture;
 
+// convolution filter
 class Filter {
 protected:
 	std::vector<float> kernel;
@@ -33,29 +34,27 @@ protected:
 };
 
 
+// seperable kernel convolution filter
 class SeperableFilter : public Filter {
 protected:
 	Texture* interTex;
 	bool ownInterTex;
 public:
+	SeperableFilter()  : interTex(NULL), ownInterTex(false) { }
 	SeperableFilter(std::vector<float> kernel);
 	void apply(Texture* inTex, Texture* outTex, Texture* interTex = NULL);
 	void bind(Texture* inTex, Texture* outTex, Texture* interTex = NULL);
 	void run();
 	~SeperableFilter();
+protected:
+	void init(std::vector<float> kernel);
 };
 
 
-class BlurFilter : public Filter {
-protected:
-	Texture* interTex;
-	bool ownInterTex;
+// gaussian blur convolution filter
+class BlurFilter : public SeperableFilter {
 public:
 	BlurFilter(unsigned int size);
-	void apply(Texture* inTex, Texture* outTex, Texture* interTex = NULL);
-	void bind(Texture* inTex, Texture* outTex, Texture* interTex = NULL);
-	void run();
-	~BlurFilter();
 };
 
 #endif

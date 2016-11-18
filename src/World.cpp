@@ -112,7 +112,7 @@ void World::draw(GLFWwindow* window) {
 	light.lightMat = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -50.0f, 50.0f)
 		* glm::lookAt(glm::normalize(light.position) + cameraPos, cameraPos, glm::vec3(0, 1, 0));
 	*/
-	light.lightMat = glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -50.0f, 50.0f)
+	light.lightMat = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -50.0f, 50.0f)
 		* glm::lookAt(glm::normalize(light.position), glm::vec3(0), glm::vec3(0, 1, 0));
 
 	//// Render shadow map
@@ -139,8 +139,8 @@ void World::draw(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// blur shadowmap
-	blurFilter->apply(shadowmapTex, bluredDepthTex, filterInterTex);
-	//blurFilter->run();
+	//blurFilter->apply(shadowmapTex, bluredDepthTex, filterInterTex);
+	blurFilter->run();
 	//filter->apply(shadowmapTex, bluredDepthTex);
 
 	// debug quad
