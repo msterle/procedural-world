@@ -78,7 +78,7 @@ World::World() {
 		params.shadowHeight, GL_RG, GL_FLOAT, GL_CLAMP_TO_BORDER, Texture::Border(1));
 	depthFBO = new FrameBuffer(depthTex);
 
-	Filter filter(vector<float>{1, 2, 3, 4, 5, 6, 7, 8, 9}, 2);
+	filteredTex = new Texture(depthTex);
 }
 
 
@@ -116,9 +116,9 @@ void World::draw(GLFWwindow* window) {
     glCullFace(GL_FRONT);
 
 	// Draw models
-	terrain.draw(*shadowShader);
+	terrain.draw(shadowShader);
 	for(list<Model*>::iterator it = models.begin(); it != models.end(); it++) {
-		(*it)->draw(*shadowShader);
+		(*it)->draw(shadowShader);
 	}
 
 	glCullFace(GL_BACK);
@@ -131,9 +131,15 @@ void World::draw(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// DEBUG
-	//DebugHelper::renderTex(depthTex->getRef());
+	Filter filter(vector<float>{
+		0.0625, 0.125, 0.0625, 
+		0.125, 0.25, 0.125, 
+		0.0625, 0.125, 0.0625}, 1);
+	filter.apply(depthTex, filteredTex);
+	DebugHelper::renderTex(filteredTex->getRef());
 
 
+	/*
 	//// Render main
 	// Bind world uniforms
 	primaryShader->use();
@@ -143,11 +149,13 @@ void World::draw(GLFWwindow* window) {
 	glUniformMatrix4fv(loc_lightMatPrimary, 1, GL_FALSE, glm::value_ptr(light.lightMat));
 
 	glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, depthTex->getRef());
+    glBindTexture(GL_TEXTURE_2D, filteredTex->getRef());
 	
 	// Draw models
-	terrain.draw(*primaryShader);
+	terrain.draw(primaryShader);
 	for(list<Model*>::iterator it = models.begin(); it != models.end(); it++) {
-		(*it)->draw(*primaryShader);
+		(*it)->draw(primaryShader);
 	}
+	*/
+	
 }

@@ -78,9 +78,9 @@ namespace DebugHelper {
 
 	void renderTex(GLuint tex) {
 		static GLuint texVAO = 0, texVBO;
-		static Shader texShader;
+		static Shader* texShader;
 		if (texVAO == 0){
-			texShader = Shader(PathHelper::shader("debug_tex.vert"),
+			texShader = new Shader(PathHelper::shader("debug_tex.vert"),
 				PathHelper::shader("debug_tex.frag"));
 			GLfloat quadVertices[] = {
 				// Positions        // Texture Coords
@@ -103,7 +103,7 @@ namespace DebugHelper {
 		}
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		texShader.use();
+		texShader->use();
 		glActiveTexture(GL_TEXTURE0);
 	    glBindTexture(GL_TEXTURE_2D, tex);
 		glBindVertexArray(texVAO);

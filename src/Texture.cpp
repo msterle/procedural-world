@@ -24,6 +24,9 @@ Texture::Texture(GLint internalFormat, GLsizei width, GLsizei height, GLenum for
 Texture::Texture(const Texture& orig) : Texture(orig.internalFormat, orig.width, orig.height, 
 		orig.format, orig.type, orig.wrap, orig.border, orig.filter) { }
 
+Texture::Texture(Texture* orig) : Texture(orig->internalFormat, orig->width, orig->height, 
+		orig->format, orig->type, orig->wrap, orig->border, orig->filter) { }
+
 
 //// public methods
 

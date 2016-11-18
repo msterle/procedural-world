@@ -43,7 +43,7 @@ public:
 	MeshInstancePtr newInstance(glm::mat4 instanceMat, Material material);
 	MeshInstancePtr newInstance(MeshInstancePtr orig);
 	//void deleteInstance(MeshInstancePtr instance);
-	void draw(Shader shader, glm::mat4 modelMat);
+	void draw(Shader* shader, glm::mat4 modelMat);
 	int getNumInstances() { return instances.size(); }
 	vector<Vertex> getVertices() { return vertices; }
 };

@@ -131,7 +131,7 @@ MeshInstancePtr Mesh::newInstance(MeshInstancePtr orig) {
 	return ptr;
 }
 
-void Mesh::draw(Shader shader, glm::mat4 modelMat) {
+void Mesh::draw(Shader* shader, glm::mat4 modelMat) {
 	glBindBuffer(GL_ARRAY_BUFFER, IBO);
 	glBufferData(GL_ARRAY_BUFFER, instances.size() * sizeof(MeshInstance), &instances.front(), GL_STATIC_DRAW);
 

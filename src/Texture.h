@@ -25,6 +25,7 @@ public:
 			GLenum format, GLenum type, GLenum wrap = GL_REPEAT, 
 			Border border = Border(0), FilterMode filter = NEAREST);
 	Texture(const Texture& orig);
+	Texture(Texture* orig);
 	void release() { 
 		glDeleteTextures(1, &texID);
 		texID = 0;

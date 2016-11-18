@@ -6,6 +6,7 @@
 #include "../include/glew.h"
 #include "../include/glfw3.h"
 #include "../include/glm/gtc/type_ptr.hpp"
+#include "../include/glm/gtc/type_ptr.hpp"
 #include "Texture.h"
 #include "FrameBuffer.h"
 #include "helpers.h"
@@ -65,6 +66,10 @@ void Filter::apply(Texture* inTex, Texture* outTex) {
 	glBindFramebuffer(GL_FRAMEBUFFER, fb->getRef());
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
+    // set uniforms
+    glUniform2fv(glGetUniformLocation(shader->getRef(), "offsets"), 9, glm::value_ptr(*offsets.data()));
+	glUniform1fv(glGetUniformLocation(shader->getRef(), "kernel"), 9, &kernel.front());
+
 	// bind input texture and quad
 	glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, inTex->getRef());

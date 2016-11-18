@@ -41,7 +41,7 @@ protected:
 	Light light;
 	Shader* primaryShader, * shadowShader;
 	FrameBuffer* depthFBO;
-	Texture* depthTex;
+	Texture* depthTex, * filteredTex;
 };
 
 #endif
