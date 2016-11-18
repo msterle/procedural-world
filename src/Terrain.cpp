@@ -116,7 +116,7 @@ void Terrain::buildFromHeightmap(string heightmapPath, string colorPath, int sca
 
 	glBindVertexArray(0);
 
-	GLuint shaderProgram = this->shader.getProgramRef();
+	GLuint shaderProgram = this->shader.getRef();
 
 	GLuint useLightingLoc = glGetUniformLocation(shaderProgram, "useLighting");
 
@@ -188,7 +188,7 @@ void Terrain::generateHills(int width, int number) {
 
 	glBindVertexArray(0);
 	
-	GLuint shaderProgram = this->shader.getProgramRef();
+	GLuint shaderProgram = this->shader.getRef();
 
 	GLuint MaterialAmbientLoc = glGetUniformLocation(shaderProgram, "material.ambient");
 	GLuint MaterialDiffuseLoc = glGetUniformLocation(shaderProgram, "material.diffuse");
@@ -207,36 +207,37 @@ void Terrain::generateHills(int width, int number) {
 */
 
 
-void Terrain::generateDiamondSquare(int aproxWidth, float roughness) {
-	
-	width = pow(2, round(log(aproxWidth - 1) / log(2))) + 1;
+void Terrain::generateDiamondSquare(float width, float aproxResolution, float roughness) {
+	this->width = width;
 	length = width;
-	vector<Vertex> vertices(pow(width, 2));
+	int xCount = pow(2, round(log(width * aproxResolution - 1) / log(2))) + 1;
+	resolution = xCount / width;
+	vector<Vertex> vertices(pow(xCount, 2));
 	
 	// set initial corner values
-	vertices[0].position = glm::vec3(0, (float)rand() / RAND_MAX * (width - 1) * roughness, 0);
-	vertices[width - 1].position = glm::vec3(width - 1, (float)rand() / RAND_MAX * (width - 1) * roughness, 0);
-	vertices[width * (width - 1)].position = glm::vec3(0, (float)rand() / RAND_MAX * (width - 1) * roughness, width - 1);
-	vertices[width * width - 1].position = glm::vec3(width - 1, (float)rand() / RAND_MAX * (width - 1) * roughness, width - 1);
+	vertices[0].position = glm::vec3(0, (float)rand() / RAND_MAX * (xCount - 1) * roughness, 0);
+	vertices[xCount - 1].position = glm::vec3(xCount - 1, (float)rand() / RAND_MAX * (xCount - 1) * roughness, 0);
+	vertices[xCount * (xCount - 1)].position = glm::vec3(0, (float)rand() / RAND_MAX * (xCount - 1) * roughness, xCount - 1);
+	vertices[xCount * xCount - 1].position = glm::vec3(xCount - 1, (float)rand() / RAND_MAX * (xCount - 1) * roughness, xCount - 1);
 	
 	// enter recursive generation algorithm
-	recurseDiamondSquare(&vertices, width, width - 1, roughness);
+	recurseDiamondSquare(&vertices, xCount, xCount - 1, roughness);
 
 	// calculate indices
 	vector<GLuint> indices;
-	for(int y = 0; y < width - 1; y++) {
-		for(int x = 0; x < width; x++) {
-			indices.push_back(x + y * width);
-			indices.push_back(x + (y + 1) * width);
+	for(int y = 0; y < xCount - 1; y++) {
+		for(int x = 0; x < xCount; x++) {
+			indices.push_back(x + y * xCount);
+			indices.push_back(x + (y + 1) * xCount);
 		}
 		// Restart primitive at end of row
-		if(y < width - 2) {
+		if(y < xCount - 2) {
 			indices.push_back(65535);
 		}
 	}
 
 	// calculate vertex normals
-	generateNormals(&vertices, width, width);
+	generateNormals(&vertices, xCount, xCount);
 
 	// create mesh and mesh instance
 	mesh = newMesh(vertices, indices, GL_TRIANGLE_STRIP);
@@ -244,21 +245,24 @@ void Terrain::generateDiamondSquare(int aproxWidth, float roughness) {
 
 	// center and scale mesh instance to fit (-1, -1, -1) (1, 1, 1) cube
 	float minHeight = 1, maxHeight = 0;
-	for(int y = 0; y < width; y++) {
-		for(int x = 0; x < width; x++) {
-			minHeight = min(minHeight, vertices[x + y * width].position.y);
-			maxHeight = max(maxHeight, vertices[x + y * width].position.y);
+	for(int y = 0; y < xCount; y++) {
+		for(int x = 0; x < xCount; x++) {
+			minHeight = min(minHeight, vertices[x + y * xCount].position.y);
+			maxHeight = max(maxHeight, vertices[x + y * xCount].position.y);
 		}
 	}
-	instancePtr->translate(glm::vec3(-width / 2, 0, -width / 2));
-	instancePtr->scale(glm::vec3(2.0f / width, 2.0f / width, 2.0f / width));
+	// center on XZ plane
+	instancePtr->translate(glm::vec3(-xCount / 2, 0, -xCount / 2));
 
-	// scale model to width
-	scale(glm::vec3(width / 2, width / 2, width / 2));
+	// scale model to xCount
+	scale(glm::vec3(1.0f / resolution, 1.0f / resolution, 1.0f / resolution));
 }
 
 void Terrain::generatePlane(float width, float length) {
 	vector<Vertex> vertices;
+	this->width = width;
+	this->length = length;
+	this->resolution = 2 / width;
 	float x = width / 2, z = length / 2;
 	vertices.push_back(Vertex { glm::vec3(-x, 0, -z), glm::vec3(0, 1, 0) });
 	vertices.push_back(Vertex { glm::vec3(x, 0, -z), glm::vec3(0, 1, 0) });
@@ -267,8 +271,8 @@ void Terrain::generatePlane(float width, float length) {
 
 	vector<GLuint> indices = { 0, 2, 1, 3 };
 
-	Mesh* mesh = newMesh(vertices, indices, GL_TRIANGLE_STRIP);
-	MeshInstancePtr ptr = mesh->newInstance(Materials::copper);
+	mesh = newMesh(vertices, indices, GL_TRIANGLE_STRIP);
+	instancePtr = mesh->newInstance(Materials::copper);
 }
 
 float Terrain::getYAtXZWorld(float x, float z) {
@@ -280,22 +284,23 @@ float Terrain::getYAtXZWorld(float x, float z) {
 	// get integer and fractrional parts, clamp between 0 and width/length
 	float fpartX, fpartZ, temp;
 	int prevX, nextX, prevZ, nextZ;
+	int xCount = getVerticesXCount(), zCount = getVerticesZCount();
 	
 	fpartX = modf(position.x, &temp);
-	prevX = min(max(temp, 0.0f), width);
-	nextX = min(prevX + 1, (int)width);
+	prevX = min(max((int)temp, 0), xCount);
+	nextX = min(prevX + 1, xCount);
 
 	fpartZ = modf(position.z, &temp);
-	prevZ = min(max(temp, 0.0f), width);
-	nextZ = min(prevZ + 1, (int)width);
+	prevZ = min(max((int)temp, 0), zCount);
+	nextZ = min(prevZ + 1, zCount);
 
 	vector<Vertex> vertices = mesh->getVertices();
 
 	// interpolate Y from surrounding 4 vertices
-	position.y = vertices[prevX + prevZ * width].position.y * fpartX * fpartZ
-		+ vertices[nextX + prevZ * width].position.y * (1.0f - fpartX) * fpartZ
-		+ vertices[prevX + nextZ * width].position.y * fpartX * (1.0f - fpartZ)
-		+ vertices[nextX + nextZ * width].position.y * (1.0f - fpartX) * (1.0f - fpartZ);
+	position.y = vertices[prevX + prevZ * xCount].position.y * (1.0f - fpartX) * (1.0f - fpartZ)
+		+ vertices[nextX + prevZ * xCount].position.y * fpartX * (1.0f - fpartZ)
+		+ vertices[prevX + nextZ * xCount].position.y * (1.0f - fpartX) * fpartZ
+		+ vertices[nextX + nextZ * xCount].position.y * fpartX * fpartZ;
 
 	// convert back to world coordinates
 	position = modelMat * instancePtr->instanceMat * position;
@@ -350,7 +355,7 @@ float Terrain::getYAtXZWorld(float x, float z) {
 
 	glBindVertexArray(0);
 	
-	GLuint shaderProgram = this->shader.getProgramRef();
+	GLuint shaderProgram = this->shader.getRef();
 
 	GLuint MaterialAmbientLoc = glGetUniformLocation(shaderProgram, "material.ambient");
 	GLuint MaterialDiffuseLoc = glGetUniformLocation(shaderProgram, "material.diffuse");

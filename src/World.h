@@ -10,6 +10,9 @@
 #include "Shader.h"
 #include "Terrain.h"
 #include "Camera.h"
+#include "Texture.h"
+#include "FrameBuffer.h"
+#include "Filter.h"
 
 using namespace std;
 
@@ -22,22 +25,25 @@ struct Light {
 class World {
 public:
 	World();
+	~World();
 	void draw(GLFWwindow* window);
 	Terrain terrain;
 	Camera camera;
 	struct {
-		GLuint shadowWidth = 2048;
-		GLuint shadowHeight = 2048;
-		GLuint shadowSamples = 0;
+		GLuint shadowWidth = 1024;
+		GLuint shadowHeight = 1024;
+		GLuint PCFSamples = 0;
 	} params;
 protected:
 	const char* TERRAIN_PATH_HEIGHTMAP = "/res/heightmap_lores.png";
 	const char* TERRAIN_PATH_COLOR = "/res/colour_lores.png";
-	Shader primaryShader, shadowShader;
 	GLint loc_viewPos, loc_viewMat, loc_projMat, loc_lightMatShadow, loc_lightMatPrimary;
 	list<Model*> models;
 	Light light;
-	GLuint shadowDepthFBO, shadowDepthTex;
+	Shader* primaryShader, * shadowShader;
+	FrameBuffer* depthFBO;
+	Texture* depthTex, * filteredTex;
+	Filter* filter;
 };
 
 #endif
