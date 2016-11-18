@@ -74,9 +74,9 @@ World::World() {
 		PathHelper::shader("shadow.frag"));
 	loc_lightMatShadow = glGetUniformLocation(shadowShader->getRef(), "lightMat");
 	
-	depthTex = new Texture(GL_RG32F, params.shadowWidth, 
+	depthTex = Texture(GL_RG32F, params.shadowWidth, 
 		params.shadowHeight, GL_RG, GL_FLOAT, GL_CLAMP_TO_BORDER, Texture::Border(1));
-	depthFB = new FrameBuffer(depthTex);
+	depthFB = FrameBuffer(&depthTex);
 
 	Filter filter(vector<float>{1, 2, 3, 4, 5, 6, 7, 8, 9}, 2);
 }
@@ -87,8 +87,8 @@ World::World() {
 World::~World() {
 	delete primaryShader;
 	delete shadowShader;
-	delete depthFB;
-	delete depthTex;
+	//delete depthFB;
+	//delete depthTex;
 	for(Model* m : models)
 		delete m;
 }
@@ -111,7 +111,7 @@ void World::draw(GLFWwindow* window) {
 	shadowShader->use();
 	glUniformMatrix4fv(loc_lightMatShadow, 1, GL_FALSE, glm::value_ptr(light.lightMat));
 	glViewport(0, 0, params.shadowWidth, params.shadowHeight);
-	glBindFramebuffer(GL_FRAMEBUFFER, depthFB->getRef());
+	glBindFramebuffer(GL_FRAMEBUFFER, depthFB.getRef());
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     glCullFace(GL_FRONT);
 
@@ -143,7 +143,7 @@ void World::draw(GLFWwindow* window) {
 	glUniformMatrix4fv(loc_lightMatPrimary, 1, GL_FALSE, glm::value_ptr(light.lightMat));
 
 	glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, depthTex->getRef());
+    glBindTexture(GL_TEXTURE_2D, depthTex.getRef());
 	
 	// Draw models
 	terrain.draw(*primaryShader);
