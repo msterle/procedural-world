@@ -79,6 +79,13 @@ World::World() {
 	depthFBO = new FrameBuffer(depthTex);
 
 	filteredTex = new Texture(depthTex);
+	
+	filter = new Filter(vector<float>{
+		0.0625, 0.125, 0.0625, 
+		0.125, 0.25, 0.125, 
+		0.0625, 0.125, 0.0625});
+	filter->bind(depthTex, filteredTex);
+	
 }
 
 
@@ -89,6 +96,7 @@ World::~World() {
 	delete shadowShader;
 	delete depthFBO;
 	delete depthTex;
+	delete filter;
 	for(Model* m : models)
 		delete m;
 }
@@ -131,12 +139,10 @@ void World::draw(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// DEBUG
-	Filter filter(vector<float>{
-		0.0625, 0.125, 0.0625, 
-		0.125, 0.25, 0.125, 
-		0.0625, 0.125, 0.0625}, 1);
-	filter.apply(depthTex, filteredTex);
+	filter->apply(depthTex, filteredTex);
 	DebugHelper::renderTex(filteredTex->getRef());
+	//filter->run();
+	//DebugHelper::renderTex(filter->getOutTexture()->getRef());
 
 
 	/*

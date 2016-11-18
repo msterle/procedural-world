@@ -21,9 +21,18 @@ public:
 		fbo = 0;
 	}
 	~FrameBuffer() { release(); }
+	void bind() { glBindFramebuffer(GL_FRAMEBUFFER, fbo); }
+	void unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 	void attachTexture(Texture* tex);
 	void attachTexture(Texture* colorTex, Texture* depthTex);
 	GLuint getRef() const { return fbo; }
+};
+
+class DoubleBuffer : public FrameBuffer {
+public:
+	DoubleBuffer(bool newFBO = false) : FrameBuffer(newFBO) { }
+	DoubleBuffer(Texture* frontTex, Texture* backTex);
+	void attachTexture(Texture* frontTex, Texture* backTex);
 };
 
 #endif

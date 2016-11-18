@@ -12,6 +12,7 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "FrameBuffer.h"
+#include "Filter.h"
 
 using namespace std;
 
@@ -42,6 +43,7 @@ protected:
 	Shader* primaryShader, * shadowShader;
 	FrameBuffer* depthFBO;
 	Texture* depthTex, * filteredTex;
+	Filter* filter;
 };
 
 #endif
