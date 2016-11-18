@@ -11,9 +11,13 @@ public:
 protected:
 	GLuint programID;
 public:
-	Shader();
+	Shader() : programID(0) {};
 	Shader(std::string vertexShaderPath, std::string fragmentShaderPath);
-	void deleteShader() { if(programID != 0) glDeleteProgram(programID); }
+	void release() { 
+		glDeleteProgram(programID);
+		programID = 0;
+	}
+	~Shader() { release(); }
 	GLuint getRef() { return programID; }
 	void use() { glUseProgram(programID); }
 protected:

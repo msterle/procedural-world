@@ -13,10 +13,6 @@ using namespace std;
 
 // Constructors
 
-Shader::Shader() {
-	
-}
-
 Shader::Shader(string vertexShaderPath, string fragmentShaderPath) {
 	// Compile shaders
 	GLuint vertexShaderRef = this->compileShader(VertexShader, vertexShaderPath);

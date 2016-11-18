@@ -12,10 +12,17 @@ protected:
 	GLuint fbo;
 	Type type;
 public:
-	FrameBuffer() : fbo(0) { }
-	FrameBuffer(const Texture& tex);
-	FrameBuffer(const Texture& colorTex, const Texture& depthTex);
-	void deleteFrameBuffer() { if(fbo != 0) glDeleteFramebuffers(1, &fbo); }
+	// allow fallback to default constructor behaviour
+	FrameBuffer(bool newFBO = false) : fbo(0) { if(newFBO) glGenFramebuffers(1, &fbo); }
+	FrameBuffer(Texture* tex);
+	FrameBuffer(Texture* colorTex, Texture* depthTex);
+	void release() {
+		glDeleteFramebuffers(1, &fbo);
+		fbo = 0;
+	}
+	~FrameBuffer() { release(); }
+	void attachTexture(Texture* tex);
+	void attachTexture(Texture* colorTex, Texture* depthTex);
 	GLuint getRef() const { return fbo; }
 };
 
