@@ -48,6 +48,16 @@ namespace UI {
 		double cursorLastX, cursorLastY;
 	} extern Explore;
 
+	// UI for Walk mode
+	class UIWalk : public UIBase {
+	private:
+		virtual void onKey(GLFWwindow* window, int key, int scancode, int action, int mods);
+		virtual void onMouseButton(GLFWwindow* window, int button, int action, int mods);
+		virtual void onCursorMove(GLFWwindow* window, double xpos, double ypos);
+		virtual void onResize(GLFWwindow* window, int width, int height);
+		double cursorLastX, cursorLastY;
+	} extern walkMode;
+
 	void init(World* world, GLFWwindow* window);
 	void setActive(UIBase &UIinstance);
 }
