@@ -258,6 +258,6 @@ namespace UI {
 	//Detecting collision between camera and object.
 	GLboolean CheckCollision(Camera* camera) {
 
-
+		return 0; 
 	}
 }
