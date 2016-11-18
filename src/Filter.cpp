@@ -69,7 +69,7 @@ void Filter::apply(Texture* inTex, Texture* outTex) {
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
     // set uniforms
-    glUniform2iv(glGetUniformLocation(shader->getRef(), "offsets"), 9, 
+    glUniform2fv(glGetUniformLocation(shader->getRef(), "offsets"), 9, 
     	glm::value_ptr(*offsets.data()));
 	glUniform1fv(glGetUniformLocation(shader->getRef(), "kernel"), 9, 
 		&kernel.front());
@@ -112,8 +112,12 @@ void Filter::run() {
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
     // set uniforms
-    glUniform2iv(glGetUniformLocation(shader->getRef(), "offsets"), 9, glm::value_ptr(*offsets.data()));
-	glUniform1fv(glGetUniformLocation(shader->getRef(), "kernel"), 9, &kernel.front());
+    glUniform2fv(glGetUniformLocation(shader->getRef(), "offsets"), 9, 
+    	glm::value_ptr(*offsets.data()));
+	glUniform1fv(glGetUniformLocation(shader->getRef(), "kernel"), 9, 
+		&kernel.front());
+	glUniform2fv(glGetUniformLocation(shader->getRef(), "scale"), 1, 
+		glm::value_ptr(glm::vec2(1.0f / width, 1.0f / height)));
 
 	// bind input texture and quad
 	glActiveTexture(GL_TEXTURE0);

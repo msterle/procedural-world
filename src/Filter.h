@@ -14,7 +14,7 @@ class Texture;
 class Filter {
 protected:
 	std::vector<float> kernel;
-	std::vector<glm::ivec2> offsets;
+	std::vector<glm::vec2> offsets;
 	unsigned int kernelSize;
 	GLuint vao, vbo;
 	GLsizei width, height;
@@ -32,7 +32,7 @@ public:
 	void apply(Texture* inTex, Texture* outTex);
 	void bind(Texture* inTex, Texture* outTex);
 	void run();
-	Texture* getOutTexture() { return textures[!inBufferIndex]; }
+	Texture* getOutTexture() { return textures[inBufferIndex]; }
 
 protected:
 	void initQuad();

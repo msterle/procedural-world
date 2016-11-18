@@ -140,12 +140,12 @@ void World::draw(GLFWwindow* window) {
 
 	// DEBUG
 	filter->apply(depthTex, filteredTex);
-	DebugHelper::renderTex(filteredTex->getRef());
+	//DebugHelper::renderTex(filteredTex->getRef());
 	//filter->run();
 	//DebugHelper::renderTex(filter->getOutTexture()->getRef());
 
 
-	/*
+	
 	//// Render main
 	// Bind world uniforms
 	primaryShader->use();
@@ -162,6 +162,5 @@ void World::draw(GLFWwindow* window) {
 	for(list<Model*>::iterator it = models.begin(); it != models.end(); it++) {
 		(*it)->draw(primaryShader);
 	}
-	*/
 	
 }
