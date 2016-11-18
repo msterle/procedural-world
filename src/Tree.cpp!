@@ -139,7 +139,6 @@ Tree::Tree(float n) : angle(20) {
 
 	lsys.iterate(n);
 	lsys.run();
-	cout << "instances: " << meshes.front().getNumInstances() << endl;
 }
 
 // protected static functions
@@ -152,7 +151,6 @@ void Tree::lsysData::forward(void* v_self) {
 	MeshInstancePtr segment = self->cylinderMesh->newInstance(Materials::pewter);
 	segment->scale(glm::vec3(1, 1, 1)); // set height
 	segment->rotate(glm::radians(90.0f), glm::vec3(1, 0, 0)); // rotate to facing +Z to match turtle start orientation
-	cout << "Tree: " << glm::to_string(self->turtle.getMatrix()) << endl;
 	segment->applyMatrix(self->turtle.getMatrix()); // transform according to turtle
 	self->turtle.scale(glm::vec3(0.95, 0.95, 0.99)); // shrink turtle
 }

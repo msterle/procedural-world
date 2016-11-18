@@ -9,7 +9,6 @@
 #include "Camera.h"
 #include "Material.h"
 #include "Model.h"
-#include "Tree.h"
 #include "ParaTree.h"
 #include "helpers.h"
 

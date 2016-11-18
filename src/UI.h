@@ -1,7 +1,7 @@
 #ifndef UI_H
 #define UI_H
 
-typedef struct GLFWwindow;
+struct GLFWwindow;
 class World;
 class Camera;
 

@@ -120,14 +120,14 @@ MeshInstancePtr Mesh::newInstance(Material material) {
 }
 MeshInstancePtr Mesh::newInstance(glm::mat4 instanceMat, Material material) {
 	MeshInstancePtr ptr(&instances, instances.size());
-	instances.push_back(MeshInstance(ptr, instanceMat, material));
+	instances.push_back(MeshInstance{ptr, instanceMat, material});
 	return ptr;
 }
 
 // copy factory method
 MeshInstancePtr Mesh::newInstance(MeshInstancePtr orig) {
 	MeshInstancePtr ptr(&instances, instances.size());
-	instances.push_back(MeshInstance(ptr, orig->instanceMat, orig->material));
+	instances.push_back(MeshInstance{ptr, orig->instanceMat, orig->material});
 	return ptr;
 }
 

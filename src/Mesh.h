@@ -68,20 +68,10 @@ public:
 };
 
 class MeshInstance {
-protected:
-	MeshInstancePtr parent;
 public:
-	// need to be public for Mesh's draw call
+	MeshInstancePtr parent;
 	glm::mat4 instanceMat;
 	Material material;
-	MeshInstance(MeshInstancePtr parent, glm::mat4 instanceMat, Material material) {
-		this->parent = parent;
-		this->instanceMat = instanceMat;
-		this->material = material;
-		instanceMat = glm::mat4(1);
-	}
-	MeshInstance(MeshInstancePtr parent) : MeshInstance(parent, glm::mat4(1), Materials::pewter) { }
-	//~MeshInstance();
 	MeshInstancePtr translate(glm::vec3 t) {
 		instanceMat = glm::translate(glm::mat4(1), t) * instanceMat;
 		return parent;

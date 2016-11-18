@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 project(comp371project)
 
 # Set compiler flags for g++
-set(GCC_COVERAGE_COMPILE_FLAGS "-g -std=c++11 -w")
+set(GCC_COVERAGE_COMPILE_FLAGS "-g -std=c++11 -Wall")
 set(GCC_COVERAGE_LINK_FLAGS "-pthread")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
 set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}")
