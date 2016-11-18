@@ -3,8 +3,8 @@
 in vec2 v2f_texCoords;
 
 uniform sampler2D tex;
-uniform vec2 offsets[9];
-uniform float kernel[9];
+uniform vec2 offsets[7];
+uniform float kernel[7];
 
 void main() {
 	vec4 color = vec4(0);

@@ -77,15 +77,10 @@ World::World() {
 		params.shadowHeight, GL_RG, GL_FLOAT, GL_CLAMP_TO_BORDER, Texture::Border(1));
 	shadowmapFBO = new FrameBuffer(shadowmapTex);
 
-	filterInterTex = new Texture(shadowmapTex);
-	bluredDepthTex = new Texture(shadowmapTex);
-	blurFilter = new BlurFilter(7);
-	blurFilter->bind(shadowmapTex, bluredDepthTex);
-
-	filter = new Filter(vector<float>{
-		0.077847, 0.123317, 0.077847,
-		0.123317, 0.195346, 0.123317,
-		0.077847, 0.123317, 0.077847});
+	// shadow blur
+	blurredShadowmapTex = new Texture(shadowmapTex);
+	blurFilter = new BlurFilter(3);
+	blurFilter->bind(shadowmapTex, blurredShadowmapTex);
 }
 
 
@@ -112,7 +107,7 @@ void World::draw(GLFWwindow* window) {
 	light.lightMat = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -50.0f, 50.0f)
 		* glm::lookAt(glm::normalize(light.position) + cameraPos, cameraPos, glm::vec3(0, 1, 0));
 	*/
-	light.lightMat = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -50.0f, 50.0f)
+	light.lightMat = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -200.0f, 200.0f)
 		* glm::lookAt(glm::normalize(light.position), glm::vec3(0), glm::vec3(0, 1, 0));
 
 	//// Render shadow map
@@ -139,14 +134,8 @@ void World::draw(GLFWwindow* window) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// blur shadowmap
-	//blurFilter->apply(shadowmapTex, bluredDepthTex, filterInterTex);
 	blurFilter->run();
-	//filter->apply(shadowmapTex, bluredDepthTex);
 
-	// debug quad
-	//DebugHelper::renderTex(bluredDepthTex->getRef());
-
-	
 	//// Render main
 	// Bind world uniforms
 	primaryShader->use();
@@ -156,11 +145,14 @@ void World::draw(GLFWwindow* window) {
 	glUniformMatrix4fv(loc_lightMatPrimary, 1, GL_FALSE, glm::value_ptr(light.lightMat));
 
 	glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, bluredDepthTex->getRef());
+    glBindTexture(GL_TEXTURE_2D, blurredShadowmapTex->getRef());
 	
 	// Draw models
 	terrain.draw(primaryShader);
 	for(list<Model*>::iterator it = models.begin(); it != models.end(); it++) {
 		(*it)->draw(primaryShader);
 	}
+
+	// debug quad
+	//DebugHelper::renderTex(blurredShadowmapTex->getRef());
 }

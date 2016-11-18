@@ -71,7 +71,7 @@ void Filter::bind(Texture* inTex, Texture* outTex) {
 	texSize = glm::vec2(outTex->getWidth(), outTex->getHeight());
 	for(int i = 0; i < offsets.size(); ++i)
     	scaledOffsets[i] = offsets[i] / texSize;
-	glUniform2fv(glGetUniformLocation(shader->getRef(), "offsets"), kernelSize, 
+	glUniform2fv(glGetUniformLocation(shader->getRef(), "offsets"), kernelSize * kernelSize, 
     	glm::value_ptr(*scaledOffsets.data()));
 }
 
@@ -82,7 +82,6 @@ void Filter::run() {
 	glGetIntegerv(GL_VIEWPORT, viewportParams);
 
 	// set viewport and bind fbo
-	texSize = glm::vec2(outTex->getWidth(), outTex->getHeight());
 	glViewport(0, 0, texSize.x, texSize.y);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo->getRef());
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);

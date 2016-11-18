@@ -42,8 +42,7 @@ protected:
 	Light light;
 	Shader* primaryShader, * shadowShader;
 	FrameBuffer* shadowmapFBO;
-	Texture* shadowmapTex, * bluredDepthTex, * filterInterTex;
-	Filter* filter;
+	Texture* shadowmapTex, * blurredShadowmapTex;
 	BlurFilter* blurFilter;
 };
 
