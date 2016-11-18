@@ -25,7 +25,7 @@ namespace PathHelper {
 }
 
 namespace DebugHelper {
-	void renderTex(GLuint tex);
+	void renderTex(GLuint tex, float scale = 1);
 }
 
 #endif

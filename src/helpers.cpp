@@ -76,7 +76,7 @@ namespace GLHelper{
 
 namespace DebugHelper {
 
-	void renderTex(GLuint tex) {
+	void renderTex(GLuint tex, float scale) {
 		static GLuint texVAO = 0, texVBO;
 		static Shader* texShader;
 		if (texVAO == 0){
@@ -84,10 +84,10 @@ namespace DebugHelper {
 				PathHelper::shader("debug_tex.frag"));
 			GLfloat quadVertices[] = {
 				// Positions        // Texture Coords
-				-1.0f,  1.0f, 0.0f,  0.0f, 1.0f,
-				-1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
-				1.0f,  1.0f, 0.0f,  1.0f, 1.0f,
-				1.0f, -1.0f, 0.0f,  1.0f, 0.0f,
+				-scale,  scale, 0.0f,  0.0f, 1.0f,
+				-scale, -scale, 0.0f,  0.0f, 0.0f,
+				scale,  scale, 0.0f,  1.0f, 1.0f,
+				scale, -scale, 0.0f,  1.0f, 0.0f,
 			};
 			// Setup plane VAO
 			glGenVertexArrays(1, &texVAO);

@@ -73,18 +73,19 @@ World::World() {
 		PathHelper::shader("shadow.frag"));
 	loc_lightMatShadow = glGetUniformLocation(shadowShader->getRef(), "lightMat");
 	
-	depthTex = new Texture(GL_RG32F, params.shadowWidth, 
+	shadowmapTex = new Texture(GL_RG32F, params.shadowWidth, 
 		params.shadowHeight, GL_RG, GL_FLOAT, GL_CLAMP_TO_BORDER, Texture::Border(1));
-	depthFBO = new FrameBuffer(depthTex);
+	shadowmapFBO = new FrameBuffer(shadowmapTex);
 
-	filteredTex = new Texture(depthTex);
-	
+	filterInterTex = new Texture(shadowmapTex);
+	bluredDepthTex = new Texture(shadowmapTex);
+	blurFilter = new BlurFilter(7);
+	blurFilter->bind(shadowmapTex, bluredDepthTex);
+
 	filter = new Filter(vector<float>{
-		0.0625, 0.125, 0.0625, 
-		0.125, 0.25, 0.125, 
-		0.0625, 0.125, 0.0625});
-	filter->bind(depthTex, filteredTex);
-	
+		0.077847, 0.123317, 0.077847,
+		0.123317, 0.195346, 0.123317,
+		0.077847, 0.123317, 0.077847});
 }
 
 
@@ -93,9 +94,9 @@ World::World() {
 World::~World() {
 	delete primaryShader;
 	delete shadowShader;
-	delete depthFBO;
-	delete depthTex;
-	delete filter;
+	delete shadowmapFBO;
+	delete shadowmapTex;
+	delete blurFilter;
 	for(Model* m : models)
 		delete m;
 }
@@ -111,14 +112,14 @@ void World::draw(GLFWwindow* window) {
 	light.lightMat = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -50.0f, 50.0f)
 		* glm::lookAt(glm::normalize(light.position) + cameraPos, cameraPos, glm::vec3(0, 1, 0));
 	*/
-	light.lightMat = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -50.0f, 50.0f)
+	light.lightMat = glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, -50.0f, 50.0f)
 		* glm::lookAt(glm::normalize(light.position), glm::vec3(0), glm::vec3(0, 1, 0));
 
 	//// Render shadow map
 	shadowShader->use();
 	glUniformMatrix4fv(loc_lightMatShadow, 1, GL_FALSE, glm::value_ptr(light.lightMat));
 	glViewport(0, 0, params.shadowWidth, params.shadowHeight);
-	glBindFramebuffer(GL_FRAMEBUFFER, depthFBO->getRef());
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowmapFBO->getRef());
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     glCullFace(GL_FRONT);
 
@@ -137,12 +138,13 @@ void World::draw(GLFWwindow* window) {
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// DEBUG
-	filter->apply(depthTex, filteredTex);
-	//DebugHelper::renderTex(filteredTex->getRef());
-	//filter->run();
-	//DebugHelper::renderTex(filter->getOutTexture()->getRef());
+	// blur shadowmap
+	blurFilter->apply(shadowmapTex, bluredDepthTex, filterInterTex);
+	//blurFilter->run();
+	//filter->apply(shadowmapTex, bluredDepthTex);
 
+	// debug quad
+	//DebugHelper::renderTex(bluredDepthTex->getRef());
 
 	
 	//// Render main
@@ -154,12 +156,11 @@ void World::draw(GLFWwindow* window) {
 	glUniformMatrix4fv(loc_lightMatPrimary, 1, GL_FALSE, glm::value_ptr(light.lightMat));
 
 	glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, filteredTex->getRef());
+    glBindTexture(GL_TEXTURE_2D, bluredDepthTex->getRef());
 	
 	// Draw models
 	terrain.draw(primaryShader);
 	for(list<Model*>::iterator it = models.begin(); it != models.end(); it++) {
 		(*it)->draw(primaryShader);
 	}
-	
 }

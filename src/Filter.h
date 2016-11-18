@@ -14,17 +14,13 @@ class Texture;
 class Filter {
 protected:
 	std::vector<float> kernel;
-	std::vector<glm::vec2> offsets;
+	std::vector<glm::vec2> offsets, scaledOffsets;
 	unsigned int kernelSize;
 	GLuint vao, vbo;
-	GLsizei width, height;
 	Shader* shader;
-	FrameBuffer* fb;
-	DoubleBuffer* db;
-	Texture* frontTex, * backTex;
-	const GLenum buffers[2] = {GL_FRONT_LEFT, GL_BACK_LEFT};
-	Texture* textures[2];
-	int inBufferIndex;
+	FrameBuffer* fbo;
+	Texture* inTex, * outTex;
+	glm::vec2 texSize;
 public:
 	Filter() { }
 	Filter(std::vector<float> kernel);
@@ -32,10 +28,34 @@ public:
 	void apply(Texture* inTex, Texture* outTex);
 	void bind(Texture* inTex, Texture* outTex);
 	void run();
-	Texture* getOutTexture() { return textures[inBufferIndex]; }
-
 protected:
 	void initQuad();
+};
+
+
+class SeperableFilter : public Filter {
+protected:
+	Texture* interTex;
+	bool ownInterTex;
+public:
+	SeperableFilter(std::vector<float> kernel);
+	void apply(Texture* inTex, Texture* outTex, Texture* interTex = NULL);
+	void bind(Texture* inTex, Texture* outTex, Texture* interTex = NULL);
+	void run();
+	~SeperableFilter();
+};
+
+
+class BlurFilter : public Filter {
+protected:
+	Texture* interTex;
+	bool ownInterTex;
+public:
+	BlurFilter(unsigned int size);
+	void apply(Texture* inTex, Texture* outTex, Texture* interTex = NULL);
+	void bind(Texture* inTex, Texture* outTex, Texture* interTex = NULL);
+	void run();
+	~BlurFilter();
 };
 
 #endif

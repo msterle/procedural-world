@@ -41,9 +41,10 @@ protected:
 	list<Model*> models;
 	Light light;
 	Shader* primaryShader, * shadowShader;
-	FrameBuffer* depthFBO;
-	Texture* depthTex, * filteredTex;
+	FrameBuffer* shadowmapFBO;
+	Texture* shadowmapTex, * bluredDepthTex, * filterInterTex;
 	Filter* filter;
+	BlurFilter* blurFilter;
 };
 
 #endif
