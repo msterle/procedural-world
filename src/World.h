@@ -40,7 +40,7 @@ protected:
 	list<Model*> models;
 	Light light;
 	Shader* primaryShader, * shadowShader;
-	FrameBuffer* depthFB;
+	FrameBuffer* depthFBO;
 	Texture* depthTex;
 };
 
