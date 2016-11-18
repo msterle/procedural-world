@@ -140,9 +140,10 @@ namespace UI {
 	// UIWalk event callbacks
 	void UIWalk::onKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		GLfloat mapheight = world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 4.0;
-		glm::vec3 newPos = (glm::vec3(UI::world->camera.getPosition().x, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 4.0, 
-			UI::world->camera.getPosition().z) + glm::vec3(0, 0, 0.3));
+		GLfloat mapheight = world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0;
+		glm::vec3 currentPos;
+		glm::vec3 newPos;
+		glm::vec3 tangentVec;
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 			glfwSetWindowShouldClose(window, GL_TRUE);
 		}
@@ -163,27 +164,52 @@ namespace UI {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 				break;
 			case GLFW_KEY_W:
-				//Lock camera position terrain height.
+				/* -Calculate the camera current Position
+				- Calculate the camera's new position
+				- Calculate the height at this new position
+				- then Calculate the tangent vector which is Normalize(NewPos - CurrentPos)
+				- Move the camera along this tangent vector*/
+				currentPos = (glm::vec3(UI::world->camera.getPosition().x, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
+					UI::world->camera.getPosition().z));
+				newPos = (glm::vec3(UI::world->camera.getPosition().x, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
+					UI::world->camera.getPosition().z + 0.3));
+				tangentVec = glm::normalize(glm::vec3(newPos.x - currentPos.x, newPos.y - currentPos.y, newPos.z - currentPos.z));
 				UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, 
 					mapheight, world->camera.getPosition().z));
-				cout << "Height Value : " << mapheight << endl;
-				cout << "New Pos Height Value : " << newPos.y << endl;
-				UI::world->camera.moveRelative(glm::vec3(0, 0, 0.3));
+				UI::world->camera.moveRelative(tangentVec);
 				break;
 			case GLFW_KEY_A:
 				//Lock camera position terrain height.
-				UI::world->camera.setPosition(glm::vec3(UI::world->camera.getPosition().x, UI::world->terrain.getYAtXZWorld(UI::world->camera.getPosition().x, UI::world->camera.getPosition().z) + 4.0, UI::world->camera.getPosition().z));
-				UI::world->camera.moveRelative(glm::vec3(-0.3, 0, 0));
+				currentPos = (glm::vec3(UI::world->camera.getPosition().x, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
+					UI::world->camera.getPosition().z));
+				newPos = (glm::vec3(UI::world->camera.getPosition().x - 0.3, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
+					UI::world->camera.getPosition().z));
+				tangentVec = glm::normalize(glm::vec3(newPos.x - currentPos.x, newPos.y - currentPos.y, newPos.z - currentPos.z));
+				UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x,
+					mapheight, world->camera.getPosition().z));
+				UI::world->camera.moveRelative(tangentVec);
 				break;
 			case GLFW_KEY_S:
 				//Lock camera position terrain height.
-				UI::world->camera.setPosition(glm::vec3(UI::world->camera.getPosition().x, UI::world->terrain.getYAtXZWorld(UI::world->camera.getPosition().x, UI::world->camera.getPosition().z) + 4.0, UI::world->camera.getPosition().z));
-				UI::world->camera.moveRelative(glm::vec3(0, 0, -0.3));
+				currentPos = (glm::vec3(UI::world->camera.getPosition().x, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
+					UI::world->camera.getPosition().z));
+				newPos = (glm::vec3(UI::world->camera.getPosition().x, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
+					UI::world->camera.getPosition().z - 0.3));
+				tangentVec = glm::normalize(glm::vec3(newPos.x - currentPos.x, newPos.y - currentPos.y, newPos.z - currentPos.z));
+				UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x,
+					mapheight, world->camera.getPosition().z));
+				UI::world->camera.moveRelative(tangentVec);
 				break;
 			case GLFW_KEY_D:
 				//Lock camera position terrain height.
-				UI::world->camera.setPosition(glm::vec3(UI::world->camera.getPosition().x, UI::world->terrain.getYAtXZWorld(UI::world->camera.getPosition().x, UI::world->camera.getPosition().z) + 4.0, UI::world->camera.getPosition().z));
-				UI::world->camera.moveRelative(glm::vec3(0.3, 0, 0));
+				currentPos = (glm::vec3(UI::world->camera.getPosition().x, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
+					UI::world->camera.getPosition().z));
+				newPos = (glm::vec3(UI::world->camera.getPosition().x + 0.3, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
+					UI::world->camera.getPosition().z));
+				tangentVec = glm::normalize(glm::vec3(newPos.x - currentPos.x, newPos.y - currentPos.y, newPos.z - currentPos.z));
+				UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x,
+					mapheight, world->camera.getPosition().z));
+				UI::world->camera.moveRelative(tangentVec);
 				break;
 				//Switch Control Mode
 			case GLFW_KEY_H:
@@ -229,4 +255,9 @@ namespace UI {
 			);
 	}
 
+	//Detecting collision between camera and object.
+	GLboolean CheckCollision(Camera* camera) {
+
+
+	}
 }
