@@ -14,6 +14,7 @@
 #include "Texture.h"
 #include "FrameBuffer.h"
 #include "Filter.h"
+#include "PerlinNoise.h"
 
 #include "World.h"
 
@@ -81,6 +82,9 @@ World::World() {
 	blurredShadowmapTex = new Texture(shadowmapTex);
 	blurFilter = new BlurFilter(3);
 	blurFilter->bind(shadowmapTex, blurredShadowmapTex);
+
+	PerlinNoise pnoise;
+	noiseTex = pnoise.newNoiseTexture(100, 100);
 }
 
 
@@ -154,5 +158,5 @@ void World::draw(GLFWwindow* window) {
 	}
 
 	// debug quad
-	//DebugHelper::renderTex(blurredShadowmapTex->getRef());
+	DebugHelper::renderTex(noiseTex->getRef());
 }

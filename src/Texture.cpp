@@ -7,31 +7,31 @@
 //// constructors
 
 Texture::Texture(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, 
-		GLenum type, GLenum wrap, Border border, FilterMode filter)
-		: internalFormat(internalFormat), width(width), height(height), format(format),
-		type(type) {
+		GLenum type, GLenum wrap, Border border, FilterMode filter, const GLvoid* data)
+			: internalFormat(internalFormat), width(width), height(height), format(format),
+			type(type) {
 	glGenTextures(1, &texID);
 	glBindTexture(GL_TEXTURE_2D, texID);
-	
-	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, NULL);
-	
+
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, type, data);
+
 	setWrap(wrap);
 	setBorder(border);
 	setFilterMode(filter);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-Texture::Texture(const Texture& orig) : Texture(orig.internalFormat, orig.width, orig.height, 
-		orig.format, orig.type, orig.wrap, orig.border, orig.filter) { }
-
-Texture::Texture(Texture* orig) : Texture(orig->internalFormat, orig->width, orig->height, 
-		orig->format, orig->type, orig->wrap, orig->border, orig->filter) { }
-
 
 //// public methods
+// TODO: look into glTexStorage?
 
-void Texture::copyParams(const Texture& orig) {
+void Texture::writePixelData(const GLvoid* data) {
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format, type, data);
+}
 
+void Texture::writePixelData(GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, 
+		const GLvoid* data) {
+	glTexSubImage2D(GL_TEXTURE_2D, 0, xoffset, yoffset, width, height, format, type, data);
 }
 
 void Texture::setWrap(GLenum wrap) {
