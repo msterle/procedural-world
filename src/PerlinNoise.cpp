@@ -70,11 +70,10 @@ double PerlinNoise::noise(double x, double y, double z, int octaves, double pers
 }
 
 Texture* PerlinNoise::newNoiseTexture(int width, int height) {
-	cout << noise(0.234, 0.324, 0.45) << endl;
-	char data[height][width][3];
+	unsigned char data[height][width][3];
 	for(int x = 0; x < width; ++x) {
 		for(int y = 0; y < width; ++y)
-			data[y][x][0] = data[y][x][1] = data[y][x][2] = round(noise((double)x / (double)width, (double)y / (double)height, 0) * 255);
+			data[y][x][0] = data[y][x][1] = data[y][x][2] = round(1 + sin((double)x / 3.0 + noise(10.0 * x / width, 10.0 * y / height, 0)) * 255.0 / 2);
 	}
 	Texture* noiseTex = new Texture(GL_RGB, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
 	return noiseTex;
