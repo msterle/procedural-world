@@ -58,6 +58,7 @@ namespace UI {
 		double cursorLastX, cursorLastY;
 	} extern walkMode;
 
+	GLboolean CheckCollision(Camera* camera);
 	void init(World* world, GLFWwindow* window);
 	void setActive(UIBase &UIinstance);
 }

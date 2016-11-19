@@ -71,17 +71,34 @@ namespace UI {
 				UI::world->terrain.rotate(glm::radians(10.0f), 
 					glm::vec3(0.0f, 0.0f, (mods == GLFW_MOD_SHIFT ? 1.0f : -1.0f)));
 				break;
-			case GLFW_KEY_LEFT:
-				UI::world->camera.moveRelative(glm::vec3(-0.1, 0, 0));
+			case GLFW_KEY_W:
+				//Check if the camera collide with the plane
+				if (CheckCollision(&UI::world->camera)){
+					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.3, world->camera.getPosition().z));
+					break;
+				}
+				UI::world->camera.moveRelative(glm::vec3(0, 0, 0.5));
 				break;
-			case GLFW_KEY_RIGHT:
-				UI::world->camera.moveRelative(glm::vec3(0.1, 0, 0));
+			case GLFW_KEY_S:
+				if (CheckCollision(&UI::world->camera)){
+					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.3, world->camera.getPosition().z));
+					break;
+				}
+				UI::world->camera.moveRelative(glm::vec3(0, 0, -0.5));
 				break;
-			case GLFW_KEY_UP:
-				UI::world->camera.moveRelative(glm::vec3(0, 0.1, 0));
+			case GLFW_KEY_A:
+				if (CheckCollision(&UI::world->camera)){
+					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.3, world->camera.getPosition().z));
+					break;
+				}
+				UI::world->camera.moveRelative(glm::vec3(-0.5, 0, 0));
 				break;
-			case GLFW_KEY_DOWN:
-				UI::world->camera.moveRelative(glm::vec3(0, -0.1, 0));
+			case GLFW_KEY_D:
+				if(CheckCollision(&UI::world->camera)){
+					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.3, world->camera.getPosition().z));
+					break;
+				}
+				UI::world->camera.moveRelative(glm::vec3(0.5, 0, 0));
 				break;
 			case GLFW_KEY_T:
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -114,8 +131,8 @@ namespace UI {
 			int width, height;
 			glfwGetFramebufferSize(window, &width, &height);
 			float anglePerPixel = UI::CAMERA_FOV / height;
-			UI::world->camera.yaw((this->cursorLastX - xpos) * anglePerPixel);
-			UI::world->camera.pitch((ypos - this->cursorLastY) * anglePerPixel);
+			UI::world->camera.yaw((xpos - this->cursorLastX) * anglePerPixel);
+			UI::world->camera.pitch((this->cursorLastY - ypos) * anglePerPixel);
 			this->cursorLastX = xpos;
 			this->cursorLastY = ypos;
 		}
@@ -255,9 +272,14 @@ namespace UI {
 			);
 	}
 
-	//Detecting collision between camera and object.
+	//Detecting collision between camera and Plane.
 	GLboolean CheckCollision(Camera* camera) {
+		GLfloat mapheight = world->terrain.getYAtXZWorld(camera->getPosition().x, camera->getPosition().z);
+		//detection truth value
+		GLboolean collision = false;
+		if (camera->getPosition().y <= mapheight + 1) //Camera collide with plane
+			collision = true;
 
-		return 0; 
+		return collision;
 	}
 }
