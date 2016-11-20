@@ -3,6 +3,10 @@
 #include "../include/glew.h"
 #include "../include/glfw3.h"
 
+// debug only
+#include <iostream>
+using namespace std;
+
 ////// Texture class
 //// public methods
 
@@ -61,6 +65,23 @@ void Texture::init(const GLvoid* pixels) {
 ////// Texture2D class
 //// protected methods
 
+void Texture1D::createImage(const GLvoid* pixels) {
+	bind();
+	glTexImage1D(target, 0, internalFormat, dims[0], 0, format, type, pixels);
+	unbind();
+}
+
+void Texture1D::updateImage(const GLvoid* pixels, Dimensions dims, Offset off) {
+	bind();
+
+	glTexSubImage1D(target, 0, off[0], dims[0], format, type, pixels);
+	unbind();
+}
+
+
+////// Texture2D class
+//// protected methods
+
 void Texture2D::createImage(const GLvoid* pixels) {
 	bind();
 	glTexImage2D(target, 0, internalFormat, dims[0], dims[1], 0, format, type, pixels);
@@ -69,6 +90,6 @@ void Texture2D::createImage(const GLvoid* pixels) {
 
 void Texture2D::updateImage(const GLvoid* pixels, Dimensions dims, Offset off) {
 	bind();
-	glTexSubImage2D(target,0, off[0], off[1], dims[0], dims[1], format, type, pixels);
+	glTexSubImage2D(target, 0, off[0], off[1], dims[0], dims[1], format, type, pixels);
 	unbind();
 }

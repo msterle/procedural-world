@@ -7,6 +7,7 @@
 
 // TODO: look into glPixelStore for pixel format params
 // TODO: look into glTexStorage for faster but immutable storage
+// TODO: look into copying texture pixels - glGetTexImage​, glCopyTexImage2D
 
 // Abstract base class with common functionality
 //
@@ -34,13 +35,13 @@ protected:
 	// pure virtual methods have to be implemented by subclasses
 	virtual void createImage(const GLvoid* pixels) = 0;
 	virtual void updateImage(const GLvoid* pixels, Dimensions dims, Offset off) = 0;
+	// TODO: implement isDimCountCorrect() to check vector size against target
 public:
 	Texture(GLenum target, GLint internalFormat, Dimensions dims, GLenum format, GLenum type, 
 			GLenum wrap = GL_REPEAT, Border border = Border(0), FilterMode filter = NEAREST, 
 			const GLvoid* pixels = NULL)
 			: texID(0), target(target), internalFormat(internalFormat), dims(dims), format(format),
 			type(type), wrap(wrap), border(border), filter(filter) { }
-	// TODO: look into copying texture pixels as well
 	Texture(GLenum target, const Texture& orig) 
 			: Texture(target, orig.internalFormat, orig.dims, orig.format, orig.type, orig.wrap, 
 				orig.border, orig.filter) { }
@@ -69,6 +70,42 @@ public:
 			Offset off = Offset{0, 0}) {
 		updateImage(pixels, dims, off);
 	}
+};
+
+
+// Subclass for 1D textures
+class Texture1D : public Texture {
+protected:
+	void createImage(const GLvoid* pixels = NULL) override;
+	void updateImage(const GLvoid* pixels, Dimensions dims, Offset off) override;
+public:
+	// full constructor with combined dimension parameters
+	Texture1D(GLint internalFormat, Dimensions dims, GLenum format, GLenum type, 
+			GLenum wrap = GL_REPEAT, Border border = Border(0), FilterMode filter = NEAREST, 
+			const GLvoid* pixels = NULL)
+			: Texture(GL_TEXTURE_1D, internalFormat, dims, format, type, wrap, border, filter, 
+				pixels) { init(pixels); }
+	// full constructor with separate dimension parameters
+	Texture1D(GLint internalFormat, GLsizei width, GLenum format, GLenum type, 
+			GLenum wrap = GL_REPEAT, Border border = Border(0), FilterMode filter = NEAREST, 
+			const GLvoid* pixels = NULL)
+			: Texture1D(internalFormat, Dimensions{width}, format, type, wrap, border, 
+				filter, pixels) { }
+	// short pixel data constructor with combined dimension parameters
+	Texture1D(GLint internalFormat, Dimensions dims, GLenum format, GLenum type, 
+			const GLvoid* pixels = NULL) 
+			: Texture1D(internalFormat, dims, format, type, GL_REPEAT, Border(0), NEAREST, 
+				pixels) { }
+	// short pixel data constructor with separate dimension parameters
+	Texture1D(GLint internalFormat, GLsizei width, GLenum format, GLenum type, 
+			const GLvoid* pixels = NULL) 
+			: Texture1D(internalFormat, Dimensions{width}, format, type, GL_REPEAT, 
+				Border(0), NEAREST, pixels) { }
+	// copy constructor
+	Texture1D(const Texture1D& orig) 
+			: Texture(GL_TEXTURE_1D, orig) { init(); }
+	// getters
+	GLsizei getHeight() const { return dims[1]; }
 };
 
 

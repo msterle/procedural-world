@@ -158,5 +158,5 @@ void World::draw(GLFWwindow* window) {
 	}
 
 	// debug quad
-	//DebugHelper::renderTex(noiseTex->getRef());
+	DebugHelper::renderTex(noiseTex->getRef());
 }
