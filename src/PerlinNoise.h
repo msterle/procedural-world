@@ -18,8 +18,9 @@ protected:
 public:
 	PerlinNoise(unsigned int seed = 0);
 	double noise(double x, double y, double z);
-	double noise(double x, double y, double z, int octaves, double persistence);
+	double octaveNoise(double x, double y, double z, int octaves, double persistence);
 	Texture2D* newNoiseTexture(int width, int height);
+	Texture2D* newOctaveNoiseTexture(int width, int height, int octaves, double persistence);
 };
 
 #endif

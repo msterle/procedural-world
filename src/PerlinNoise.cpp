@@ -69,8 +69,15 @@ double PerlinNoise::noise(double x, double y, double z) {
 									grad(p[bb + 1], x - 1, y - 1, z - 1)))) + 1.0) / 2.0;
 }
 
-double PerlinNoise::noise(double x, double y, double z, int octaves, double persistence) {
-	double val = 0, frequency = 1, amplitude = 1, maxVal = 0;
+double PerlinNoise::octaveNoise(double x, double y, double z, int octaves, double persistence) {
+	double sum = 0, frequency = 1, amplitude = 1, maxValue = 0;
+    for(int i = 0; i < octaves; ++i) {
+        sum += noise(x * frequency, y * frequency, z * frequency) * amplitude;
+        maxValue += amplitude;
+        amplitude *= persistence;
+        frequency *= 2;
+    }
+    return sum/maxValue;
 }
 
 Texture2D* PerlinNoise::newNoiseTexture(int width, int height) {
@@ -92,4 +99,21 @@ Texture2D* PerlinNoise::newNoiseTexture(int width, int height) {
 	noiseTex->setPixelData(data, {width / 4, height / 4}, {width / 4, height / 4});
 	delete[] data;
 	return noiseTex;
+}
+
+Texture2D* PerlinNoise::newOctaveNoiseTexture(int width, int height, int octaves, double persistence) {
+	unsigned char* data = new unsigned char[width * height * 4];
+	for(int x = 0; x < width; ++x) {
+		for(int y = 0; y < height; ++y) {
+			data[(x + y * width) * 4] = data[(x + y * width) * 4 + 1] = data[(x + y * width) * 4 + 2] = round(octaveNoise(10.0 * x / width, 10.0 * y / height, 0, octaves, persistence) * 255.0);//round(1 + sin((double)x / 3.0 + noise(10.0 * x / width, 10.0 * y / height, 0)) * 255.0 / 2);
+			data[(x + y * width) * 4 + 3] = 255;
+		}
+	}
+	Texture2D* noiseTex = new Texture2D(GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	noiseTex->setFilterMode(Texture::NEAREST);
+	delete[] data;
+	return noiseTex;
+
+	//GLint swizzleMask[] = {GL_RED, GL_RED, GL_RED, GL_ONE};
+	//glTexParameteriv (GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
 }

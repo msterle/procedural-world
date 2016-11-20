@@ -87,7 +87,7 @@ World::World() {
 	PerlinNoise pnoise(237);
 	DebugHelper::Timer timer;
 	timer.start();
-	noiseTex = pnoise.newNoiseTexture(200, 150);
+	noiseTex = pnoise.newOctaveNoiseTexture(800, 600, 4, 0.5);
 	cout << "Timer noiseTex: " << timer.stop() << endl;
 }
 
