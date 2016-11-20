@@ -85,7 +85,10 @@ World::World() {
 	blurFilter->bind(shadowmapTex, blurredShadowmapTex);
 
 	PerlinNoise pnoise(237);
+	DebugHelper::Timer timer;
+	timer.start();
 	noiseTex = pnoise.newNoiseTexture(200, 150);
+	cout << "Timer noiseTex: " << timer.stop() << endl;
 }
 
 

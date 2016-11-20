@@ -46,6 +46,11 @@ namespace PathHelper {
 
 namespace DebugHelper {
 	void renderTex(GLuint tex, float scale = 1);
+	struct Timer {
+		double t0;
+		void start() { t0 = glfwGetTime(); }
+		double stop() { return glfwGetTime() - t0; }
+	};
 }
 
 #endif
