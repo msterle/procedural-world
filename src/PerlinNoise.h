@@ -19,7 +19,7 @@ public:
 	PerlinNoise(unsigned int seed = 0);
 	double noise(double x, double y, double z);
 	double noise(double x, double y, double z, int octaves, double persistence);
-	Texture* newNoiseTexture(int width, int height);
+	Texture2D* newNoiseTexture(int width, int height);
 };
 
 #endif

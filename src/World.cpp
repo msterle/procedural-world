@@ -74,12 +74,12 @@ World::World() {
 		PathHelper::shader("shadow.frag"));
 	loc_lightMatShadow = glGetUniformLocation(shadowShader->getRef(), "lightMat");
 	
-	shadowmapTex = new Texture(GL_RG32F, params.shadowWidth, 
+	shadowmapTex = new Texture2D(GL_RG32F, params.shadowWidth, 
 		params.shadowHeight, GL_RG, GL_FLOAT, GL_CLAMP_TO_BORDER, Texture::Border(1));
 	shadowmapFBO = new FrameBuffer(shadowmapTex);
 
 	// shadow blur
-	blurredShadowmapTex = new Texture(shadowmapTex);
+	blurredShadowmapTex = new Texture2D(*shadowmapTex);
 	blurFilter = new BlurFilter(3);
 	blurFilter->bind(shadowmapTex, blurredShadowmapTex);
 
@@ -149,7 +149,7 @@ void World::draw(GLFWwindow* window) {
 	glUniformMatrix4fv(loc_lightMatPrimary, 1, GL_FALSE, glm::value_ptr(light.lightMat));
 
 	glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, blurredShadowmapTex->getRef());
+    blurredShadowmapTex->bind();
 	
 	// Draw models
 	terrain.draw(primaryShader);
@@ -158,5 +158,5 @@ void World::draw(GLFWwindow* window) {
 	}
 
 	// debug quad
-	DebugHelper::renderTex(noiseTex->getRef());
+	//DebugHelper::renderTex(noiseTex->getRef());
 }

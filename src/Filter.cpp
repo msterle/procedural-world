@@ -57,12 +57,12 @@ Filter::~Filter() {
 // TODO: convert to shared pointers
 
 // render quad through filter and capture in frame buffer
-void Filter::apply(Texture* inTex, Texture* outTex) {
+void Filter::apply(Texture2D* inTex, Texture2D* outTex) {
 	bind(inTex, outTex);
 	run();
 }
 
-void Filter::bind(Texture* inTex, Texture* outTex) {
+void Filter::bind(Texture2D* inTex, Texture2D* outTex) {
 	this->inTex = inTex;
 	this->outTex = outTex;
 	fbo->attachTexture(outTex);
@@ -88,7 +88,7 @@ void Filter::run() {
 
 	// bind input texture and quad
 	glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, inTex->getRef());
+    inTex->bind();
 	glBindVertexArray(vao);
 	
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -143,10 +143,10 @@ SeperableFilter::~SeperableFilter() {
 // TODO: convert to shared pointers
 
 // render quad through filter and capture in frame buffer
-void SeperableFilter::apply(Texture* inTex, Texture* outTex, Texture* interTex) {
+void SeperableFilter::apply(Texture2D* inTex, Texture2D* outTex, Texture2D* interTex) {
 	if(interTex == NULL) {
 		ownInterTex = true;
-		interTex = new Texture(outTex);
+		interTex = new Texture2D(*outTex);
 	}
 	this->interTex = interTex;
 
@@ -159,7 +159,7 @@ void SeperableFilter::apply(Texture* inTex, Texture* outTex, Texture* interTex) 
 	}
 }
 
-void SeperableFilter::bind(Texture* inTex, Texture* outTex, Texture* interTex) {
+void SeperableFilter::bind(Texture2D* inTex, Texture2D* outTex, Texture2D* interTex) {
 	// delete existing intermediate texture if have ownership
 	if(this->interTex != NULL && ownInterTex) {
 		delete interTex;
@@ -168,7 +168,7 @@ void SeperableFilter::bind(Texture* inTex, Texture* outTex, Texture* interTex) {
 	// if no intermediate texture passed, create one
 	if(interTex == NULL) {
 		ownInterTex = true;
-		interTex = new Texture(outTex);
+		interTex = new Texture2D(*outTex);
 	}
 	this->interTex = interTex;
 	this->inTex = inTex;
@@ -200,18 +200,21 @@ void SeperableFilter::run() {
 	glBindVertexArray(vao);
 	
 	// draw horizontal pass to intermediate texture
-	glBindTexture(GL_TEXTURE_2D, inTex->getRef());
+	inTex->bind();
 	glDrawBuffer(GL_COLOR_ATTACHMENT1);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	inTex->unbind();
 
 	// draw vertical pass to output texture
 	for(glm::vec2 &o : scaledOffsets)
     	o = glm::vec2(o.y, o.x);
 	glUniform2fv(glGetUniformLocation(shader->getRef(), "offsets"), kernelSize, 
     	glm::value_ptr(*scaledOffsets.data()));
-	glBindTexture(GL_TEXTURE_2D, interTex->getRef());
+	
+	interTex->bind();
 	glDrawBuffer(GL_COLOR_ATTACHMENT0);
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	interTex->unbind();
 	
 	// unbind
 	glBindVertexArray(0);

@@ -20,14 +20,14 @@ protected:
 	GLuint vao, vbo;
 	Shader* shader;
 	FrameBuffer* fbo;
-	Texture* inTex, * outTex;
+	Texture2D* inTex, * outTex;
 	glm::vec2 texSize;
 public:
 	Filter() { }
 	Filter(std::vector<float> kernel);
 	~Filter();
-	void apply(Texture* inTex, Texture* outTex);
-	void bind(Texture* inTex, Texture* outTex);
+	void apply(Texture2D* inTex, Texture2D* outTex);
+	void bind(Texture2D* inTex, Texture2D* outTex);
 	void run();
 protected:
 	void initQuad();
@@ -37,13 +37,13 @@ protected:
 // seperable kernel convolution filter
 class SeperableFilter : public Filter {
 protected:
-	Texture* interTex;
+	Texture2D* interTex;
 	bool ownInterTex;
 public:
 	SeperableFilter()  : interTex(NULL), ownInterTex(false) { }
 	SeperableFilter(std::vector<float> kernel);
-	void apply(Texture* inTex, Texture* outTex, Texture* interTex = NULL);
-	void bind(Texture* inTex, Texture* outTex, Texture* interTex = NULL);
+	void apply(Texture2D* inTex, Texture2D* outTex, Texture2D* interTex = NULL);
+	void bind(Texture2D* inTex, Texture2D* outTex, Texture2D* interTex = NULL);
 	void run();
 	~SeperableFilter();
 protected:
