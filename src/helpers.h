@@ -8,9 +8,29 @@
 #include "Shader.h"
 
 namespace GLHelper {
+	struct Error {
+		GLenum code;
+		std::string name() { return to_string(code); }
+	private:
+		static std::string to_string(GLenum err) {
+			switch(err) {
+				case GL_INVALID_ENUM:                  return "GL_INVALID_ENUM";
+				case GL_INVALID_VALUE:                 return "GL_INVALID_VALUE";
+				case GL_INVALID_OPERATION:             return "GL_INVALID_OPERATION";
+				case GL_STACK_OVERFLOW:                return "GL_STACK_OVERFLOW";
+				case GL_STACK_UNDERFLOW:               return "GL_STACK_UNDERFLOW";
+				case GL_OUT_OF_MEMORY:                 return "GL_OUT_OF_MEMORY";
+				case GL_INVALID_FRAMEBUFFER_OPERATION: return "GL_INVALID_FRAMEBUFFER_OPERATION";
+				case GL_CONTEXT_LOST:                  return "GL_CONTEXT_LOST";
+				case GL_TABLE_TOO_LARGE:               return "GL_TABLE_TOO_LARGE";
+				default:                               return "Unknown error code";
+			}
+		}
+	};
 	const int OPENGL_VERSION_MAJOR = 3, OPENGL_VERSION_MINOR = 3;
 	const GLuint WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
 	GLFWwindow* initGL();
+	Error getError();
 	inline void glfw_error_callback(int error, const char* description) {
 		std::cerr << "GLFW error: " << description << std::endl;
 	}

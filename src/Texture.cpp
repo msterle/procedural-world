@@ -83,12 +83,16 @@ void Texture1D::updateImage(const GLvoid* pixels, Dimensions dims, Offset off) {
 //// protected methods
 
 void Texture2D::createImage(const GLvoid* pixels) {
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, dims[0]);
 	bind();
 	glTexImage2D(target, 0, internalFormat, dims[0], dims[1], 0, format, type, pixels);
 	unbind();
 }
 
 void Texture2D::updateImage(const GLvoid* pixels, Dimensions dims, Offset off) {
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glPixelStorei(GL_UNPACK_ROW_LENGTH, this->dims[0]);
 	bind();
 	glTexSubImage2D(target, 0, off[0], off[1], dims[0], dims[1], format, type, pixels);
 	unbind();

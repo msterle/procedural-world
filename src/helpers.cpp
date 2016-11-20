@@ -5,6 +5,10 @@
 #include "../include/glfw3.h"
 #include "Shader.h"
 
+// debug only
+#include <iostream>
+using namespace std;
+
 namespace GLHelper{
 
 	GLFWwindow* initGL() {
@@ -71,6 +75,12 @@ namespace GLHelper{
 		glEnable(GL_MULTISAMPLE);
 
 		return window;
+	}
+
+	Error getError() {
+		Error err;
+		err.code = glGetError();
+		return err;
 	}
 }
 

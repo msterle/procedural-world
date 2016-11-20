@@ -75,7 +75,8 @@ World::World() {
 	loc_lightMatShadow = glGetUniformLocation(shadowShader->getRef(), "lightMat");
 	
 	shadowmapTex = new Texture2D(GL_RG32F, params.shadowWidth, 
-		params.shadowHeight, GL_RG, GL_FLOAT, GL_CLAMP_TO_BORDER, Texture::Border(1));
+		params.shadowHeight, GL_RG, GL_FLOAT, GL_CLAMP_TO_BORDER, Texture::Border(1), 
+		Texture::LINEAR);
 	shadowmapFBO = new FrameBuffer(shadowmapTex);
 
 	// shadow blur
@@ -84,7 +85,7 @@ World::World() {
 	blurFilter->bind(shadowmapTex, blurredShadowmapTex);
 
 	PerlinNoise pnoise(237);
-	noiseTex = pnoise.newNoiseTexture(100, 100);
+	noiseTex = pnoise.newNoiseTexture(80, 60);
 }
 
 

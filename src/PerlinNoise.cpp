@@ -7,6 +7,8 @@
 
 // debug only
 #include <iostream>
+#include "../include/glew.h"
+#include "../include/glfw3.h"
 using namespace std;
 
 double PerlinNoise::grad(int hash, double x, double y, double z) {
@@ -73,17 +75,17 @@ Texture2D* PerlinNoise::newNoiseTexture(int width, int height) {
 	unsigned char data[height][width][4];
 	for(int x = 0; x < width; ++x) {
 		for(int y = 0; y < width; ++y) {
-			data[y][x][0] = data[y][x][1] = data[y][x][2] = round(1 + sin((double)x / 3.0 + noise(10.0 * x / width, 10.0 * y / height, 0)) * 255.0 / 2);
+			data[y][x][0] = data[y][x][1] = data[y][x][2] = noise(10.0 * x / width, 10.0 * y / height, 0) * 255.0;//round(1 + sin((double)x / 3.0 + noise(10.0 * x / width, 10.0 * y / height, 0)) * 255.0 / 2);
 			data[y][x][3] = 255;
 		}
 	}
 	Texture2D* noiseTex = new Texture2D(GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
-	for(int x = 0; x < width / 2; ++x) {
-		for(int y = 0; y < width / 2; ++y) {
-			data[y][x][0] = data[y][x][1] = data[y][x][2] = round(1 + sin((double)x / 3.0 + noise(10.0 * x / width, 10.0 * y / height, 0)) * 255.0 / 2);
+	for(int x = 0; x < width / 4; ++x) {
+		for(int y = 0; y < width / 4; ++y) {
+			data[y][x][0] = data[y][x][1] = data[y][x][2] = 255;
 			data[y][x][3] = 255;
 		}
 	}
-	noiseTex->setPixelData(data, {width / 2, width / 2}, {width / 4, height / 4});
+	noiseTex->setPixelData(data, {width / 4, width / 4}, {width / 4, height / 4});
 	return noiseTex;
 }
