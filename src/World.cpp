@@ -85,7 +85,7 @@ World::World() {
 	blurFilter->bind(shadowmapTex, blurredShadowmapTex);
 
 	PerlinNoise pnoise(237);
-	noiseTex = pnoise.newNoiseTexture(80, 60);
+	noiseTex = pnoise.newNoiseTexture(200, 150);
 }
 
 
