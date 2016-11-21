@@ -17,6 +17,7 @@ build/*
 *.sublime-workspace
 
 # MSVC files
+*.opensdf
 *.vcxproj
 *.vcxproj.filters
 Win32

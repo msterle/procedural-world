@@ -5,6 +5,7 @@
 #include <numeric>
 #include <algorithm>
 #include <vector>
+#include <random>
 
 // debug only
 #include <iostream>

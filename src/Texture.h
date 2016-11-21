@@ -2,6 +2,7 @@
 #define TEXTURE_H
 
 #include <vector>
+#include <array>
 #include "../include/glew.h"
 #include "../include/glfw3.h"
 
@@ -16,9 +17,11 @@
 class Texture {
 public:
 	struct Border {
-		GLfloat components[4];
-		Border(GLfloat c) : components{c, c, c, c} { }
-		Border() : Border(0) { }
+		std::array<GLfloat, 4> components;
+		Border(GLfloat c1, GLfloat c2, GLfloat c3, GLfloat c4) : components({ c1, c2, c3, c4}) { }
+		Border(GLfloat c[4]) : Border(c[0], c[1], c[2], c[3]) { }
+		Border(GLfloat c) : Border(c, c, c, c) { }
+		Border() : Border((GLfloat)0) { }
 	};
 	enum FilterMode {NEAREST, LINEAR, MIPMAP};
 	typedef std::vector<GLsizei> Dimensions;
@@ -38,7 +41,7 @@ protected:
 	// TODO: implement isDimCountCorrect() to check vector size against target
 public:
 	Texture(GLenum target, GLint internalFormat, Dimensions dims, GLenum format, GLenum type, 
-			GLenum wrap = GL_REPEAT, Border border = Border(0), FilterMode filter = NEAREST, 
+			GLenum wrap = GL_REPEAT, Border border = Border(), FilterMode filter = NEAREST, 
 			const GLvoid* pixels = NULL)
 			: texID(0), target(target), internalFormat(internalFormat), dims(dims), format(format),
 			type(type), wrap(wrap), border(border), filter(filter) { }
@@ -81,26 +84,26 @@ protected:
 public:
 	// full constructor with combined dimension parameters
 	Texture1D(GLint internalFormat, Dimensions dims, GLenum format, GLenum type, 
-			GLenum wrap = GL_REPEAT, Border border = Border(0), FilterMode filter = NEAREST, 
+			GLenum wrap = GL_REPEAT, Border border = Border(), FilterMode filter = NEAREST, 
 			const GLvoid* pixels = NULL)
 			: Texture(GL_TEXTURE_1D, internalFormat, dims, format, type, wrap, border, filter, 
 				pixels) { init(pixels); }
 	// full constructor with separate dimension parameters
 	Texture1D(GLint internalFormat, GLsizei width, GLenum format, GLenum type, 
-			GLenum wrap = GL_REPEAT, Border border = Border(0), FilterMode filter = NEAREST, 
+			GLenum wrap = GL_REPEAT, Border border = Border(), FilterMode filter = NEAREST, 
 			const GLvoid* pixels = NULL)
 			: Texture1D(internalFormat, Dimensions{width}, format, type, wrap, border, 
 				filter, pixels) { }
 	// short pixel data constructor with combined dimension parameters
 	Texture1D(GLint internalFormat, Dimensions dims, GLenum format, GLenum type, 
 			const GLvoid* pixels = NULL) 
-			: Texture1D(internalFormat, dims, format, type, GL_REPEAT, Border(0), NEAREST, 
+			: Texture1D(internalFormat, dims, format, type, GL_REPEAT, Border(), NEAREST, 
 				pixels) { }
 	// short pixel data constructor with separate dimension parameters
 	Texture1D(GLint internalFormat, GLsizei width, GLenum format, GLenum type, 
 			const GLvoid* pixels = NULL) 
 			: Texture1D(internalFormat, Dimensions{width}, format, type, GL_REPEAT, 
-				Border(0), NEAREST, pixels) { }
+				Border(), NEAREST, pixels) { }
 	// copy constructor
 	Texture1D(const Texture1D& orig) 
 			: Texture(GL_TEXTURE_1D, orig) { init(); }
@@ -117,26 +120,26 @@ protected:
 public:
 	// full constructor with combined dimension parameters
 	Texture2D(GLint internalFormat, Dimensions dims, GLenum format, GLenum type, 
-			GLenum wrap = GL_REPEAT, Border border = Border(0), FilterMode filter = NEAREST, 
+			GLenum wrap = GL_REPEAT, Border border = Border(), FilterMode filter = NEAREST, 
 			const GLvoid* pixels = NULL)
 			: Texture(GL_TEXTURE_2D, internalFormat, dims, format, type, wrap, border, filter, 
 				pixels) { init(pixels); }
 	// full constructor with separate dimension parameters
 	Texture2D(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, 
-			GLenum wrap = GL_REPEAT, Border border = Border(0), FilterMode filter = NEAREST, 
+			GLenum wrap = GL_REPEAT, Border border = Border(), FilterMode filter = NEAREST, 
 			const GLvoid* pixels = NULL)
 			: Texture2D(internalFormat, Dimensions{width, height}, format, type, wrap, border, 
 				filter, pixels) { }
 	// short pixel data constructor with combined dimension parameters
 	Texture2D(GLint internalFormat, Dimensions dims, GLenum format, GLenum type, 
 			const GLvoid* pixels = NULL) 
-			: Texture2D(internalFormat, dims, format, type, GL_REPEAT, Border(0), NEAREST, 
+			: Texture2D(internalFormat, dims, format, type, GL_REPEAT, Border(), NEAREST, 
 				pixels) { }
 	// short pixel data constructor with separate dimension parameters
 	Texture2D(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, 
 			const GLvoid* pixels = NULL) 
 			: Texture2D(internalFormat, Dimensions{width, height}, format, type, GL_REPEAT, 
-				Border(0), NEAREST, pixels) { }
+				Border(), NEAREST, pixels) { }
 	// copy constructor
 	Texture2D(const Texture2D& orig) 
 			: Texture(GL_TEXTURE_2D, orig) { init(); }

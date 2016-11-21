@@ -287,12 +287,12 @@ float Terrain::getYAtXZWorld(float x, float z) {
 	int xCount = getVerticesXCount(), zCount = getVerticesZCount();
 	
 	fpartX = modf(position.x, &temp);
-	prevX = min(max((int)temp, 0), xCount);
-	nextX = min(prevX + 1, xCount);
+	prevX = min(max((int)temp, 0), xCount - 1);
+	nextX = min(prevX + 1, xCount - 1);
 
 	fpartZ = modf(position.z, &temp);
-	prevZ = min(max((int)temp, 0), zCount);
-	nextZ = min(prevZ + 1, zCount);
+	prevZ = min(max((int)temp, 0), zCount - 1);
+	nextZ = min(prevZ + 1, zCount - 1);
 
 	vector<Vertex> vertices = mesh->getVertices();
 

@@ -21,7 +21,7 @@ void Texture::setWrap(GLenum wrap) {
 void Texture::setBorder(Border border) {
 	this->border = border;
 	bind();
-	glTexParameterfv(target, GL_TEXTURE_BORDER_COLOR, border.components);
+	glTexParameterfv(target, GL_TEXTURE_BORDER_COLOR, border.components.data());
 	unbind();
 }
 
