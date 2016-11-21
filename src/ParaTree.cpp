@@ -152,6 +152,10 @@ void ParaTree::setPosition(glm::vec3 position) {
 	this->position = position;
 }
 
+void createBoundingSphere(){
+	vector<Vertex> paratree_vertex = cylinderMesh.getVertices();
+}
+
 
 
 // tree parameter presets

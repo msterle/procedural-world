@@ -89,6 +89,12 @@ public:
 		return parent;
 	}
 	glm::mat4 getInstanceMat() { return instanceMat; }
+
+	vector<glm::mat4> getInstancesMatrices() {
+		vector<glm::mat4> instanceMatrices;
+
+		for (int i = 0; i < instances)
+	}
 };
 
 #endif

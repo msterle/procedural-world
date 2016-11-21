@@ -26,7 +26,7 @@ protected:
 	PLS treePLS;
 	Turtle turtle;
 	Mesh* cylinderMesh;
-	glm::vec3 position;
+	glm::vec3 position, BS_center, BS_radius;
 	void generate(unsigned int n);
 	struct Actions {
 		static void setWidth(void* v_self, float w) {
