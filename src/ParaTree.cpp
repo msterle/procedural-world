@@ -138,6 +138,21 @@ void ParaTree::Actions::forward(void* v_self, float length) {
 	segment->applyMatrix(self->turtle.getMatrix()); // transform according to turtle
 }
 
+//public method
+glm::vec3 ParaTree::getPosition() {
+	glm::vec4 currentPos(glm::vec3(position) , 1);
+
+	currentPos = this->getModelMat() * currentPos;
+
+	glm::vec3 newPos = glm::vec3(currentPos.x, currentPos.y, currentPos.z);
+	return newPos;
+}
+
+void ParaTree::setPosition(glm::vec3 position) {
+	this->position = position;
+}
+
+
 
 // tree parameter presets
 

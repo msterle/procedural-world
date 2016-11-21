@@ -77,6 +77,7 @@ namespace UI {
 					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.3, world->camera.getPosition().z));
 					break;
 				}
+				cout << "camera Pos : " << UI::world->camera.getPosition().x << " " << UI::world->camera.getPosition().y << " " << UI::world->camera.getPosition().z << endl;
 				UI::world->camera.moveRelative(glm::vec3(0, 0, 0.5));
 				break;
 			case GLFW_KEY_S:
