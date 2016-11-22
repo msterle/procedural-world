@@ -2,6 +2,7 @@
 
 #include "../include/glew.h"
 #include "../include/glfw3.h"
+#include <functional>
 
 // debug only
 #include <iostream>
@@ -62,7 +63,7 @@ void Texture::init(const GLvoid* pixels) {
 }
 
 
-////// Texture2D class
+////// Texture1D class
 //// protected methods
 
 void Texture1D::createImage(const GLvoid* pixels) {
@@ -72,14 +73,55 @@ void Texture1D::createImage(const GLvoid* pixels) {
 }
 
 void Texture1D::updateImage(const GLvoid* pixels, Dimensions dims, Offset off) {
+	if(dims.size() != 1)
+		dims = this->dims;
+	if(off.size() != 1)
+		off = Offset(1, 0);
 	bind();
-
 	glTexSubImage1D(target, 0, off[0], dims[0], format, type, pixels);
 	unbind();
 }
 
 
 ////// Texture2D class
+//// constructors
+
+// generator methods
+
+Texture2D::Texture2D(GLsizei width, GLsizei height, GeneratorRGBA8U generator)
+		: Texture2D(GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE) {
+	unsigned char* data = new unsigned char[width * height * 4];
+	PixelRGBA8U pixel;
+	for(int x = 0; x < width; ++x) {
+		for(int y = 0; y < height; ++y) {
+			pixel = generator((float)x / width, (float)y / width);
+			data[(x + y * width) * 4]     = pixel[0];
+			data[(x + y * width) * 4 + 1] = pixel[1];
+			data[(x + y * width) * 4 + 2] = pixel[2];
+			data[(x + y * width) * 4 + 3] = pixel[3];
+		}
+	}
+	updateImage(data);
+	delete[] data;
+}
+
+Texture2D::Texture2D(GLsizei width, GLsizei height, GeneratorRGBA32F generator)
+		: Texture2D(GL_RGBA32F, width, height, GL_RGBA, GL_FLOAT) {
+	float* data = new float[width * height * 4];
+	PixelRGBA32F pixel;
+	for(int x = 0; x < width; ++x) {
+		for(int y = 0; y < height; ++y) {
+			pixel = {generator((float)x / width, (float)y / width)};
+			data[(x + y * width) * 4]     = pixel[0];
+			data[(x + y * width) * 4 + 1] = pixel[1];
+			data[(x + y * width) * 4 + 2] = pixel[2];
+			data[(x + y * width) * 4 + 3] = pixel[3];
+		}
+	}
+	updateImage(data);
+	delete[] data;
+}
+
 //// protected methods
 
 void Texture2D::createImage(const GLvoid* pixels) {
@@ -91,6 +133,10 @@ void Texture2D::createImage(const GLvoid* pixels) {
 }
 
 void Texture2D::updateImage(const GLvoid* pixels, Dimensions dims, Offset off) {
+	if(dims.size() != 2)
+		dims = this->dims;
+	if(off.size() != 2)
+		off = Offset(3, 0);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, this->dims[0]);
 	bind();

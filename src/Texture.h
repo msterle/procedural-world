@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <array>
+#include <functional>
 #include "../include/glew.h"
 #include "../include/glfw3.h"
 
@@ -26,6 +27,10 @@ public:
 	enum FilterMode {NEAREST, LINEAR, MIPMAP};
 	typedef std::vector<GLsizei> Dimensions;
 	typedef std::vector<GLint> Offset;
+	typedef std::array<unsigned char, 4> PixelRGBA8U;
+	typedef std::array<float, 4> PixelRGBA32F;
+	typedef std::function<PixelRGBA8U(float, float)> GeneratorRGBA8U;
+	typedef std::function<PixelRGBA32F(float, float)> GeneratorRGBA32F;
 protected:
 	GLuint texID;
 	GLenum target, format, type, wrap;
@@ -79,7 +84,7 @@ public:
 	}
 	// write method
 	void setPixelData(const GLvoid* pixels, Dimensions dims = Dimensions(), 
-			Offset off = Offset{0, 0}) {
+			Offset off = Offset()) {
 		updateImage(pixels, dims, off);
 	}
 };
@@ -89,7 +94,8 @@ public:
 class Texture1D : public Texture {
 protected:
 	void createImage(const GLvoid* pixels = NULL) override;
-	void updateImage(const GLvoid* pixels, Dimensions dims, Offset off) override;
+	void updateImage(const GLvoid* pixels, Dimensions dims = Dimensions(), 
+			Offset off = Offset()) override;
 public:
 	// full constructor with combined dimension parameters
 	Texture1D(GLint internalFormat, Dimensions dims, GLenum format, GLenum type, 
@@ -125,7 +131,8 @@ public:
 class Texture2D : public Texture {
 protected:
 	void createImage(const GLvoid* pixels = NULL) override;
-	void updateImage(const GLvoid* pixels, Dimensions dims, Offset off) override;
+	void updateImage(const GLvoid* pixels, Dimensions dims = Dimensions(), 
+			Offset off = Offset()) override;
 public:
 	// full constructor with combined dimension parameters
 	Texture2D(GLint internalFormat, Dimensions dims, GLenum format, GLenum type, 
@@ -139,16 +146,9 @@ public:
 			const GLvoid* pixels = NULL)
 			: Texture2D(internalFormat, Dimensions{width, height}, format, type, wrap, border, 
 				filter, pixels) { }
-	// short pixel data constructor with combined dimension parameters
-	Texture2D(GLint internalFormat, Dimensions dims, GLenum format, GLenum type, 
-			const GLvoid* pixels = NULL) 
-			: Texture2D(internalFormat, dims, format, type, GL_REPEAT, Border(), NEAREST, 
-				pixels) { }
-	// short pixel data constructor with separate dimension parameters
-	Texture2D(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, 
-			const GLvoid* pixels = NULL) 
-			: Texture2D(internalFormat, Dimensions{width, height}, format, type, GL_REPEAT, 
-				Border(), NEAREST, pixels) { }
+	// texture generators
+	Texture2D(GLsizei width, GLsizei height, GeneratorRGBA8U generator);
+	Texture2D(GLsizei width, GLsizei height, GeneratorRGBA32F generator);
 	// copy constructor
 	Texture2D(const Texture2D& orig) 
 			: Texture(GL_TEXTURE_2D, orig) { init(); }

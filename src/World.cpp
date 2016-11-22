@@ -35,7 +35,16 @@ World::World() {
 	PerlinNoise pnoise(237);
 	DebugHelper::Timer timer;
 	timer.start();
-	noiseTex = pnoise.newOctaveNoiseTexture(100, 100, 4, 0.5);
+	noiseTex = new Texture2D(200, 200, [pnoise](float x, float y)->Texture::PixelRGBA8U {
+		unsigned char val = round(pnoise.octaveNoise(10.0 * x, 10.0 * y, 0, 4, 0.5) * 255.0);
+		return {val, val, val, 255};
+	});
+	/*
+	noiseTex = new Texture2D(800, 600, [pnoise](float x, float y)->Texture::PixelRGBA32F {
+		float val = pnoise.octaveNoise(10.0 * x, 10.0 * y, 0, 4, 0.5);
+		return {val, val, val, 1.0};
+	});
+	*/
 	cout << "Timer noiseTex: " << timer.stop() << endl;
 
 	// set up trees

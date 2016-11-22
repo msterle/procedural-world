@@ -14,7 +14,7 @@
 #include "../include/CImg.h"
 using namespace std;
 
-double PerlinNoise::grad(int hash, double x, double y, double z) {
+float PerlinNoise::grad(int hash, float x, float y, float z) {
 	// using lowest 4 bits of hash
 	switch(hash & 0xF) {
 		case 0x0: return  x + y;
@@ -43,19 +43,19 @@ PerlinNoise::PerlinNoise(unsigned int seed) {
 	// shuffle according to seed
 	std::default_random_engine engine(seed);
 	std::shuffle(ptemp.begin(), ptemp.end(), engine);
-	// double permutation set in length to prevent overflow
+	// float permutation set in length to prevent overflow
 	for(int i = 0; i < 512; ++i)
 		p[i] = ptemp[i%256];
 }
 
-double PerlinNoise::noise(double x, double y, double z) {
+float PerlinNoise::noise(float x, float y, float z) const {
 	// first 8 bits of integer parts
 	int xi = (int)floor(x) & 255, yi = (int)floor(y) & 255, zi = (int)floor(z) & 255;
 	x -= floor(x);
 	y -= floor(y);
 	z -= floor(z);
 	// get faded distances from coordinates
-	double u = fade(x), v = fade(y), w = fade(z);
+	float u = fade(x), v = fade(y), w = fade(z);
 	// hashing method
 	int a = p[xi]     + yi, aa = p[a] + zi, ab = p[a + 1] + zi;
 	int b = p[xi + 1] + yi, ba = p[b] + zi, bb = p[b + 1] + zi;
@@ -70,8 +70,8 @@ double PerlinNoise::noise(double x, double y, double z) {
 									grad(p[bb + 1], x - 1, y - 1, z - 1)))) + 1.0) / 2.0;
 }
 
-double PerlinNoise::octaveNoise(double x, double y, double z, int octaves, double persistence) {
-	double sum = 0, frequency = 1, amplitude = 1, maxValue = 0;
+float PerlinNoise::octaveNoise(float x, float y, float z, int octaves, float persistence) const {
+	float sum = 0, frequency = 1, amplitude = 1, maxValue = 0;
     for(int i = 0; i < octaves; ++i) {
         sum += noise(x * frequency, y * frequency, z * frequency) * amplitude;
         maxValue += amplitude;
@@ -79,44 +79,4 @@ double PerlinNoise::octaveNoise(double x, double y, double z, int octaves, doubl
         frequency *= 2;
     }
     return sum/maxValue;
-}
-
-Texture2D* PerlinNoise::newNoiseTexture(int width, int height) {
-	unsigned char* data = new unsigned char[width * height * 4];
-	for(int x = 0; x < width; ++x) {
-		for(int y = 0; y < height; ++y) {
-			data[(x + y * width) * 4] = data[(x + y * width) * 4 + 1] = data[(x + y * width) * 4 + 2] = round(noise(10.0 * x / width, 10.0 * y / height, 0) * 255.0);//round(1 + sin((double)x / 3.0 + noise(10.0 * x / width, 10.0 * y / height, 0)) * 255.0 / 2);
-			data[(x + y * width) * 4 + 3] = 255;
-		}
-	}
-	Texture2D* noiseTex = new Texture2D(GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
-	noiseTex->setFilterMode(Texture::LINEAR);
-	for(int x = 0; x < width / 4; ++x) {
-		for(int y = 0; y < height / 4; ++y) {
-			data[(x + y * width) * 4] = data[(x + y * width) * 4 + 1] = data[(x + y * width) * 4 + 2] = round(sin(noise(10.0 * x / width, 10.0 * y / height, 0) * 255.0 / 10));
-			data[(x + y * width) * 4 + 3] = 255;
-		}
-	}
-	noiseTex->setPixelData(data, {width / 4, height / 4}, {width / 4, height / 4});
-	delete[] data;
-	return noiseTex;
-}
-
-Texture2D* PerlinNoise::newOctaveNoiseTexture(int width, int height, int octaves, double persistence) {
-	unsigned char* data = new unsigned char[width * height * 4];
-	for(int x = 0; x < width; ++x) {
-		for(int y = 0; y < height; ++y) {
-			double val = round(octaveNoise(10.0 * x / width, 20.0 * y / height, 0, octaves, persistence) * 255.0);
-			val = val * 2.0;
-			data[(x + y * width) * 4] = data[(x + y * width) * 4 + 1] = data[(x + y * width) * 4 + 2] = val;//round(1 + sin((double)x / 3.0 + noise(10.0 * x / width, 10.0 * y / height, 0)) * 255.0 / 2);
-			data[(x + y * width) * 4 + 3] = 255;
-		}
-	}
-	Texture2D* noiseTex = new Texture2D(GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
-	noiseTex->setFilterMode(Texture::LINEAR);
-	delete[] data;
-	return noiseTex;
-
-	//GLint swizzleMask[] = {GL_RED, GL_RED, GL_RED, GL_ONE};
-	//glTexParameteriv (GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
 }
