@@ -16,8 +16,124 @@
 
 using namespace std;
 
-Filter::Filter(vector<float> kernel) : kernel(kernel) {
+
+////// filter base class
+
+Filter::Filter() {
 	fbo = new FrameBuffer(true);
+	initQuad();
+}
+
+Filter::~Filter() {
+	delete fbo;
+	delete shader;
+	glDeleteVertexArrays(1, &vao);
+	glDeleteBuffers(1, &vbo);
+}
+
+// Protected methods
+
+void Filter::initQuad() {
+	// set up quad
+	GLfloat quadVertices[] = {
+		// Positions         // Texture Coords
+		-1.0f,  1.0f, 0.0f,  0.0f, 1.0f,
+		-1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
+		1.0f,   1.0f, 0.0f,  1.0f, 1.0f,
+		1.0f,  -1.0f, 0.0f,  1.0f, 0.0f,
+	};
+
+	// set up VAO/VBO
+	glGenVertexArrays(1, &vao);
+	glGenBuffers(1, &vbo);
+	glBindVertexArray(vao);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 
+		(GLvoid*)(3 * sizeof(GLfloat)));
+}
+
+
+//// Blender class
+
+void Blender::multiply(Texture2D* inTex1, Texture2D* inTex2, Texture2D* outTex) {
+	shader = new Shader(PathHelper::shader("filter.vert"), 
+		PathHelper::shader("blendmult.frag"));
+
+	texSize = glm::vec2(outTex->getWidth(), outTex->getHeight());
+	fbo->attachTexture(outTex);
+
+	shader->use();
+
+	// bind input textures and quad
+	glUniform1i(glGetUniformLocation(shader->getRef(), "inTex1"), 0);
+	glUniform1i(glGetUniformLocation(shader->getRef(), "inTex2"), 1);
+    inTex1->bind(0);
+    inTex2->bind(1);
+	glBindVertexArray(vao);
+
+	// save viewport dimensions
+	GLint viewportParams[4];
+	glGetIntegerv(GL_VIEWPORT, viewportParams);
+
+	// set viewport and bind fbo
+	glViewport(0, 0, texSize.x, texSize.y);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo->getRef());
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	
+	// unbind
+	glBindVertexArray(0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// reset viewport
+	glViewport(viewportParams[0], viewportParams[1], viewportParams[2], viewportParams[3]);
+}
+
+void Blender::colorize(Texture2D* inTex, glm::vec3 colorDark, glm::vec3 colorLight, Texture2D* outTex) {
+	shader = new Shader(PathHelper::shader("filter.vert"), 
+		PathHelper::shader("blendcolorize.frag"));
+
+	texSize = glm::vec2(outTex->getWidth(), outTex->getHeight());
+	fbo->attachTexture(outTex);
+
+	shader->use();
+	glm::vec4 colorDark4 = glm::vec4(colorDark, 1.0);
+	glm::vec4 colorLight4 = glm::vec4(colorLight, 1.0);
+	glUniform4fv(glGetUniformLocation(shader->getRef(), "colorDark"), 1, glm::value_ptr(colorDark4));
+	glUniform4fv(glGetUniformLocation(shader->getRef(), "colorLight"), 1, glm::value_ptr(colorLight4));
+
+	// bind input textures and quad
+    inTex->bind();
+	glBindVertexArray(vao);
+
+	// save viewport dimensions
+	GLint viewportParams[4];
+	glGetIntegerv(GL_VIEWPORT, viewportParams);
+
+	// set viewport and bind fbo
+	glViewport(0, 0, texSize.x, texSize.y);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbo->getRef());
+    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	
+	// unbind
+	glBindVertexArray(0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// reset viewport
+	glViewport(viewportParams[0], viewportParams[1], viewportParams[2], viewportParams[3]);
+}
+
+
+////// Linear filter
+
+LinearFilter::LinearFilter(vector<float> kernel) : kernel(kernel) {
 	// make kernel square with odd-numbered length of sides
 	kernelSize = ceil((sqrt(kernel.size()) - 1) / 2) * 2 + 1;
 	if(kernelSize * kernelSize != kernel.size()) {
@@ -39,30 +155,22 @@ Filter::Filter(vector<float> kernel) : kernel(kernel) {
 	shader = new Shader(PathHelper::shader("filter.vert"), 
 		PathHelper::shader(shaderName));
 
-	initQuad();
 	// bind global uniforms
 	shader->use();
 	glUniform1fv(glGetUniformLocation(shader->getRef(), "kernel"), kernelSize * kernelSize, 
 		&kernel.front());
 }
 
-Filter::~Filter() {
-	delete fbo;
-	delete shader;
-	glDeleteVertexArrays(1, &vao);
-	glDeleteBuffers(1, &vbo);
-}
-
 // TODO: const correctness
 // TODO: convert to shared pointers
 
 // render quad through filter and capture in frame buffer
-void Filter::apply(Texture2D* inTex, Texture2D* outTex) {
+void LinearFilter::apply(Texture2D* inTex, Texture2D* outTex) {
 	bind(inTex, outTex);
 	run();
 }
 
-void Filter::bind(Texture2D* inTex, Texture2D* outTex) {
+void LinearFilter::bind(Texture2D* inTex, Texture2D* outTex) {
 	this->inTex = inTex;
 	this->outTex = outTex;
 	fbo->attachTexture(outTex);
@@ -75,7 +183,7 @@ void Filter::bind(Texture2D* inTex, Texture2D* outTex) {
     	glm::value_ptr(*scaledOffsets.data()));
 }
 
-void Filter::run() {
+void LinearFilter::run() {
 	// save viewport dimensions
 	shader->use();
 	GLint viewportParams[4];
@@ -102,29 +210,26 @@ void Filter::run() {
 }
 
 
-// Protected methods
+//// Sorbel filter
 
-void Filter::initQuad() {
-	// set up quad
-	GLfloat quadVertices[] = {
-		// Positions         // Texture Coords
-		-1.0f,  1.0f, 0.0f,  0.0f, 1.0f,
-		-1.0f, -1.0f, 0.0f,  0.0f, 0.0f,
-		1.0f,   1.0f, 0.0f,  1.0f, 1.0f,
-		1.0f,  -1.0f, 0.0f,  1.0f, 0.0f,
-	};
+SorbelFilter::SorbelFilter() {
+	fbo = new FrameBuffer(true);
+	offsets.resize(9);
+	scaledOffsets.resize(9);
+	kernelSize = 3;
+	for(int x = 0; x < kernelSize; x++) {
+		for(int y = 0; y < kernelSize; y++) {
+			offsets[x + y * kernelSize] = glm::vec2((float)(x - ((int)kernelSize - 1) / 2), 
+				(int)(y - ((float)kernelSize - 1) / 2));
+		}
+	}
+	
+	shader = new Shader(PathHelper::shader("filter.vert"), 
+		PathHelper::shader("sorbel.frag"));
 
-	// set up VAO/VBO
-	glGenVertexArrays(1, &vao);
-	glGenBuffers(1, &vbo);
-	glBindVertexArray(vao);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 
-		(GLvoid*)(3 * sizeof(GLfloat)));
+	initQuad();
+	// bind global uniforms
+	shader->use();
 }
 
 

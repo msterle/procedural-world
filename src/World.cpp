@@ -28,27 +28,53 @@ using namespace std;
 
 World::World() {
 	// set up terrain
-	//terrain.generateDiamondSquare(100, 0.1, 0.25);
-	terrain.generatePlane(500, 500);
+	terrain.generateDiamondSquare(100, 0.1, 0.25);
+	//terrain.generatePlane(500, 500);
 
 	// set up textures
 	PerlinNoise pnoise(237);
 	DebugHelper::Timer timer;
 	timer.start();
+	/*
 	noiseTex = new Texture2D(200, 200, [pnoise](float x, float y)->Texture::PixelRGBA8U {
 		unsigned char val = round(pnoise.octaveNoise(10.0 * x, 10.0 * y, 0, 4, 0.5) * 255.0);
 		return {val, val, val, 255};
 	});
+	*/
 	/*
-	noiseTex = new Texture2D(800, 600, [pnoise](float x, float y)->Texture::PixelRGBA32F {
-		float val = pnoise.octaveNoise(10.0 * x, 10.0 * y, 0, 4, 0.5);
+	noiseTex = new Texture2D(200, 150, [pnoise](float x, float y)->Texture::PixelRGBA32F {
+		//float val = pnoise.octaveNoise(10.0 * x, 10.0 * y, 0, 4, 0.5);
+		//float val = pnoise.noise(50.0 * x, 10.0 * y);
+		//float val = sin(50.0 * x);
+		float val = (sin(pnoise.noise(25.0 * x, 10.0 * y) * 2 * glm::pi<float>()) + 1) / 2;
 		return {val, val, val, 1.0};
 	});
 	*/
-	cout << "Timer noiseTex: " << timer.stop() << endl;
+	barkTex = new Texture2D(200, 200, [pnoise](float x, float y)->Texture::PixelRGBA32F {
+		float val = floor(10.0 * pnoise.octaveNoise(25.0 * x, 5.0 * y, 0, 2, 0.5)) / 10.0;
+		//float val = pnoise.noise(10.0 * x, 10.0 * y);
+		return {val, val, val, 1.0};
+	});
+	//barkTex->setFilterMode(Texture::LINEAR);
+	barkTexFiltered = new Texture2D(*barkTex);
+	
+	Texture2D* tempTex1 = new Texture2D(*barkTex), * tempTex2 = new Texture2D(*barkTex);
+
+	SorbelFilter sorbel;
+	sorbel.apply(barkTex, tempTex1);
+
+	Blender blender;
+
+	blender.multiply(tempTex1, barkTex, tempTex2);
+	blender.colorize(tempTex2, glm::vec3(37.0 / 255, 21.0 / 255, 0.0), glm::vec3(131.0 / 255, 83.0 / 255, 25.0 / 255), barkTexFiltered);
+
+	delete tempTex1;
+	delete tempTex2;
+
+	cout << "Timer barkTex: " << timer.stop() << endl;
 
 	// set up trees
-	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2, noiseTex);
+	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2, barkTexFiltered);
 	glm::vec3 treePos(0, 0, 0);
 	ptree->translate(glm::vec3(
 		treePos.x, 
@@ -178,5 +204,5 @@ void World::draw(GLFWwindow* window) {
 	}
 
 	// debug quad
-	//DebugHelper::renderTex(noiseTex->getRef());
+	//DebugHelper::renderTex(barkTexFiltered->getRef());
 }

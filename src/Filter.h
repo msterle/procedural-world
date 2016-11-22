@@ -11,31 +11,56 @@
 
 class Texture;
 
-// convolution filter
+// Basic filter
 class Filter {
-protected:
-	std::vector<float> kernel;
-	std::vector<glm::vec2> offsets, scaledOffsets;
-	unsigned int kernelSize;
+	protected:
 	GLuint vao, vbo;
 	Shader* shader;
 	FrameBuffer* fbo;
-	Texture2D* inTex, * outTex;
 	glm::vec2 texSize;
 public:
-	Filter() { }
-	Filter(std::vector<float> kernel);
+	Filter();
 	~Filter();
-	void apply(Texture2D* inTex, Texture2D* outTex);
-	void bind(Texture2D* inTex, Texture2D* outTex);
-	void run();
 protected:
 	void initQuad();
 };
 
 
+// blender base class
+
+class Blender : public Filter {
+public:
+	void multiply(Texture2D* inTex1, Texture2D* inTex2, Texture2D* outTex);
+	void colorize(Texture2D* inTex, glm::vec3 colorDark, glm::vec3 colorLight, Texture2D* outTex);
+	void colorize(Texture2D* inTex, glm::vec3 color, Texture2D* outTex) {
+		colorize(inTex, glm::vec3(0), color, outTex);
+	}
+};
+
+
+// linear convolution filter
+class LinearFilter : public Filter {
+protected:
+	std::vector<float> kernel;
+	std::vector<glm::vec2> offsets, scaledOffsets;
+	unsigned int kernelSize;
+	Texture2D* inTex, * outTex;
+public:
+	LinearFilter() { }
+	LinearFilter(std::vector<float> kernel);
+	void apply(Texture2D* inTex, Texture2D* outTex);
+	void bind(Texture2D* inTex, Texture2D* outTex);
+	void run();
+};
+
+class SorbelFilter : public LinearFilter {
+public:
+	SorbelFilter();
+};
+
+
 // seperable kernel convolution filter
-class SeperableFilter : public Filter {
+class SeperableFilter : public LinearFilter {
 protected:
 	Texture2D* interTex;
 	bool ownInterTex;

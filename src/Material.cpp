@@ -140,4 +140,11 @@ namespace Materials {
 		10
 	};
 
+	Material bark = {
+		glm::vec4(0.02, 0.02, 0.02, 1),
+		glm::vec4(0.5, 0.5, 0.5, 1),
+		glm::vec4(0.1, 0.1, 0.1, 1),
+		10
+	};
+
 }

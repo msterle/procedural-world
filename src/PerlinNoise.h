@@ -17,8 +17,11 @@ protected:
 	static float grad(int hash, float x, float y, float z);
 public:
 	PerlinNoise(unsigned int seed = 0);
-	float noise(float x, float y, float z) const;
+	float noise(float x, float y, float z = 0) const;
 	float octaveNoise(float x, float y, float z, int octaves, float persistence) const;
+	float octaveNoise(float x, float y, int octaves, float persistence) const {
+		octaveNoise(x, y, 0, octaves, persistence);
+	}
 };
 
 #endif

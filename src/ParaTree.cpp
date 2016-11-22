@@ -132,7 +132,7 @@ void ParaTree::Actions::forward(void* v_self, float length) {
 	// advance turtle
 	self->turtle.forward(length / 50);
 	// place new segment behind
-	MeshInstancePtr segment = self->cylinderMesh->newInstance(Materials::pewter);
+	MeshInstancePtr segment = self->cylinderMesh->newInstance(Materials::bark);
 	segment->scale(glm::vec3(1, length / 50, 1)); // set height
 	segment->rotate(glm::radians(90.0f), glm::vec3(1, 0, 0)); // rotate to facing +Z to match turtle start orientation
 	segment->applyMatrix(self->turtle.getMatrix()); // transform according to turtle
