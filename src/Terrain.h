@@ -9,12 +9,15 @@
 #include "Model.h"
 #include "Vertex.h"
 
+class Texture;
+
 class Terrain: public Model {
 protected:
 	float width, length;
 	float resolution;
 	Mesh* mesh;
 	MeshInstancePtr instancePtr;
+	Texture2D* tex;
 public:
 	Terrain();
 	//void buildFromHeightmap(std::string heightmapPath, std::string colorPath, int scale = 1);

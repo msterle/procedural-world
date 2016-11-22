@@ -106,12 +106,14 @@ Texture2D* PerlinNoise::newOctaveNoiseTexture(int width, int height, int octaves
 	unsigned char* data = new unsigned char[width * height * 4];
 	for(int x = 0; x < width; ++x) {
 		for(int y = 0; y < height; ++y) {
-			data[(x + y * width) * 4] = data[(x + y * width) * 4 + 1] = data[(x + y * width) * 4 + 2] = round(octaveNoise(10.0 * x / width, 10.0 * y / height, 0, octaves, persistence) * 255.0);//round(1 + sin((double)x / 3.0 + noise(10.0 * x / width, 10.0 * y / height, 0)) * 255.0 / 2);
+			double val = round(octaveNoise(10.0 * x / width, 20.0 * y / height, 0, octaves, persistence) * 255.0);
+			val = val * 2.0;
+			data[(x + y * width) * 4] = data[(x + y * width) * 4 + 1] = data[(x + y * width) * 4 + 2] = val;//round(1 + sin((double)x / 3.0 + noise(10.0 * x / width, 10.0 * y / height, 0)) * 255.0 / 2);
 			data[(x + y * width) * 4 + 3] = 255;
 		}
 	}
 	Texture2D* noiseTex = new Texture2D(GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
-	noiseTex->setFilterMode(Texture::NEAREST);
+	noiseTex->setFilterMode(Texture::LINEAR);
 	delete[] data;
 	return noiseTex;
 

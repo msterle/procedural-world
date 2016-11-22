@@ -11,13 +11,16 @@ in vec4 v2f_position;  // position
 in vec4 v2f_positionL;  // position in light space
 in vec4 v2f_normal;    // normal
 in vec4 v2f_color;
+in vec2 v2f_texcoords;
 in Material v2f_material;
 
 uniform bool useLighting;
+uniform bool isTextured;
 uniform vec4 viewPos;
 uniform vec4 lightPosition;  // light position in camera space
 uniform vec4 lightColor;
 uniform sampler2D shadowDepthTex;
+uniform sampler2D meshTex;
 uniform int PCFSamples;
 
 out vec4 out_color;
@@ -37,11 +40,14 @@ float chebyshev(vec3 projCoords) {
 }
 
 void main() {
+    vec4 diffuseColor = isTextured ? texture2D(meshTex, v2f_texcoords) : v2f_material.diffuse;
+    vec4 ambientColor = isTextured ? diffuseColor / 8 : v2f_material.ambient;
+
     if(useLighting) {
         // Compute the diffuse component
         vec4 N = normalize(v2f_normal);
         vec4 L = normalize(lightPosition - v2f_position);
-        vec4 Diffuse =  max(dot(L, N), 0) * lightColor * v2f_material.diffuse;
+        vec4 Diffuse =  max(dot(L, N), 0) * lightColor * diffuseColor;
          
         // Compute the specular component
         vec4 V = normalize(viewPos - v2f_position);
@@ -51,11 +57,10 @@ void main() {
         // combine light components
         vec3 projCoords = v2f_positionL.xyz / v2f_positionL.w * 0.5 + 0.5;
         float shadow = chebyshev(projCoords);
-        vec4 lighting = max((Diffuse + Specular) * shadow, v2f_material.ambient);
+        vec4 lighting = max((Diffuse + Specular) * shadow, ambientColor);
         out_color = lighting;
     }
     else {
-        //out_color = v2f_color;
-        out_color = vec4(1.0, 1.0, 1.0, 1.0);
+        out_color = v2f_color;
     }
 } 

@@ -24,7 +24,6 @@ using namespace std;
 
 Terrain::Terrain() {
 	//glGenBuffers(1, &this->colorBuffer);
-
 }
 
 /*
@@ -240,7 +239,7 @@ void Terrain::generateDiamondSquare(float width, float aproxResolution, float ro
 	generateNormals(&vertices, xCount, xCount);
 
 	// create mesh and mesh instance
-	mesh = newMesh(vertices, indices, GL_TRIANGLE_STRIP);
+	mesh = newMesh(vertices, indices, GL_TRIANGLE_STRIP, false);
 	instancePtr = mesh->newInstance(Materials::copper);
 
 	// center and scale mesh instance to fit (-1, -1, -1) (1, 1, 1) cube

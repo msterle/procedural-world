@@ -38,6 +38,9 @@ protected:
 	// pure virtual methods have to be implemented by subclasses
 	virtual void createImage(const GLvoid* pixels) = 0;
 	virtual void updateImage(const GLvoid* pixels, Dimensions dims, Offset off) = 0;
+	static GLenum texUnitEnum(int texUnit) {
+		return (GLenum)(GL_TEXTURE0 + texUnit);
+	}
 	// TODO: implement isDimCountCorrect() to check vector size against target
 public:
 	Texture(GLenum target, GLint internalFormat, Dimensions dims, GLenum format, GLenum type, 
@@ -66,8 +69,14 @@ public:
 	void setBorder(float color) { setBorder(Border(color)); }
 	void setFilterMode(FilterMode filter);
 	// bind/unbind
-	void bind() { glBindTexture(target, texID); }
-	void unbind() { glBindTexture(target, 0); }
+	void bind(int texUnit = 0) {
+		glActiveTexture(texUnitEnum(texUnit));
+		glBindTexture(target, texID);
+	}
+	void unbind(int texUnit = 0) {
+		glActiveTexture(texUnitEnum(texUnit));
+		glBindTexture(target, 0);
+	}
 	// write method
 	void setPixelData(const GLvoid* pixels, Dimensions dims = Dimensions(), 
 			Offset off = Offset{0, 0}) {

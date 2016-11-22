@@ -29,7 +29,7 @@ using namespace std::placeholders;
 
 // Constructor
 
-ParaTree::ParaTree(ParaTree::TreeParams treeParams) {
+ParaTree::ParaTree(ParaTree::TreeParams treeParams, Texture2D* branchTex) : branchTex(branchTex) {
 	treePLS = PLS(
 		// axiom
 		{
@@ -114,8 +114,8 @@ ParaTree::ParaTree(ParaTree::TreeParams treeParams) {
 // protected methods
 
 void ParaTree::generate(unsigned int n) {
-	string objPath = PathHelper::model("cylinder8.obj");
-	cylinderMesh = newMesh(objPath);
+	string objPath = PathHelper::model("cylinder8tex.obj");
+	cylinderMesh = newMesh(objPath, branchTex);
 
 	// generate tree
 	treePLS.iterate(n);

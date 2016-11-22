@@ -13,6 +13,7 @@
 
 using namespace std;
 
+class Texture2D;
 
 class ParaTree : public Model {
 public:
@@ -26,6 +27,7 @@ protected:
 	PLS treePLS;
 	Turtle turtle;
 	Mesh* cylinderMesh;
+	Texture2D* branchTex;
 	void generate(unsigned int n);
 	struct Actions {
 		static void setWidth(void* v_self, float w) {
@@ -49,7 +51,7 @@ protected:
 		static void noop() {}
 	};
 public:
-	ParaTree(TreeParams treeParams = Presets::h);
+	ParaTree(TreeParams treeParams = Presets::h, Texture2D* branchTex = NULL);
 };
 
 #endif

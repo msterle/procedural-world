@@ -1,4 +1,4 @@
-//#include <cstddef>
+#include "Mesh.h"
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -8,35 +8,33 @@
 #include "../include/glm/gtc/type_ptr.hpp"
 
 #include "Shader.h"
+#include "Texture.h"
 
-#include "Mesh.h"
+
 
 // debugging only
 #include <iostream>
+#include "helpers.h"
 
 using namespace std;
 
-
+////// Mesh
 //// Constructors
 
-Mesh::Mesh(vector<Vertex> vertices, GLenum drawMode) {
-	this->vertices = vertices;
-	this->drawMode = drawMode;
-	isIndexed = false;
+Mesh::Mesh(vector<Vertex> vertices, GLenum drawMode, Texture2D* tex) 
+		: vertices(vertices), drawMode(drawMode), isIndexed(false), tex(tex) {
 	init();
 }
 
-Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, GLenum drawMode) {
-	this->vertices = vertices;
-	this->indices = indices;
-	this->drawMode = drawMode;
-	isIndexed = true;
+Mesh::Mesh(vector<Vertex> vertices, vector<GLuint> indices, GLenum drawMode, Texture2D* tex) 
+		: vertices(vertices), indices(indices), drawMode(drawMode), isIndexed(true), tex(tex) {
 	init();
 }
 
-Mesh::Mesh(string filePath) {
-	std::vector<unsigned int> vertexPositionIndices, vertexNormalIndices;
+Mesh::Mesh(string filePath, Texture2D* tex) : tex(tex) {
+	std::vector<unsigned int> vertexPositionIndices, vertexTexcoordsIndices, vertexNormalIndices;
 	std::vector<glm::vec3> vertexPositions, vertexNormals;
+	std::vector<glm::vec2> vertexTexcoords;
 
 	FILE * file = fopen(filePath.c_str(), "r");
 
@@ -57,24 +55,37 @@ Mesh::Mesh(string filePath) {
 			fscanf(file, "%f %f %f\n", &vertexPosition.x, &vertexPosition.y, &vertexPosition.z );
 			vertexPositions.push_back(vertexPosition);
 		}
+		else if(strcmp(lineHeader, "vt") == 0) {
+		    glm::vec2 texcoord;
+		    fscanf(file, "%f %f\n", &texcoord.x, &texcoord.y);
+		    vertexTexcoords.push_back(texcoord);
+		}
 		else if(strcmp(lineHeader, "vn") == 0) {
 		    glm::vec3 vertexNormal;
 		    fscanf(file, "%f %f %f\n", &vertexNormal.x, &vertexNormal.y, &vertexNormal.z );
 		    vertexNormals.push_back(glm::normalize(vertexNormal));
 		}
 		else if(strcmp(lineHeader, "f") == 0) {
-			unsigned int vertexIndex[3], normalIndex[3];
+			unsigned int vertexIndex[3], texcoordsIndex[3], normalIndex[3];
 
 			//int matches = fscanf(file, "%d %d %d\n", &vertexIndex[0], &vertexIndex[1], &vertexIndex[2]);
-			int matches = fscanf(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
-
+			int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &texcoordsIndex[0], &normalIndex[0], &vertexIndex[1], &texcoordsIndex[1], &normalIndex[1], &vertexIndex[2], &texcoordsIndex[2], &normalIndex[2]);
 			if (matches == 0){
-				cerr << "File can't be read by our simple parser :-( Try exporting with other options" << endl;
-				terminate();
+				matches = fscanf(file, "%d//%d %d//%d %d//%d\n", &vertexIndex[0], &normalIndex[0], &vertexIndex[1], &normalIndex[1], &vertexIndex[2], &normalIndex[2]);
+				if (matches == 0) {
+					cerr << "File can't be read by our simple parser :-( Try exporting with other options" << endl;
+					terminate();
+				}
+				texcoordsIndex[0] = texcoordsIndex[1] = texcoordsIndex[2] = 0;
 			}
 			vertexPositionIndices.push_back(vertexIndex[0]);
 			vertexPositionIndices.push_back(vertexIndex[1]);
 			vertexPositionIndices.push_back(vertexIndex[2]);
+			if(tex != NULL) {
+				vertexTexcoordsIndices.push_back(texcoordsIndex[0]);
+				vertexTexcoordsIndices.push_back(texcoordsIndex[1]);
+				vertexTexcoordsIndices.push_back(texcoordsIndex[2]);
+			}
 			vertexNormalIndices.push_back(normalIndex[0]);
 			vertexNormalIndices.push_back(normalIndex[1]);
 			vertexNormalIndices.push_back(normalIndex[2]);
@@ -89,10 +100,22 @@ Mesh::Mesh(string filePath) {
 	// For each vertex of each triangle
 	for(unsigned int i = 0; i < vertexPositionIndices.size(); i++) {
 		// Get the attributes thanks to the index
-		Vertex vertex = {
-			vertexPositions[vertexPositionIndices[i] - 1], 
-			vertexNormals[vertexNormalIndices[i] - 1]
-		};
+		Vertex vertex;
+		if(tex != NULL) {
+			vertex = {
+				vertexPositions[vertexPositionIndices[i] - 1], 
+				vertexNormals[vertexNormalIndices[i] - 1],
+				vertexTexcoords[vertexTexcoordsIndices[i] - 1]
+			};
+		}
+		else {
+			vertex = {
+				vertexPositions[vertexPositionIndices[i] - 1], 
+				vertexNormals[vertexNormalIndices[i] - 1],
+				glm::vec2(0)
+			};
+		}
+		
 		// add to our vector
 		vertices.push_back(vertex);
 	}
@@ -103,9 +126,36 @@ Mesh::Mesh(string filePath) {
 }
 
 
-//// Public methods
+//// public methods
 
+void Mesh::draw(Shader* shader, glm::mat4 modelMat) {
+	shader->use();
+	glBindBuffer(GL_ARRAY_BUFFER, IBO);
+	glBufferData(GL_ARRAY_BUFFER, instances.size() * sizeof(MeshInstance), &instances.front(), GL_STATIC_DRAW);
+	glUniform1i(glGetUniformLocation(shader->getRef(), "isTextured"), tex != NULL);
+	
+	// bind texture if it exists
+	if(tex != NULL) {
+		//tex->bind(0);
+		//glUniform1i(glGetUniformLocation(shader->getRef(), "tex"), 0);
+		glUniform1i(glGetUniformLocation(shader->getRef(), "meshTex"), 1);
+	    glActiveTexture(GL_TEXTURE0 + 1);
+		glBindTexture(GL_TEXTURE_2D, tex->getRef());
+	}
 
+	glBindVertexArray(VAO);
+
+	if(isIndexed) {
+		glDrawElementsInstanced(drawMode, indices.size(), GL_UNSIGNED_INT, 0, instances.size());
+	}
+	else {
+		glDrawArraysInstanced(drawMode, 0, vertices.size(), instances.size());
+	}
+	
+	glBindVertexArray(0);
+}
+
+//// MeshInstancePtr factory methods
 
 MeshInstancePtr Mesh::newInstance() {
 	return newInstance(glm::mat4(1), Materials::pewter);
@@ -129,22 +179,6 @@ MeshInstancePtr Mesh::newInstance(MeshInstancePtr orig) {
 	MeshInstancePtr ptr(&instances, instances.size());
 	instances.push_back(MeshInstance{ptr, orig->instanceMat, orig->material});
 	return ptr;
-}
-
-void Mesh::draw(Shader* shader, glm::mat4 modelMat) {
-	glBindBuffer(GL_ARRAY_BUFFER, IBO);
-	glBufferData(GL_ARRAY_BUFFER, instances.size() * sizeof(MeshInstance), &instances.front(), GL_STATIC_DRAW);
-
-	glBindVertexArray(VAO);
-
-	if(isIndexed) {
-		glDrawElementsInstanced(drawMode, indices.size(), GL_UNSIGNED_INT, 0, instances.size());
-	}
-	else {
-		glDrawArraysInstanced(drawMode, 0, vertices.size(), instances.size());
-	}
-	
-	glBindVertexArray(0);
 }
 
 
@@ -172,11 +206,15 @@ void Mesh::init() {
 	
 	// position
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, position));
 	
 	// normal
 	glEnableVertexAttribArray(1);	
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, normal));
+
+	// texture coordinates
+	glEnableVertexAttribArray(3);	
+	glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texcoords));
 
 	// instance matrix
 	GLsizei vec4Size = sizeof(glm::vec4);
@@ -222,7 +260,8 @@ void Mesh::init() {
 }
 
 
-//// MeshInstancePtr public methods
+////// MeshInstance
+//// public methods
 
 MeshInstance MeshInstancePtr::operator*() {
 	return (*container)[offset];

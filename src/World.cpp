@@ -31,8 +31,15 @@ World::World() {
 	//terrain.generateDiamondSquare(100, 0.1, 0.25);
 	terrain.generatePlane(500, 500);
 
+	// set up textures
+	PerlinNoise pnoise(237);
+	DebugHelper::Timer timer;
+	timer.start();
+	noiseTex = pnoise.newOctaveNoiseTexture(100, 100, 4, 0.5);
+	cout << "Timer noiseTex: " << timer.stop() << endl;
+
 	// set up trees
-	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2);
+	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2, noiseTex);
 	glm::vec3 treePos(0, 0, 0);
 	ptree->translate(glm::vec3(
 		treePos.x, 
@@ -60,6 +67,7 @@ World::World() {
 	loc_viewMat = glGetUniformLocation(primaryShader->getRef(), "viewMat");
 	loc_projMat = glGetUniformLocation(primaryShader->getRef(), "projMat");
 	loc_lightMatPrimary = glGetUniformLocation(primaryShader->getRef(), "lightMat");
+	loc_shadowTex = glGetUniformLocation(primaryShader->getRef(), "shadowDepthTex");
 	primaryShader->use();
 	glUniform4fv(glGetUniformLocation(primaryShader->getRef(), "lightPosition"), 
 		1, glm::value_ptr(glm::vec4(light.position, 1)));
@@ -84,11 +92,6 @@ World::World() {
 	blurFilter = new BlurFilter(3);
 	blurFilter->bind(shadowmapTex, blurredShadowmapTex);
 
-	PerlinNoise pnoise(237);
-	DebugHelper::Timer timer;
-	timer.start();
-	noiseTex = pnoise.newOctaveNoiseTexture(800, 600, 4, 0.5);
-	cout << "Timer noiseTex: " << timer.stop() << endl;
 }
 
 
@@ -152,8 +155,12 @@ void World::draw(GLFWwindow* window) {
 	glUniformMatrix4fv(loc_projMat, 1, GL_FALSE, glm::value_ptr(camera.getProjMat()));
 	glUniformMatrix4fv(loc_lightMatPrimary, 1, GL_FALSE, glm::value_ptr(light.lightMat));
 
-	glActiveTexture(GL_TEXTURE0);
-    blurredShadowmapTex->bind();
+	// bind shadow depth texture
+    //blurredShadowmapTex->bind(1);
+    //glUniform1i(loc_shadowTex, 1);
+	glUniform1i(glGetUniformLocation(primaryShader->getRef(), "shadowDepthTex"), 0);
+    glActiveTexture(GL_TEXTURE0 + 0);
+	glBindTexture(GL_TEXTURE_2D, blurredShadowmapTex->getRef());
 	
 	// Draw models
 	terrain.draw(primaryShader);
@@ -162,5 +169,5 @@ void World::draw(GLFWwindow* window) {
 	}
 
 	// debug quad
-	DebugHelper::renderTex(noiseTex->getRef());
+	//DebugHelper::renderTex(noiseTex->getRef());
 }

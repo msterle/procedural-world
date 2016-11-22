@@ -9,6 +9,7 @@
 #include "../include/glm/gtc/type_ptr.hpp"
 #include "Vertex.h"
 #include "Mesh.h"
+#include "Texture.h"
 
 class Shader;
 
@@ -18,21 +19,22 @@ protected:
 	list<Mesh> meshes;
 public:
 	Model() : modelMat(glm::mat4(1)) { }
-	Mesh* newMesh(vector<Vertex> vertices, GLenum drawMode = GL_TRIANGLES) {
-		meshes.push_back(Mesh(vertices, drawMode));
+	Mesh* newMesh(vector<Vertex> vertices, GLenum drawMode = GL_TRIANGLES, Texture2D* tex = NULL) {
+		meshes.push_back(Mesh(vertices, drawMode, tex));
 		return &meshes.back();
 	}
-	Mesh* newMesh(vector<Vertex> vertices, vector<GLuint> indices, GLenum drawMode = GL_TRIANGLES) {
-		meshes.push_back(Mesh(vertices, indices, drawMode));
+	Mesh* newMesh(vector<Vertex> vertices, vector<GLuint> indices, GLenum drawMode = GL_TRIANGLES, Texture2D* tex = NULL) {
+		meshes.push_back(Mesh(vertices, indices, drawMode, tex));
 		return &meshes.back();
 	}
-	Mesh* newMesh(string filePath) {
-		meshes.push_back(Mesh(filePath));
+	Mesh* newMesh(string filePath, Texture2D* tex = NULL) {
+		meshes.push_back(Mesh(filePath, tex));
 		return &meshes.back();
 	}
 	glm::mat4 getModelMat() { return modelMat; }
 	void translate(glm::vec3 t);
 	void scale(glm::vec3 s);
+	void scale(float s) { scale(glm::vec3(s, s, s)); }
 	void rotate(float angle, glm::vec3 axis);
 	void draw(Shader* shader);
 	list<Mesh> getMeshes() { return meshes; }

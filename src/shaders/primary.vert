@@ -7,9 +7,12 @@ struct Material {
     float shininess;
 };
 
+// mesh-specific
 layout (location = 0)	in vec3 in_position;
 layout (location = 1)	in vec3 in_normal;
 layout (location = 2)	in vec3 in_color;
+layout (location = 3)   in vec2 in_texcoords;
+// instance-specific
 layout (location = 4)	in mat4 in_instanceMat;
 layout (location = 8)	in vec4 in_materialAmbient;
 layout (location = 9)	in vec4 in_materialDiffuse;
@@ -20,8 +23,11 @@ out vec4 v2f_position; // Position in world space.
 out vec4 v2f_positionL; // position in light space
 out vec4 v2f_normal;   // normal in world space.
 out vec4 v2f_color;
+out vec2 v2f_texcoords;
 out Material v2f_material;
 
+uniform bool useLighting;
+uniform bool isTextured;
 uniform mat4 modelMat;
 uniform mat4 normalMat;
 uniform mat4 viewMat;
@@ -33,6 +39,7 @@ void main() {
     v2f_positionL = lightMat * v2f_position;
     v2f_normal = normalMat * in_instanceMat * vec4(in_normal, 0);
     v2f_color = vec4(in_color, 1);
+    v2f_texcoords = in_texcoords;
     v2f_material.ambient = in_materialAmbient;
     v2f_material.diffuse = in_materialDiffuse;
     v2f_material.specular = in_materialSpecular;

@@ -12,6 +12,7 @@
 #include "Vertex.h"
 #include "Shader.h"
 #include "Material.h"
+#include "Texture.h"
 
 using namespace std;
 
@@ -32,11 +33,12 @@ protected:
 	vector<Vertex> vertices;
 	vector<GLuint> indices;
 	vector<MeshInstance> instances;
+	Texture2D* tex;
 	void init();
 public:
-	Mesh(vector<Vertex> vertices, GLenum drawMode = GL_TRIANGLES);
-	Mesh(vector<Vertex> vertices, vector<GLuint> indices, GLenum drawMode = GL_TRIANGLES);
-	Mesh(string filePath);
+	Mesh(vector<Vertex> vertices, GLenum drawMode = GL_TRIANGLES, Texture2D* tex = NULL);
+	Mesh(vector<Vertex> vertices, vector<GLuint> indices, GLenum drawMode = GL_TRIANGLES, Texture2D* tex = NULL);
+	Mesh(string filePath, Texture2D* tex = NULL);
 	MeshInstancePtr newInstance();
 	MeshInstancePtr newInstance(glm::mat4 instanceMat);
 	MeshInstancePtr newInstance(Material material);
