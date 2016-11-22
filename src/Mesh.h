@@ -45,7 +45,10 @@ public:
 	//void deleteInstance(MeshInstancePtr instance);
 	void draw(Shader shader, glm::mat4 modelMat);
 	int getNumInstances() { return instances.size(); }
+	vector<MeshInstance> getInstances() { return instances; }
 	vector<Vertex> getVertices() { return vertices; }
+	//go through each instance and calls its respective getInstanceMatirx() method
+	vector<glm::mat4> getInstancesMatrices();
 };
 
 // turn into template?
@@ -65,6 +68,7 @@ public:
 	}
 	MeshInstance operator*();
 	MeshInstance* operator->();
+
 };
 
 class MeshInstance {
@@ -90,11 +94,7 @@ public:
 	}
 	glm::mat4 getInstanceMat() { return instanceMat; }
 
-	vector<glm::mat4> getInstancesMatrices() {
-		vector<glm::mat4> instanceMatrices;
 
-		for (int i = 0; i < instances)
-	}
 };
 
 #endif

@@ -28,14 +28,14 @@ World::World() {
 
 	// set up trees
 	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2);
-	glm::vec3 treePos(0, 0, 0);
+	glm::vec3 treePos(5, 0, 0);
 	ptree->setPosition(treePos);
 	ptree->translate(glm::vec3(
 		treePos.x, 
 		terrain.getYAtXZWorld(treePos.x, treePos.z), 
 		treePos.z));
 	cout << "PTREE POS : " << ptree->getPosition().x << " "<< ptree->getPosition().y << " " << ptree->getPosition().z << endl;
-	//ptree->setPosition(treePos * ptree->getModelMat());
+	ptree->createBoundingSphere();
 	models.push_back(ptree);
 
 	// set up camera

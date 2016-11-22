@@ -152,9 +152,23 @@ void ParaTree::setPosition(glm::vec3 position) {
 	this->position = position;
 }
 
-void createBoundingSphere(){
-	vector<Vertex> paratree_vertex = cylinderMesh.getVertices();
+void ParaTree::createBoundingSphere(){
+	Mesh* theMesh;
+	theMesh = getCylinderMesh();
+	vector<glm::mat4> instances;
+	instances = theMesh->getInstancesMatrices();
+	vector<Vertex> paratree_vertex;
+
+	paratree_vertex = theMesh->getVertices();
+
+		//glm::vec4 newvecFour = instances[i] * glm::vec4(paratree_vertex[i].position.x, paratree_vertex[i].position.y, paratree_vertex[i].position.z, 1);
+		
+		for (int i = 0; i < paratree_vertex.size(); i++){
+			cout << "PARATREE VERTICES : " << paratree_vertex[i].position.x << " " << paratree_vertex[i].position.y << " " << paratree_vertex[i].position.z << endl;
+		}
+	
 }
+
 
 
 

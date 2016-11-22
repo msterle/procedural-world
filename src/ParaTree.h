@@ -52,7 +52,10 @@ protected:
 public:
 	ParaTree(TreeParams treeParams = Presets::h);
 	glm::vec3 getPosition();
+	Mesh* getCylinderMesh(){ return cylinderMesh; }
 	void setPosition(glm::vec3 position);
+	//Create bounding sphere
+	void createBoundingSphere();
 
 };
 
