@@ -10,6 +10,8 @@
 #include "Vertex.h"
 #include "Mesh.h"
 
+using namespace std;
+
 class Shader;
 
 class Model {
@@ -36,6 +38,12 @@ public:
 	void rotate(float angle, glm::vec3 axis);
 	void draw(Shader shader);
 	list<Mesh> getMeshes() { return meshes; }
+	virtual glm::vec3 getPosition() { return glm::vec3(0,0,0); }//virtual member that base class(eg. ParaTree, Rocks must implement)
+	virtual void createBoundingVolume(){ cout << "Unable to create Bounding Volume" << endl; }
+	virtual glm::vec3 getCenterCoord() {return glm::vec3(0, 0, 0); }
+	virtual vector<float> getBoundingVolumePos(){ //virtual member that base class(eg. ParaTree, Rocks must implement)
+		vector<float> empty;
+		return empty; }
 };
 
 #endif

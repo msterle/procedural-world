@@ -1,9 +1,15 @@
 #ifndef UI_H
 #define UI_H
 
+#include <vector>
+#include "World.h"
+#include "Camera.h"
+
 struct GLFWwindow;
 class World;
 class Camera;
+
+using namespace std;
 
 namespace UI {
 	// Abstract base class
@@ -58,7 +64,7 @@ namespace UI {
 		double cursorLastX, cursorLastY;
 	} extern walkMode;
 
-	GLboolean CheckCollision(Camera* camera);
+	GLboolean CheckCollision(Camera* camera, list<Model*> models);
 	void init(World* world, GLFWwindow* window);
 	void setActive(UIBase &UIinstance);
 }

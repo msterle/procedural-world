@@ -25,6 +25,7 @@ public:
 	void draw(GLFWwindow* window);
 	Terrain terrain;
 	Camera camera;
+	list<Model*> models;
 	struct {
 		GLuint shadowWidth = 2048;
 		GLuint shadowHeight = 2048;
@@ -35,7 +36,6 @@ protected:
 	const char* TERRAIN_PATH_COLOR = "/res/colour_lores.png";
 	Shader primaryShader, shadowShader;
 	GLint loc_viewPos, loc_viewMat, loc_projMat, loc_lightMatShadow, loc_lightMatPrimary;
-	list<Model*> models;
 	Light light;
 	GLuint shadowDepthFBO, shadowDepthTex;
 };

@@ -17,6 +17,8 @@
 #include "PLS.h"
 #include "Turtle.h"
 #include "helpers.h"
+#include "World.h"
+#include "Terrain.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -142,6 +144,7 @@ void ParaTree::Actions::forward(void* v_self, float length) {
 glm::vec3 ParaTree::getPosition() {
 	glm::vec4 currentPos(glm::vec3(position) , 1);
 
+	currentPos = glm::inverse(this->getModelMat()) * currentPos;
 	currentPos = this->getModelMat() * currentPos;
 
 	glm::vec3 newPos = glm::vec3(currentPos.x, currentPos.y, currentPos.z);
@@ -152,21 +155,35 @@ void ParaTree::setPosition(glm::vec3 position) {
 	this->position = position;
 }
 
-void ParaTree::createBoundingSphere(){
-	Mesh* theMesh;
-	theMesh = getCylinderMesh();
-	vector<glm::mat4> instances;
-	instances = theMesh->getInstancesMatrices();
-	vector<Vertex> paratree_vertex;
+void ParaTree::createBoundingVolume(){
+	 top = this->getPosition().y + 8.0f;
+	 bot = this->getPosition().y;
+	 left = this->getPosition().x - 2.0f;
+	 right = this->getPosition().x + 2.0f;
+	 back = this->getPosition().z - 2.0f;
+	 front = this->getPosition().z + 2.0f;
 
-	paratree_vertex = theMesh->getVertices();
-
-		//glm::vec4 newvecFour = instances[i] * glm::vec4(paratree_vertex[i].position.x, paratree_vertex[i].position.y, paratree_vertex[i].position.z, 1);
-		
-		for (int i = 0; i < paratree_vertex.size(); i++){
-			cout << "PARATREE VERTICES : " << paratree_vertex[i].position.x << " " << paratree_vertex[i].position.y << " " << paratree_vertex[i].position.z << endl;
-		}
+	 BS_center = glm::vec3(right + left / 2, top + bot / 2, back + front / 2);
 	
+}
+
+glm::vec3 ParaTree::getCenterCoord(){
+	this->createBoundingVolume();
+	return BS_center;
+}
+
+vector<float> ParaTree::getBoundingVolumePos() {
+	//Make sure we can get all the position of the bouding volume.
+	this->createBoundingVolume();
+	vector<float> BVPos;
+	BVPos.push_back(this->top);
+	BVPos.push_back(this->bot);
+	BVPos.push_back(this->left);
+	BVPos.push_back(this->right);
+	BVPos.push_back(this->back);
+	BVPos.push_back(this->front);
+
+	return BVPos;
 }
 
 
