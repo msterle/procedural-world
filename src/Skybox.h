@@ -5,6 +5,7 @@
 #include "../include/glfw3.h"
 #include "../include/glm/gtc/type_ptr.hpp"
 #include <vector>
+#include <cmath>
 
 #include "Vertex.h"
 #include "Shader.h"
@@ -17,7 +18,7 @@ protected:
 	TextureCubemap* tex;
 	Shader* shader;
 public:
-	Skybox();
+	Skybox(float size = 100.0f);
 	~Skybox();
 	void draw(glm::mat4 view, glm::mat4 projection);
 };

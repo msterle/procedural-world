@@ -14,6 +14,7 @@
 #include "FrameBuffer.h"
 #include "Filter.h"
 #include "Skybox.h"
+#include "helpers.h"
 
 using namespace std;
 
@@ -29,7 +30,7 @@ public:
 	~World();
 	void draw(GLFWwindow* window);
 	Terrain terrain;
-	Skybox skybox;
+	Skybox* skybox;
 	Camera camera;
 	struct {
 		GLuint shadowWidth = 1024;
@@ -46,9 +47,8 @@ protected:
 	FrameBuffer* shadowmapFBO;
 	Texture2D* shadowmapTex, * blurredShadowmapTex, * barkTex, * skyTex;
 	BlurFilter* blurFilter;
+	DebugHelper::Timer timer;
 	void generateBarkTex();
-	void generateSkyTex();
-	void buildSky();
 };
 
 #endif

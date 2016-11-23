@@ -307,6 +307,40 @@ float Terrain::getYAtXZWorld(float x, float z) {
 	return position.y;
 }
 
+glm::vec3 Terrain::getNormalAtXZWorld(float x, float z) {
+	glm::vec4 position(x, 0, z, 1);
+
+	// convert to instance coordinates
+	position = glm::inverse(instancePtr->instanceMat) * glm::inverse(modelMat) * position;
+
+	// get integer and fractrional parts, clamp between 0 and width/length
+	float fpartX, fpartZ, temp;
+	int prevX, nextX, prevZ, nextZ;
+	int xCount = getVerticesXCount(), zCount = getVerticesZCount();
+	
+	fpartX = modf(position.x, &temp);
+	prevX = min(max((int)temp, 0), xCount - 1);
+	nextX = min(prevX + 1, xCount - 1);
+
+	fpartZ = modf(position.z, &temp);
+	prevZ = min(max((int)temp, 0), zCount - 1);
+	nextZ = min(prevZ + 1, zCount - 1);
+
+	vector<Vertex> vertices = mesh->getVertices();
+
+	// calculate normal from surrounding 4 vertices
+	glm::vec3 normal;
+	normal = glm::normalize(glm::cross(vertices[prevX + nextZ * xCount].position 
+		- vertices[prevX + prevZ * xCount].position, 
+		vertices[nextX + prevZ * xCount].position 
+		- vertices[prevX + prevZ * xCount].position));
+
+	// convert to world coordinates
+	normal = glm::normalize(glm::transpose(glm::inverse(modelMat)) * instancePtr->instanceMat 
+		* glm::vec4(normal, 0));
+	return glm::vec3(normal);
+}
+
 
 /*
 	for(int y = 0; y < width; y++) {

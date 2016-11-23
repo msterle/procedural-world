@@ -31,28 +31,25 @@ using namespace std;
 
 World::World() {
 	// set up terrain
-	//terrain.generateDiamondSquare(100, 0.1, 0.25);
-	terrain.generatePlane(500, 500);
-
-	// set up textures
-	
-	DebugHelper::Timer timer;
+	timer.start("Generating terrain...");
+	terrain.generateDiamondSquare(200, 0.1, 0.25);
+	//terrain.generatePlane(500, 500);
+	timer.stop("Terrain took ");
 
 	//// bark generation
-	timer.start();
+	timer.start("Generating bark texture...");
 	generateBarkTex();
-	cout << "Timer barkTex: " << timer.stop() << endl;
+	timer.stop("Bark texture took ");
 
-	// sky texture generation
-	timer.start();
-	//generateSkyTex();
-	cout << "Timer skyTex: " << timer.stop() << endl;
-
-	//buildSky();
+	// skybox generation
+	timer.start("Generating skybox...");
+	//skybox = new Skybox(2000);
+	timer.stop("Skybox took ");
+	
 
 	// set up trees
 	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2, barkTex);
-	glm::vec3 treePos(0, 0, 0);
+	glm::vec3 treePos(-1, 0, -1);
 	ptree->translate(glm::vec3(
 		treePos.x, 
 		terrain.getYAtXZWorld(treePos.x, treePos.z), 
@@ -110,6 +107,7 @@ World::World() {
 // destructor
 
 World::~World() {
+	delete skybox;
 	delete primaryShader;
 	delete shadowShader;
 	delete shadowmapFBO;
@@ -177,10 +175,10 @@ void World::draw(GLFWwindow* window) {
 	glBindTexture(GL_TEXTURE_2D, blurredShadowmapTex->getRef());
 	
 	// draw skybox
-	skybox.draw(camera.getViewMat(), camera.getProjMat());
+	//skybox->draw(camera.getViewMat(), camera.getProjMat());
 
 	// Draw models
-	//terrain.draw(primaryShader);
+	terrain.draw(primaryShader);
 	for(list<Model*>::iterator it = models.begin(); it != models.end(); it++) {
 		(*it)->draw(primaryShader);
 	}
@@ -216,51 +214,4 @@ void World::generateBarkTex() {
 	delete tempTex1;
 	delete tempTex2;
 	delete tempTex3;
-}
-
-void World::generateSkyTex() {
-	PerlinNoise pnoise(237);
-	//TextureCubemap* skybox = new TextureCubemap();
-
-
-	Texture2D* tempTex1 = new Texture2D(600, 600, [pnoise](float x, float y)->Texture::PixelRGBA32F {
-		float xPersp = x / y;
-		float yPersp = 1.0 / y;
-		float val = min(1.0, 
-			  max(0.0, pnoise.octaveNoise(15.0 * xPersp, 15.0 * yPersp, 0, 8, 0.5) - 0.5) * 2.0
-			* max(0.0, pnoise.octaveNoise(5.0 * xPersp, 5.0 * yPersp, 0, 2, 0.5) - 0.4)
-			* 10.0 / 6.0 * 3);
-		return {val, val, val, 1.0};
-	});
-	//skyTex = new Texture2D(*tempTex1);
-	skyTex = tempTex1;
-}
-
-void World::buildSky() {
-	Model* sky = new Model();
-	vector<Vertex> vertices;
-	vertices.push_back(Vertex{
-		glm::vec3(-10000, 0, -10000),
-		glm::vec3(0, -1, 0),
-		glm::vec2(0, 0)
-	});
-	vertices.push_back(Vertex{
-		glm::vec3(10000, 0, -10000),
-		glm::vec3(0, -1, 0),
-		glm::vec2(1, 0)
-	});
-	vertices.push_back(Vertex{
-		glm::vec3(-10000, 0, 10000),
-		glm::vec3(0, -1, 0),
-		glm::vec2(0, 1)
-	});
-	vertices.push_back(Vertex{
-		glm::vec3(10000, 0, 10000),
-		glm::vec3(0, -1, 0),
-		glm::vec2(1, 1)
-	});
-	Mesh* mesh = sky->newMesh(vertices, GL_TRIANGLE_STRIP);
-	mesh->newInstance();
-	models.push_back(sky);
-	sky->translate(glm::vec3(0, 1500, 0));
 }

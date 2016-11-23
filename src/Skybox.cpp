@@ -15,46 +15,46 @@
 
 using namespace std;
 
-Skybox::Skybox() : tex(NULL) {
+Skybox::Skybox(float size) : tex(NULL) {
 	shader = new Shader(PathHelper::shader("skybox.vert"),
 		PathHelper::shader("skybox.frag"));
 
-	vertices.push_back(glm::vec3(-20.0f,  20.0f, -20.0f));
-	vertices.push_back(glm::vec3(-20.0f, -20.0f, -20.0f));
-	vertices.push_back(glm::vec3( 20.0f, -20.0f, -20.0f));
-	vertices.push_back(glm::vec3( 20.0f, -20.0f, -20.0f));
-	vertices.push_back(glm::vec3( 20.0f,  20.0f, -20.0f));
-	vertices.push_back(glm::vec3(-20.0f,  20.0f, -20.0f));
-	vertices.push_back(glm::vec3(-20.0f, -20.0f,  20.0f));
-	vertices.push_back(glm::vec3(-20.0f, -20.0f, -20.0f));
-	vertices.push_back(glm::vec3(-20.0f,  20.0f, -20.0f));
-	vertices.push_back(glm::vec3(-20.0f,  20.0f, -20.0f));
-	vertices.push_back(glm::vec3(-20.0f,  20.0f,  20.0f));
-	vertices.push_back(glm::vec3(-20.0f, -20.0f,  20.0f));
-	vertices.push_back(glm::vec3( 20.0f, -20.0f, -20.0f));
-	vertices.push_back(glm::vec3( 20.0f, -20.0f,  20.0f));
-	vertices.push_back(glm::vec3( 20.0f,  20.0f,  20.0f));
-	vertices.push_back(glm::vec3( 20.0f,  20.0f,  20.0f));
-	vertices.push_back(glm::vec3( 20.0f,  20.0f, -20.0f));
-	vertices.push_back(glm::vec3( 20.0f, -20.0f, -20.0f));
-	vertices.push_back(glm::vec3(-20.0f, -20.0f,  20.0f));
-	vertices.push_back(glm::vec3(-20.0f,  20.0f,  20.0f));
-	vertices.push_back(glm::vec3( 20.0f,  20.0f,  20.0f));
-	vertices.push_back(glm::vec3( 20.0f,  20.0f,  20.0f));
-	vertices.push_back(glm::vec3( 20.0f, -20.0f,  20.0f));
-	vertices.push_back(glm::vec3(-20.0f, -20.0f,  20.0f));
-	vertices.push_back(glm::vec3(-20.0f,  20.0f, -20.0f));
-	vertices.push_back(glm::vec3( 20.0f,  20.0f, -20.0f));
-	vertices.push_back(glm::vec3( 20.0f,  20.0f,  20.0f));
-	vertices.push_back(glm::vec3( 20.0f,  20.0f,  20.0f));
-	vertices.push_back(glm::vec3(-20.0f,  20.0f,  20.0f));
-	vertices.push_back(glm::vec3(-20.0f,  20.0f, -20.0f));
-	vertices.push_back(glm::vec3(-20.0f, -20.0f, -20.0f));
-	vertices.push_back(glm::vec3(-20.0f, -20.0f,  20.0f));
-	vertices.push_back(glm::vec3( 20.0f, -20.0f, -20.0f));
-	vertices.push_back(glm::vec3( 20.0f, -20.0f, -20.0f));
-	vertices.push_back(glm::vec3(-20.0f, -20.0f,  20.0f));
-	vertices.push_back(glm::vec3( 20.0f, -20.0f,  20.0f));
+	vertices.push_back(glm::vec3(-size,  size, -size));
+	vertices.push_back(glm::vec3(-size, -size, -size));
+	vertices.push_back(glm::vec3( size, -size, -size));
+	vertices.push_back(glm::vec3( size, -size, -size));
+	vertices.push_back(glm::vec3( size,  size, -size));
+	vertices.push_back(glm::vec3(-size,  size, -size));
+	vertices.push_back(glm::vec3(-size, -size,  size));
+	vertices.push_back(glm::vec3(-size, -size, -size));
+	vertices.push_back(glm::vec3(-size,  size, -size));
+	vertices.push_back(glm::vec3(-size,  size, -size));
+	vertices.push_back(glm::vec3(-size,  size,  size));
+	vertices.push_back(glm::vec3(-size, -size,  size));
+	vertices.push_back(glm::vec3( size, -size, -size));
+	vertices.push_back(glm::vec3( size, -size,  size));
+	vertices.push_back(glm::vec3( size,  size,  size));
+	vertices.push_back(glm::vec3( size,  size,  size));
+	vertices.push_back(glm::vec3( size,  size, -size));
+	vertices.push_back(glm::vec3( size, -size, -size));
+	vertices.push_back(glm::vec3(-size, -size,  size));
+	vertices.push_back(glm::vec3(-size,  size,  size));
+	vertices.push_back(glm::vec3( size,  size,  size));
+	vertices.push_back(glm::vec3( size,  size,  size));
+	vertices.push_back(glm::vec3( size, -size,  size));
+	vertices.push_back(glm::vec3(-size, -size,  size));
+	vertices.push_back(glm::vec3(-size,  size, -size));
+	vertices.push_back(glm::vec3( size,  size, -size));
+	vertices.push_back(glm::vec3( size,  size,  size));
+	vertices.push_back(glm::vec3( size,  size,  size));
+	vertices.push_back(glm::vec3(-size,  size,  size));
+	vertices.push_back(glm::vec3(-size,  size, -size));
+	vertices.push_back(glm::vec3(-size, -size, -size));
+	vertices.push_back(glm::vec3(-size, -size,  size));
+	vertices.push_back(glm::vec3( size, -size, -size));
+	vertices.push_back(glm::vec3( size, -size, -size));
+	vertices.push_back(glm::vec3(-size, -size,  size));
+	vertices.push_back(glm::vec3( size, -size,  size));
 
 	// Generate VAO, VBO, EBO, IBO
 	glGenVertexArrays(1, &VAO);
@@ -72,16 +72,33 @@ Skybox::Skybox() : tex(NULL) {
 	glBindVertexArray(0);
 
 	PerlinNoise pnoise(237);
-	tex = new TextureCubemap(400, 400, [pnoise](float x, float y, float z)->Texture::PixelRGBA32F {
-		float val = floor(10.0 * pnoise.octaveNoise(5.0 * x, 5.0 * y, 5.0 * z, 2, 0.5)) / 10.0;
-		//float val = (-y / 2 + 0.5) * 2;
-		return {val, val, val, 1.0};
+	Texture::PixelRGBA32F colorDark = {0.62, 0.82, 1};
+	Texture::PixelRGBA32F colorLight = {1, 1, 1, 1};
+
+	tex = new TextureCubemap(400, 400, [pnoise, colorDark, colorLight](float x, float y, float z)->Texture::PixelRGBA32F {
+		// speed things up by ignoring values where y < 0
+		if(y < 0)
+			return {1, 1, 1, 1};
+		float val = min(1.0, 
+			  max(0.0, pnoise.octaveNoise(15.0 * x / y, 1.0, 15.0 * z / y, 8, 0.5) - 0.5) * 2.0
+			* max(0.0, pnoise.octaveNoise(5.0 * x / y, 5.0 * z / y, 0, 2, 0.5) - 0.4)
+			* 10.0 / 6.0 * 3
+			+ 0.8 * pow(100.0, -y)); // add for raleigh scattering
+		Texture::PixelRGBA32F pixel = {
+			fma(val, colorLight[0], fma(-val, colorDark[0], colorDark[0])),
+			fma(val, colorLight[1], fma(-val, colorDark[1], colorDark[1])),
+			fma(val, colorLight[2], fma(-val, colorDark[2], colorDark[2])),
+			fma(val, colorLight[3], fma(-val, colorDark[3], colorDark[3]))
+		};
+		return pixel;
 	});
-	tex->setFilterMode(Texture::LINEAR);
+
+	tex->setFilterMode(Texture::NEAREST);
 }
 
 Skybox::~Skybox() {
 	delete shader;
+	delete tex;
 }
 
 void Skybox::draw(glm::mat4 view, glm::mat4 projection) {

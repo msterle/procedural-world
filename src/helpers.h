@@ -49,8 +49,17 @@ namespace DebugHelper {
 	void renderTex(Texture2D* tex, float scale = 1);
 	struct Timer {
 		double t0;
-		void start() { t0 = glfwGetTime(); }
-		double stop() { return glfwGetTime() - t0; }
+		void start(std::string message = "") {
+			if(!message.empty())
+				std::cout << message << std::endl;
+			t0 = glfwGetTime();
+		}
+		double stop(std::string message = "") {
+			double t1 = glfwGetTime() - t0;
+			if(!message.empty())
+				std::cout << message << t1 << "s" << std::endl;
+			return t1;
+		}
 	};
 }
 

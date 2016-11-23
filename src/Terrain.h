@@ -26,6 +26,7 @@ public:
 	void generateDiamondSquare(float width, float resolution, float roughness);
 	void generatePlane(float width, float length);
 	float getYAtXZWorld(float x, float z);
+	glm::vec3 getNormalAtXZWorld(float x, float z);
 	float getWidth() { return width; }
 	float getLength() { return length; }
 	float getResolution() { return resolution; }

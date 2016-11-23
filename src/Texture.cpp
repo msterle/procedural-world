@@ -159,7 +159,7 @@ TextureCubemap::TextureCubemap(GLsizei width, GLsizei height, Generator3DRGBA8U 
 	// +X face
 	for(int x = 0; x < width; ++x) {
 		for(int y = 0; y < height; ++y) {
-			pixel = generator(1, 2.0 * (float)y / height - 1.0, -2.0 * (float)x / width + 1.0);
+			pixel = generator(1, -2.0 * (float)y / height + 1.0, -2.0 * (float)x / width + 1.0);
 			data[(x + y * width) * 4]     = pixel[0];
 			data[(x + y * width) * 4 + 1] = pixel[1];
 			data[(x + y * width) * 4 + 2] = pixel[2];
@@ -171,7 +171,7 @@ TextureCubemap::TextureCubemap(GLsizei width, GLsizei height, Generator3DRGBA8U 
 	// -X face
 	for(int x = 0; x < width; ++x) {
 		for(int y = 0; y < height; ++y) {
-			pixel = generator(-1, 2.0 * (float)y / height - 1.0, 2.0 * (float)x / width - 1.0);
+			pixel = generator(-1, -2.0 * (float)y / height + 1.0, 2.0 * (float)x / width - 1.0);
 			data[(x + y * width) * 4]     = pixel[0];
 			data[(x + y * width) * 4 + 1] = pixel[1];
 			data[(x + y * width) * 4 + 2] = pixel[2];
@@ -195,7 +195,7 @@ TextureCubemap::TextureCubemap(GLsizei width, GLsizei height, Generator3DRGBA8U 
 	// -Y face
 	for(int x = 0; x < width; ++x) {
 		for(int y = 0; y < height; ++y) {
-			pixel = generator(2.0 * (float)x / width - 1.0, -1, 2.0 * (float)y / height - 1.0);
+			pixel = generator(2.0 * (float)x / width - 1.0, -1, -2.0 * (float)y / height + 1.0);
 			data[(x + y * width) * 4]     = pixel[0];
 			data[(x + y * width) * 4 + 1] = pixel[1];
 			data[(x + y * width) * 4 + 2] = pixel[2];
@@ -207,7 +207,7 @@ TextureCubemap::TextureCubemap(GLsizei width, GLsizei height, Generator3DRGBA8U 
 	// +Z face
 	for(int x = 0; x < width; ++x) {
 		for(int y = 0; y < height; ++y) {
-			pixel = generator(2.0 * (float)x / width - 1.0, 2.0 * (float)y / height - 1.0, 1);
+			pixel = generator(2.0 * (float)x / width - 1.0, -2.0 * (float)y / height + 1.0, 1);
 			data[(x + y * width) * 4]     = pixel[0];
 			data[(x + y * width) * 4 + 1] = pixel[1];
 			data[(x + y * width) * 4 + 2] = pixel[2];
@@ -219,7 +219,7 @@ TextureCubemap::TextureCubemap(GLsizei width, GLsizei height, Generator3DRGBA8U 
 	// -Z face
 	for(int x = 0; x < width; ++x) {
 		for(int y = 0; y < height; ++y) {
-			pixel = generator(-2.0 * (float)x / width + 1.0, 2.0 * (float)y / height - 1.0, -1);
+			pixel = generator(-2.0 * (float)x / width + 1.0, -2.0 * (float)y / height + 1.0, -1);
 			data[(x + y * width) * 4]     = pixel[0];
 			data[(x + y * width) * 4 + 1] = pixel[1];
 			data[(x + y * width) * 4 + 2] = pixel[2];
