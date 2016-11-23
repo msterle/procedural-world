@@ -82,28 +82,28 @@ namespace UI {
 				break;
 			case GLFW_KEY_S:
 				if (CheckCollision(&UI::world->camera)){
-					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.3, world->camera.getPosition().z));
+					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.2, world->camera.getPosition().z));
 					break;
 				}
 				UI::world->camera.moveRelative(glm::vec3(0, 0, -0.5));
 				break;
 			case GLFW_KEY_A:
 				if (CheckCollision(&UI::world->camera)){
-					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.3, world->camera.getPosition().z));
+					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.2, world->camera.getPosition().z));
 					break;
 				}
 				UI::world->camera.moveRelative(glm::vec3(-0.5, 0, 0));
 				break;
 			case GLFW_KEY_D:
 				if (CheckCollision(&UI::world->camera)){
-					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.3, world->camera.getPosition().z));
+					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.2, world->camera.getPosition().z));
 					break;
 				}
 				UI::world->camera.moveRelative(glm::vec3(0.5, 0, 0));
 				break;
 			case GLFW_KEY_SPACE:
 				if (CheckCollision(&UI::world->camera)){
-					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.3, world->camera.getPosition().z));
+					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.2, world->camera.getPosition().z));
 					break;
 				}
 				UI::world->camera.moveRelative(glm::vec3(0, 0.5, 0));
@@ -191,7 +191,7 @@ namespace UI {
 			case GLFW_KEY_A:
 				//Lock camera position terrain height.
 				if (CheckCollision(&UI::world->camera)){
-					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x - 0.1f, world->camera.getPosition().y, world->camera.getPosition().z));
+					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y, world->camera.getPosition().z + 0.1f));
 					break;
 				}
 				UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x,
@@ -211,7 +211,7 @@ namespace UI {
 			case GLFW_KEY_D:
 				//Lock camera position terrain height.
 				if (CheckCollision(&UI::world->camera)){
-					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x + 0.1f, world->camera.getPosition().y, world->camera.getPosition().z));
+					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y, world->camera.getPosition().z - 0.1f));
 					break;
 				}
 				UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x,
@@ -270,7 +270,7 @@ namespace UI {
 		for (list<Model*>::iterator it = ModelPtr.begin(); it != ModelPtr.end(); it++) {
 			glm::vec3 Position = glm::vec3((*it)->getCenterCoord());
 			cout << "Model center coordinate" << Position.x << " " << Position.y << " " << Position.z << endl;
-			if (glm::distance(camera->getPosition(), Position) < 2.90f)
+			if (glm::distance(camera->getPosition(), Position) < 3.0f)
 				collision = true;
 		}
 		GLfloat mapheight = world->terrain.getYAtXZWorld(camera->getPosition().x, camera->getPosition().z);
