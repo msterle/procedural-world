@@ -59,7 +59,6 @@ public:
 	void setPosition(glm::vec3 position);
 	//Create bounding sphere
 	void createBoundingVolume();
-	vector<float> getBoundingVolumePos();
 	glm::vec3 getCenterCoord();
 
 };

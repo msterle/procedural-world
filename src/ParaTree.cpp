@@ -147,7 +147,7 @@ glm::vec3 ParaTree::getPosition() {
 	currentPos = glm::inverse(this->getModelMat()) * currentPos;
 	currentPos = this->getModelMat() * currentPos;
 
-	glm::vec3 newPos = glm::vec3(currentPos.x, currentPos.y, currentPos.z);
+	glm::vec3 newPos = glm::vec3(currentPos.x, currentPos.y + 2, currentPos.z);
 	return newPos;
 }
 
@@ -156,14 +156,11 @@ void ParaTree::setPosition(glm::vec3 position) {
 }
 
 void ParaTree::createBoundingVolume(){
-	 top = this->getPosition().y + 8.0f;
-	 bot = this->getPosition().y;
-	 left = this->getPosition().x - 2.0f;
-	 right = this->getPosition().x + 2.0f;
-	 back = this->getPosition().z - 2.0f;
-	 front = this->getPosition().z + 2.0f;
+	GLfloat BoundingX = this->getPosition().x;
+	GLfloat BoundingY = this->getPosition().y + 2.0;
+	GLfloat BoundingZ = this->getPosition().z;
 
-	 BS_center = glm::vec3(right + left / 2, top + bot / 2, back + front / 2);
+	 BS_center = glm::vec3(BoundingX, BoundingY, BoundingZ);
 	
 }
 
@@ -171,21 +168,6 @@ glm::vec3 ParaTree::getCenterCoord(){
 	this->createBoundingVolume();
 	return BS_center;
 }
-
-vector<float> ParaTree::getBoundingVolumePos() {
-	//Make sure we can get all the position of the bouding volume.
-	this->createBoundingVolume();
-	vector<float> BVPos;
-	BVPos.push_back(this->top);
-	BVPos.push_back(this->bot);
-	BVPos.push_back(this->left);
-	BVPos.push_back(this->right);
-	BVPos.push_back(this->back);
-	BVPos.push_back(this->front);
-
-	return BVPos;
-}
-
 
 
 

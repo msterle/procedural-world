@@ -73,7 +73,7 @@ namespace UI {
 				break;
 			case GLFW_KEY_W:
 				//Check if the camera collide with the plane
-				if (CheckCollision(&UI::world->camera, UI::world->models)){
+				if (CheckCollision(&UI::world->camera)){
 					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.3, world->camera.getPosition().z));
 					break;
 				}
@@ -81,31 +81,33 @@ namespace UI {
 				UI::world->camera.moveRelative(glm::vec3(0, 0, 0.5));
 				break;
 			case GLFW_KEY_S:
-				if (CheckCollision(&UI::world->camera, UI::world->models)){
+				if (CheckCollision(&UI::world->camera)){
 					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.3, world->camera.getPosition().z));
 					break;
 				}
 				UI::world->camera.moveRelative(glm::vec3(0, 0, -0.5));
 				break;
 			case GLFW_KEY_A:
-				if (CheckCollision(&UI::world->camera, UI::world->models)){
+				if (CheckCollision(&UI::world->camera)){
 					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.3, world->camera.getPosition().z));
 					break;
 				}
 				UI::world->camera.moveRelative(glm::vec3(-0.5, 0, 0));
 				break;
 			case GLFW_KEY_D:
-				if (CheckCollision(&UI::world->camera, UI::world->models)){
+				if (CheckCollision(&UI::world->camera)){
 					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.3, world->camera.getPosition().z));
 					break;
 				}
 				UI::world->camera.moveRelative(glm::vec3(0.5, 0, 0));
 				break;
 			case GLFW_KEY_SPACE:
-				if (CheckCollision(&UI::world->camera, UI::world->models)){
+				if (CheckCollision(&UI::world->camera)){
 					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y + 0.3, world->camera.getPosition().z));
 					break;
 				}
+				UI::world->camera.moveRelative(glm::vec3(0, 0.5, 0));
+				break;
 			case GLFW_KEY_T:
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 				break;
@@ -131,8 +133,6 @@ namespace UI {
 	}
 
 	void UIExplore::onCursorMove(GLFWwindow* window, double xpos, double ypos) {
-		//Display cursor and lock it to the frame
-		glfwGetCursorPos(window, &xpos, &ypos);
 			// change heading and attitude
 			int width, height;
 			glfwGetFramebufferSize(window, &width, &height);
@@ -163,76 +163,60 @@ namespace UI {
 	// UIWalk event callbacks
 	void UIWalk::onKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		GLfloat mapheight = world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0;
+		GLfloat mapheight = world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 3.0;
 		glm::vec3 currentPos;
 		glm::vec3 newPos;
 		glm::vec3 tangentVec;
+		GLfloat cameraSpeed = 0.3;
+		GLfloat runSpeed = 0.85;
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
 			glfwSetWindowShouldClose(window, GL_TRUE);
 		}
 		else if (action == GLFW_PRESS || action == GLFW_REPEAT) {
 			switch (key) {
-				//Rotate Mesh Around X axis
-			case GLFW_KEY_Y:
-				UI::world->terrain.rotate(glm::radians(10.0f),
-					glm::vec3(0.0f, (mods == GLFW_MOD_SHIFT ? 1.0f : -1.0f), 0.0f));
-				break;
-			case GLFW_KEY_T:
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-				break;
-			case GLFW_KEY_V:
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-				break;
-			case GLFW_KEY_P:
-				glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-				break;
 			case GLFW_KEY_W:
 				/* -Calculate the camera current Position
 				- Calculate the camera's new position
 				- Calculate the height at this new position
 				- then Calculate the tangent vector which is Normalize(NewPos - CurrentPos)
 				- Move the camera along this tangent vector*/
-				currentPos = (glm::vec3(UI::world->camera.getPosition().x, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
-					UI::world->camera.getPosition().z));
-				newPos = (glm::vec3(UI::world->camera.getPosition().x, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
-					UI::world->camera.getPosition().z + 0.3));
-				tangentVec = glm::normalize(glm::vec3(newPos.x - currentPos.x, newPos.y - currentPos.y, newPos.z - currentPos.z));
+				if (CheckCollision(&UI::world->camera)){
+					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x , world->camera.getPosition().y, world->camera.getPosition().z));
+					break;
+				}
 				UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, 
 					mapheight, world->camera.getPosition().z));
-				UI::world->camera.moveRelative(tangentVec);
+				UI::world->camera.moveRelative(glm::vec3(0, 0, (mods == GLFW_MOD_SHIFT ? runSpeed : cameraSpeed)));
 				break;
 			case GLFW_KEY_A:
 				//Lock camera position terrain height.
-				currentPos = (glm::vec3(UI::world->camera.getPosition().x, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
-					UI::world->camera.getPosition().z));
-				newPos = (glm::vec3(UI::world->camera.getPosition().x - 0.3, UI::world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
-					UI::world->camera.getPosition().z));
-				tangentVec = glm::normalize(glm::vec3(newPos.x - currentPos.x, newPos.y - currentPos.y, newPos.z - currentPos.z));
+				if (CheckCollision(&UI::world->camera)){
+					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x - 0.1f, world->camera.getPosition().y, world->camera.getPosition().z));
+					break;
+				}
 				UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x,
 					mapheight, world->camera.getPosition().z));
-				UI::world->camera.moveRelative(tangentVec);
+				UI::world->camera.moveRelative(glm::vec3((mods == GLFW_MOD_SHIFT ? -runSpeed : -cameraSpeed), 0, 0));
 				break;
 			case GLFW_KEY_S:
 				//Lock camera position terrain height.
-				currentPos = (glm::vec3(UI::world->camera.getPosition().x, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
-					UI::world->camera.getPosition().z));
-				newPos = (glm::vec3(UI::world->camera.getPosition().x, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
-					UI::world->camera.getPosition().z - 0.3));
-				tangentVec = glm::normalize(glm::vec3(newPos.x - currentPos.x, newPos.y - currentPos.y, newPos.z - currentPos.z));
+				if (CheckCollision(&UI::world->camera)){
+					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x, world->camera.getPosition().y, world->camera.getPosition().z + 0.1f));
+					break;
+				}
 				UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x,
 					mapheight, world->camera.getPosition().z));
-				UI::world->camera.moveRelative(tangentVec);
+				UI::world->camera.moveRelative(glm::vec3(0, 0, (mods == GLFW_MOD_SHIFT ? -runSpeed : -cameraSpeed)));
 				break;
 			case GLFW_KEY_D:
 				//Lock camera position terrain height.
-				currentPos = (glm::vec3(UI::world->camera.getPosition().x, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
-					UI::world->camera.getPosition().z));
-				newPos = (glm::vec3(UI::world->camera.getPosition().x + 0.3, world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 5.0,
-					UI::world->camera.getPosition().z));
-				tangentVec = glm::normalize(glm::vec3(newPos.x - currentPos.x, newPos.y - currentPos.y, newPos.z - currentPos.z));
+				if (CheckCollision(&UI::world->camera)){
+					UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x + 0.1f, world->camera.getPosition().y, world->camera.getPosition().z));
+					break;
+				}
 				UI::world->camera.setPosition(glm::vec3(world->camera.getPosition().x,
 					mapheight, world->camera.getPosition().z));
-				UI::world->camera.moveRelative(tangentVec);
+				UI::world->camera.moveRelative(glm::vec3((mods == GLFW_MOD_SHIFT ? runSpeed : cameraSpeed), 0, 0));
 				break;
 				//Switch Control Mode
 			case GLFW_KEY_H:
@@ -278,15 +262,16 @@ namespace UI {
 	}
 
 	//Detecting collision between camera and Plane.
-	GLboolean CheckCollision(Camera* camera, list<Model*> model) {
-
-		
+	GLboolean CheckCollision(Camera* camera) {
 		GLboolean collision = false;
-		for (list<Model*>::iterator it = model.begin(); it != model.end(); it++) {
-				glm::vec3 centerCoord = (*it)->getCenterCoord();
-				cout << "Model center coordinate" << centerCoord.x << " " << centerCoord.y << " " << centerCoord.z << endl;
-				if (glm::distance(camera->getPosition(), centerCoord) < 2.0f)
-					collision = true;
+		//Copy the models
+		list<Model*> ModelPtr = UI::world->getModels();
+		//Loop through each model and see if the camera,(at any point)wwwwwwwwwwwwwwwww collide with one of them.
+		for (list<Model*>::iterator it = ModelPtr.begin(); it != ModelPtr.end(); it++) {
+			glm::vec3 Position = glm::vec3((*it)->getCenterCoord());
+			cout << "Model center coordinate" << Position.x << " " << Position.y << " " << Position.z << endl;
+			if (glm::distance(camera->getPosition(), Position) < 2.90f)
+				collision = true;
 		}
 		GLfloat mapheight = world->terrain.getYAtXZWorld(camera->getPosition().x, camera->getPosition().z);
 		//detection truth value
