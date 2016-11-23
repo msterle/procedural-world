@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <vector>
 #include <random>
+#include <cmath>
 
 // debug only
 #include <iostream>
@@ -48,7 +49,12 @@ PerlinNoise::PerlinNoise(unsigned int seed) {
 		p[i] = ptemp[i%256];
 }
 
-float PerlinNoise::noise(float x, float y, float z) const {
+float PerlinNoise::noise(float x, float y, float z, unsigned int period) const {
+	if(period < 1)
+		period = 1;
+	x = fmod(x, (float)period);
+	y = fmod(y, (float)period);
+	z = fmod(z, (float)period);
 	// first 8 bits of integer parts
 	int xi = (int)floor(x) & 255, yi = (int)floor(y) & 255, zi = (int)floor(z) & 255;
 	x -= floor(x);
@@ -57,23 +63,30 @@ float PerlinNoise::noise(float x, float y, float z) const {
 	// get faded distances from coordinates
 	float u = fade(x), v = fade(y), w = fade(z);
 	// hashing method
-	int a = p[xi]     + yi, aa = p[a] + zi, ab = p[a + 1] + zi;
-	int b = p[xi + 1] + yi, ba = p[b] + zi, bb = p[b + 1] + zi;
+	int aaa = p[p[p[                  xi] +                   yi] +                   zi];
+    int aba = p[p[p[                  xi] + (yi + 1) % period] +                   zi];
+    int aab = p[p[p[                  xi] +                   yi] + (zi + 1) % period];
+    int abb = p[p[p[                  xi] + (yi + 1) % period] + (zi + 1) % period];
+    int baa = p[p[p[(xi + 1) % period] +                   yi] +                   zi];
+    int bba = p[p[p[(xi + 1) % period] + (yi + 1) % period] +                   zi];
+    int bab = p[p[p[(xi + 1) % period] +                   yi] + (zi + 1) % period];
+    int bbb = p[p[p[(xi + 1) % period] + (yi + 1) % period] + (zi + 1) % period];
 	// find component of each hash for 8 surrounding vertices, normalize on [0,1]
-	return (lerp(w, lerp(v, lerp(u, grad(p[aa    ], x    , y    , z    ),
-									grad(p[ba    ], x - 1, y    , z    )),
-							lerp(u, grad(p[ab    ], x    , y - 1, z    ),
-									grad(p[bb    ], x - 1, y - 1, z    ))),
-					lerp(v, lerp(u, grad(p[aa + 1], x    , y    , z - 1),
-									grad(p[ba + 1], x - 1, y    , z - 1)),
-							lerp(u, grad(p[ab + 1], x    , y - 1, z - 1),
-									grad(p[bb + 1], x - 1, y - 1, z - 1)))) + 1.0) / 2.0;
+	return (lerp(w, lerp(v, lerp(u, grad(aaa, x    , y    , z    ),
+									grad(baa, x - 1, y    , z    )),
+							lerp(u, grad(aba, x    , y - 1, z    ),
+									grad(bba, x - 1, y - 1, z    ))),
+					lerp(v, lerp(u, grad(aab, x    , y    , z - 1),
+									grad(bab, x - 1, y    , z - 1)),
+							lerp(u, grad(abb, x    , y - 1, z - 1),
+									grad(bbb, x - 1, y - 1, z - 1)))) + 1.0) / 2.0;
 }
 
-float PerlinNoise::octaveNoise(float x, float y, float z, int octaves, float persistence) const {
+float PerlinNoise::octaveNoise(float x, float y, float z, int octaves, float persistence, 
+		unsigned int period) const {
 	float sum = 0, frequency = 1, amplitude = 1, maxValue = 0;
     for(int i = 0; i < octaves; ++i) {
-        sum += noise(x * frequency, y * frequency, z * frequency) * amplitude;
+        sum += noise(x * frequency, y * frequency, z * frequency, period) * amplitude;
         maxValue += amplitude;
         amplitude *= persistence;
         frequency *= 2;

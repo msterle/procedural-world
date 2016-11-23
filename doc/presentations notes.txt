@@ -1,0 +1,22 @@
+presentations
+
+18:30 - may change
+
+display vga or hdmi
+
+15 - general
+45 - content
+40 - presentation
+
+
+presentation
+- cite references
+- explain for teams who did other project
+- good conclusion (i.e. future work...)
+- good visual aids
+
+demo
+- show different options (PLS vs basic, PVS, filters, tex generators, terrain)
+
+report
+- 

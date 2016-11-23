@@ -31,6 +31,8 @@ public:
 	typedef std::array<float, 4> PixelRGBA32F;
 	typedef std::function<PixelRGBA8U(float, float)> GeneratorRGBA8U;
 	typedef std::function<PixelRGBA32F(float, float)> GeneratorRGBA32F;
+	typedef std::function<PixelRGBA8U(float, float, float)> Generator3DRGBA8U;
+	typedef std::function<PixelRGBA32F(float, float, float)> Generator3DRGBA32F;
 protected:
 	GLuint texID;
 	GLenum target, format, type, wrap;
@@ -122,8 +124,6 @@ public:
 	// copy constructor
 	Texture1D(const Texture1D& orig) 
 			: Texture(GL_TEXTURE_1D, orig) { init(); }
-	// getters
-	GLsizei getHeight() const { return dims[1]; }
 };
 
 
@@ -154,6 +154,42 @@ public:
 			: Texture(GL_TEXTURE_2D, orig) { init(); }
 	// getters
 	GLsizei getHeight() const { return dims[1]; }
+};
+
+
+// Subclass for cubemaps
+class TextureCubemap : public Texture {
+protected:
+	GLenum face;
+	void createImage(const GLvoid* pixels = NULL) override;
+	void updateImage(const GLvoid* pixels, Dimensions dims = Dimensions(), 
+			Offset off = Offset()) override;
+public:
+	// full constructor with combined dimension parameters
+	TextureCubemap(GLint internalFormat, Dimensions dims, GLenum format, GLenum type, 
+			GLenum wrap = GL_REPEAT, Border border = Border(), FilterMode filter = NEAREST, 
+			const GLvoid* pixels = NULL)
+			: Texture(GL_TEXTURE_CUBE_MAP, internalFormat, dims, format, type, wrap, border, filter, 
+				pixels) { init(pixels); }
+	// full constructor with separate dimension parameters
+	TextureCubemap(GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, 
+			GLenum wrap = GL_REPEAT, Border border = Border(), FilterMode filter = NEAREST, 
+			const GLvoid* pixels = NULL)
+			: TextureCubemap(internalFormat, Dimensions{width, height}, format, type, wrap, border, 
+				filter, pixels) { }
+	// texture generators
+	TextureCubemap(GLsizei width, GLsizei height, Generator3DRGBA8U generator);
+	TextureCubemap(GLsizei width, GLsizei height, Generator3DRGBA32F generator);
+	// copy constructor
+	TextureCubemap(const TextureCubemap& orig) 
+			: Texture(GL_TEXTURE_CUBE_MAP, orig) { init(); }
+	// getters
+	GLsizei getHeight() const { return dims[1]; }
+	// set face texture
+	void setFace(GLenum face, const GLvoid* pixels) {
+		this->face = face;
+		updateImage(pixels);
+	}
 };
 
 #endif

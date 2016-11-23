@@ -4,6 +4,7 @@
 #include "../include/glew.h"
 #include "../include/glfw3.h"
 #include "Shader.h"
+#include "Texture.h"
 
 // debug only
 #include <iostream>
@@ -71,6 +72,9 @@ namespace GLHelper{
 		// Define restart index
 		glPrimitiveRestartIndex(65535);
 
+		// seamless cubemaps
+		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
 		// antialiasing
 		glEnable(GL_MULTISAMPLE);
 
@@ -86,7 +90,7 @@ namespace GLHelper{
 
 namespace DebugHelper {
 
-	void renderTex(GLuint tex, float scale) {
+	void renderTex(Texture2D* tex, float scale) {
 		static GLuint texVAO = 0, texVBO;
 		static Shader* texShader;
 		if (texVAO == 0){
@@ -114,8 +118,7 @@ namespace DebugHelper {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		texShader->use();
-		glActiveTexture(GL_TEXTURE0);
-	    glBindTexture(GL_TEXTURE_2D, tex);
+		tex->bind();
 		glBindVertexArray(texVAO);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glBindVertexArray(0);

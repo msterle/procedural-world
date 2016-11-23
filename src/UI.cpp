@@ -39,7 +39,7 @@ namespace UI {
 		UI::world->camera.perspective(glm::radians(UI::CAMERA_FOV),
 			(float)width / (float)height,
 			0.01f,
-			5000.0f
+			15000.0f
 			);
 	}
 
@@ -125,7 +125,7 @@ namespace UI {
 		UI::world->camera.perspective(glm::radians(UI::CAMERA_FOV),
 			(float)width / (float)height,
 			0.01f,
-			5000.0f
+			15000.0f
 			);
 	}
 

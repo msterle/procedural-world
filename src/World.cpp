@@ -15,6 +15,7 @@
 #include "FrameBuffer.h"
 #include "Filter.h"
 #include "PerlinNoise.h"
+#include "Vertex.h"
 
 #include "World.h"
 
@@ -28,53 +29,27 @@ using namespace std;
 
 World::World() {
 	// set up terrain
-	terrain.generateDiamondSquare(100, 0.1, 0.25);
-	//terrain.generatePlane(500, 500);
+	//terrain.generateDiamondSquare(100, 0.1, 0.25);
+	terrain.generatePlane(500, 500);
 
 	// set up textures
-	PerlinNoise pnoise(237);
-	DebugHelper::Timer timer;
-	timer.start();
-	/*
-	noiseTex = new Texture2D(200, 200, [pnoise](float x, float y)->Texture::PixelRGBA8U {
-		unsigned char val = round(pnoise.octaveNoise(10.0 * x, 10.0 * y, 0, 4, 0.5) * 255.0);
-		return {val, val, val, 255};
-	});
-	*/
-	/*
-	noiseTex = new Texture2D(200, 150, [pnoise](float x, float y)->Texture::PixelRGBA32F {
-		//float val = pnoise.octaveNoise(10.0 * x, 10.0 * y, 0, 4, 0.5);
-		//float val = pnoise.noise(50.0 * x, 10.0 * y);
-		//float val = sin(50.0 * x);
-		float val = (sin(pnoise.noise(25.0 * x, 10.0 * y) * 2 * glm::pi<float>()) + 1) / 2;
-		return {val, val, val, 1.0};
-	});
-	*/
-	barkTex = new Texture2D(200, 200, [pnoise](float x, float y)->Texture::PixelRGBA32F {
-		float val = floor(10.0 * pnoise.octaveNoise(25.0 * x, 5.0 * y, 0, 2, 0.5)) / 10.0;
-		//float val = pnoise.noise(10.0 * x, 10.0 * y);
-		return {val, val, val, 1.0};
-	});
-	//barkTex->setFilterMode(Texture::LINEAR);
-	barkTexFiltered = new Texture2D(*barkTex);
 	
-	Texture2D* tempTex1 = new Texture2D(*barkTex), * tempTex2 = new Texture2D(*barkTex);
+	DebugHelper::Timer timer;
 
-	SorbelFilter sorbel;
-	sorbel.apply(barkTex, tempTex1);
-
-	Blender blender;
-
-	blender.multiply(tempTex1, barkTex, tempTex2);
-	blender.colorize(tempTex2, glm::vec3(37.0 / 255, 21.0 / 255, 0.0), glm::vec3(131.0 / 255, 83.0 / 255, 25.0 / 255), barkTexFiltered);
-
-	delete tempTex1;
-	delete tempTex2;
-
+	//// bark generation
+	timer.start();
+	generateBarkTex();
 	cout << "Timer barkTex: " << timer.stop() << endl;
 
+	// sky texture generation
+	timer.start();
+	generateSkyTex();
+	cout << "Timer skyTex: " << timer.stop() << endl;
+
+	//buildSky();
+
 	// set up trees
-	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2, barkTexFiltered);
+	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2, barkTex);
 	glm::vec3 treePos(0, 0, 0);
 	ptree->translate(glm::vec3(
 		treePos.x, 
@@ -137,6 +112,8 @@ World::~World() {
 	delete shadowShader;
 	delete shadowmapFBO;
 	delete shadowmapTex;
+	delete barkTex;
+	delete skyTex;
 	delete blurFilter;
 	for(Model* m : models)
 		delete m;
@@ -204,5 +181,81 @@ void World::draw(GLFWwindow* window) {
 	}
 
 	// debug quad
-	//DebugHelper::renderTex(barkTexFiltered->getRef());
+	DebugHelper::renderTex(skyTex);
+}
+
+
+//// protected methods
+
+void World::generateBarkTex() {
+	// step-shaded perlin octave noise
+	PerlinNoise pnoise(237);
+	Texture2D* tempTex1 = new Texture2D(200, 200, [pnoise](float x, float y)->Texture::PixelRGBA32F {
+		float val = floor(10.0 * pnoise.octaveNoise(25.0 * x, 5.0 * y, 0, 2, 0.5)) / 10.0;
+		return {val, val, val, 1.0};
+	});
+	//tempTex2->setFilterMode(Texture::LINEAR);
+
+	// find edges
+	Texture2D* tempTex2 = new Texture2D(*tempTex1);
+	SorbelFilter sorbel;
+	sorbel.apply(tempTex1, tempTex2);
+
+	// multiply noise with edges and colorize
+	Texture2D* tempTex3 = new Texture2D(*tempTex1);
+	barkTex = new Texture2D(*tempTex1);
+	Blender blender;
+	blender.multiply(tempTex1, tempTex2, tempTex3);
+	blender.colorize(tempTex3, glm::vec3(37.0 / 255, 21.0 / 255, 0.0), glm::vec3(131.0 / 255, 83.0 / 255, 25.0 / 255), barkTex);
+
+	delete tempTex1;
+	delete tempTex2;
+	delete tempTex3;
+}
+
+void World::generateSkyTex() {
+	PerlinNoise pnoise(237);
+	//TextureCubemap* skybox = new TextureCubemap();
+
+
+	Texture2D* tempTex1 = new Texture2D(600, 600, [pnoise](float x, float y)->Texture::PixelRGBA32F {
+		float xPersp = x / y;
+		float yPersp = 1.0 / y;
+		float val = min(1.0, 
+			  max(0.0, pnoise.octaveNoise(15.0 * xPersp, 15.0 * yPersp, 0, 8, 0.5) - 0.5) * 2.0
+			* max(0.0, pnoise.octaveNoise(5.0 * xPersp, 5.0 * yPersp, 0, 2, 0.5) - 0.4)
+			* 10.0 / 6.0 * 3);
+		return {val, val, val, 1.0};
+	});
+	//skyTex = new Texture2D(*tempTex1);
+	skyTex = tempTex1;
+}
+
+void World::buildSky() {
+	Model* sky = new Model();
+	vector<Vertex> vertices;
+	vertices.push_back(Vertex{
+		glm::vec3(-10000, 0, -10000),
+		glm::vec3(0, -1, 0),
+		glm::vec2(0, 0)
+	});
+	vertices.push_back(Vertex{
+		glm::vec3(10000, 0, -10000),
+		glm::vec3(0, -1, 0),
+		glm::vec2(1, 0)
+	});
+	vertices.push_back(Vertex{
+		glm::vec3(-10000, 0, 10000),
+		glm::vec3(0, -1, 0),
+		glm::vec2(0, 1)
+	});
+	vertices.push_back(Vertex{
+		glm::vec3(10000, 0, 10000),
+		glm::vec3(0, -1, 0),
+		glm::vec2(1, 1)
+	});
+	Mesh* mesh = sky->newMesh(vertices, GL_TRIANGLE_STRIP);
+	mesh->newInstance();
+	models.push_back(sky);
+	sky->translate(glm::vec3(0, 1500, 0));
 }

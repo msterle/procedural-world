@@ -42,8 +42,11 @@ protected:
 	Light light;
 	Shader* primaryShader, * shadowShader;
 	FrameBuffer* shadowmapFBO;
-	Texture2D* shadowmapTex, * blurredShadowmapTex, * noiseTex, * barkTex, * barkTexFiltered;
+	Texture2D* shadowmapTex, * blurredShadowmapTex, * barkTex, * skyTex;
 	BlurFilter* blurFilter;
+	void generateBarkTex();
+	void generateSkyTex();
+	void buildSky();
 };
 
 #endif

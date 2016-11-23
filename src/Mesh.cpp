@@ -158,11 +158,11 @@ void Mesh::draw(Shader* shader, glm::mat4 modelMat) {
 //// MeshInstancePtr factory methods
 
 MeshInstancePtr Mesh::newInstance() {
-	return newInstance(glm::mat4(1), Materials::pewter);
+	return newInstance(glm::mat4(1), Materials::ruby);
 }
 
 MeshInstancePtr Mesh::newInstance(glm::mat4 instanceMat) {
-	return newInstance(instanceMat, Materials::pewter);
+	return newInstance(instanceMat, Materials::ruby);
 }
 
 MeshInstancePtr Mesh::newInstance(Material material) {

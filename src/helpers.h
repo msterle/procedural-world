@@ -6,6 +6,7 @@
 #include "../include/glew.h"
 #include "../include/glfw3.h"
 #include "Shader.h"
+#include "Texture.h"
 
 namespace GLHelper {
 	struct Error {
@@ -45,7 +46,7 @@ namespace PathHelper {
 }
 
 namespace DebugHelper {
-	void renderTex(GLuint tex, float scale = 1);
+	void renderTex(Texture2D* tex, float scale = 1);
 	struct Timer {
 		double t0;
 		void start() { t0 = glfwGetTime(); }
