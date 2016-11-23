@@ -13,6 +13,7 @@
 #include "Texture.h"
 #include "FrameBuffer.h"
 #include "Filter.h"
+#include "Skybox.h"
 
 using namespace std;
 
@@ -28,6 +29,7 @@ public:
 	~World();
 	void draw(GLFWwindow* window);
 	Terrain terrain;
+	Skybox skybox;
 	Camera camera;
 	struct {
 		GLuint shadowWidth = 1024;

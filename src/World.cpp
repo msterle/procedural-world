@@ -1,3 +1,5 @@
+#include "World.h"
+
 #include <string>
 #include <vector>
 #include "../include/glew.h"
@@ -16,8 +18,8 @@
 #include "Filter.h"
 #include "PerlinNoise.h"
 #include "Vertex.h"
+#include "Skybox.h"
 
-#include "World.h"
 
 // debugging only
 #include <iostream>
@@ -43,7 +45,7 @@ World::World() {
 
 	// sky texture generation
 	timer.start();
-	generateSkyTex();
+	//generateSkyTex();
 	cout << "Timer skyTex: " << timer.stop() << endl;
 
 	//buildSky();
@@ -174,14 +176,17 @@ void World::draw(GLFWwindow* window) {
     glActiveTexture(GL_TEXTURE0 + 0);
 	glBindTexture(GL_TEXTURE_2D, blurredShadowmapTex->getRef());
 	
+	// draw skybox
+	skybox.draw(camera.getViewMat(), camera.getProjMat());
+
 	// Draw models
-	terrain.draw(primaryShader);
+	//terrain.draw(primaryShader);
 	for(list<Model*>::iterator it = models.begin(); it != models.end(); it++) {
 		(*it)->draw(primaryShader);
 	}
 
 	// debug quad
-	DebugHelper::renderTex(skyTex);
+	//DebugHelper::renderTex(skyTex);
 }
 
 

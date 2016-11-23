@@ -154,28 +154,80 @@ TextureCubemap::TextureCubemap(GLsizei width, GLsizei height, Generator3DRGBA8U 
 	unsigned char* data = new unsigned char[width * height * 4];
 	PixelRGBA8U pixel;
 	
-	for(int x = 0; x < width; ++x) {
-		for(int y = 0; y < height; ++y) {
-			pixel = generator((float)x / width - 0.5, (float)y / height, 1);
-			data[(x + y * width) * 4]     = pixel[0];
-			data[(x + y * width) * 4 + 1] = pixel[1];
-			data[(x + y * width) * 4 + 2] = pixel[2];
-			data[(x + y * width) * 4 + 3] = pixel[3];
-		}
-	}
-	updateImage(GL_TEXTURE_CUBE_MAP_POSITIVE_X, data);
+	// pass generator 3d coordinates on a cube centered at origin with sides of length 2
 
+	// +X face
 	for(int x = 0; x < width; ++x) {
 		for(int y = 0; y < height; ++y) {
-			pixel = generator((float)x / width - 0.5, (float)y / height, 1);
+			pixel = generator(1, 2.0 * (float)y / height - 1.0, -2.0 * (float)x / width + 1.0);
 			data[(x + y * width) * 4]     = pixel[0];
 			data[(x + y * width) * 4 + 1] = pixel[1];
 			data[(x + y * width) * 4 + 2] = pixel[2];
 			data[(x + y * width) * 4 + 3] = pixel[3];
 		}
 	}
-	updateImage(GL_TEXTURE_CUBE_MAP_POSITIVE_X, data);
-	
+	setFace(GL_TEXTURE_CUBE_MAP_POSITIVE_X, data);
+
+	// -X face
+	for(int x = 0; x < width; ++x) {
+		for(int y = 0; y < height; ++y) {
+			pixel = generator(-1, 2.0 * (float)y / height - 1.0, 2.0 * (float)x / width - 1.0);
+			data[(x + y * width) * 4]     = pixel[0];
+			data[(x + y * width) * 4 + 1] = pixel[1];
+			data[(x + y * width) * 4 + 2] = pixel[2];
+			data[(x + y * width) * 4 + 3] = pixel[3];
+		}
+	}
+	setFace(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, data);
+
+	// +Y face
+	for(int x = 0; x < width; ++x) {
+		for(int y = 0; y < height; ++y) {
+			pixel = generator(2.0 * (float)x / width - 1.0, 1, 2.0 * (float)y / height - 1.0);
+			data[(x + y * width) * 4]     = pixel[0];
+			data[(x + y * width) * 4 + 1] = pixel[1];
+			data[(x + y * width) * 4 + 2] = pixel[2];
+			data[(x + y * width) * 4 + 3] = pixel[3];
+		}
+	}
+	setFace(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, data);
+
+	// -Y face
+	for(int x = 0; x < width; ++x) {
+		for(int y = 0; y < height; ++y) {
+			pixel = generator(2.0 * (float)x / width - 1.0, -1, 2.0 * (float)y / height - 1.0);
+			data[(x + y * width) * 4]     = pixel[0];
+			data[(x + y * width) * 4 + 1] = pixel[1];
+			data[(x + y * width) * 4 + 2] = pixel[2];
+			data[(x + y * width) * 4 + 3] = pixel[3];
+		}
+	}
+	setFace(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, data);
+
+	// +Z face
+	for(int x = 0; x < width; ++x) {
+		for(int y = 0; y < height; ++y) {
+			pixel = generator(2.0 * (float)x / width - 1.0, 2.0 * (float)y / height - 1.0, 1);
+			data[(x + y * width) * 4]     = pixel[0];
+			data[(x + y * width) * 4 + 1] = pixel[1];
+			data[(x + y * width) * 4 + 2] = pixel[2];
+			data[(x + y * width) * 4 + 3] = pixel[3];
+		}
+	}
+	setFace(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, data);
+
+	// -Z face
+	for(int x = 0; x < width; ++x) {
+		for(int y = 0; y < height; ++y) {
+			pixel = generator(-2.0 * (float)x / width + 1.0, 2.0 * (float)y / height - 1.0, -1);
+			data[(x + y * width) * 4]     = pixel[0];
+			data[(x + y * width) * 4 + 1] = pixel[1];
+			data[(x + y * width) * 4 + 2] = pixel[2];
+			data[(x + y * width) * 4 + 3] = pixel[3];
+		}
+	}
+	setFace(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, data);
+
 	delete[] data;
 }
 
@@ -183,16 +235,81 @@ TextureCubemap::TextureCubemap(GLsizei width, GLsizei height, Generator3DRGBA32F
 		: TextureCubemap(GL_RGBA32F, width, height, GL_RGBA, GL_FLOAT) {
 	float* data = new float[width * height * 4];
 	PixelRGBA32F pixel;
+
+	// pass generator 3d coordinates on a cube centered at origin with sides of length 2
+
+	// +X face
 	for(int x = 0; x < width; ++x) {
 		for(int y = 0; y < height; ++y) {
-			pixel = {generator((float)x / width, (float)y / width, (float)z / width)};
+			pixel = generator(1, -2.0 * (float)y / height + 1.0, -2.0 * (float)x / width + 1.0);
 			data[(x + y * width) * 4]     = pixel[0];
 			data[(x + y * width) * 4 + 1] = pixel[1];
 			data[(x + y * width) * 4 + 2] = pixel[2];
 			data[(x + y * width) * 4 + 3] = pixel[3];
 		}
 	}
-	updateImage(data);
+	setFace(GL_TEXTURE_CUBE_MAP_POSITIVE_X, data);
+
+	// -X face
+	for(int x = 0; x < width; ++x) {
+		for(int y = 0; y < height; ++y) {
+			pixel = generator(-1, -2.0 * (float)y / height + 1.0, 2.0 * (float)x / width - 1.0);
+			data[(x + y * width) * 4]     = pixel[0];
+			data[(x + y * width) * 4 + 1] = pixel[1];
+			data[(x + y * width) * 4 + 2] = pixel[2];
+			data[(x + y * width) * 4 + 3] = pixel[3];
+		}
+	}
+	setFace(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, data);
+
+	// +Y face
+	for(int x = 0; x < width; ++x) {
+		for(int y = 0; y < height; ++y) {
+			pixel = generator(2.0 * (float)x / width - 1.0, 1, 2.0 * (float)y / height - 1.0);
+			data[(x + y * width) * 4]     = pixel[0];
+			data[(x + y * width) * 4 + 1] = pixel[1];
+			data[(x + y * width) * 4 + 2] = pixel[2];
+			data[(x + y * width) * 4 + 3] = pixel[3];
+		}
+	}
+	setFace(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, data);
+
+	// -Y face
+	for(int x = 0; x < width; ++x) {
+		for(int y = 0; y < height; ++y) {
+			pixel = generator(2.0 * (float)x / width - 1.0, -1, -2.0 * (float)y / height + 1.0);
+			data[(x + y * width) * 4]     = pixel[0];
+			data[(x + y * width) * 4 + 1] = pixel[1];
+			data[(x + y * width) * 4 + 2] = pixel[2];
+			data[(x + y * width) * 4 + 3] = pixel[3];
+		}
+	}
+	setFace(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, data);
+
+	// +Z face
+	for(int x = 0; x < width; ++x) {
+		for(int y = 0; y < height; ++y) {
+			pixel = generator(2.0 * (float)x / width - 1.0, -2.0 * (float)y / height + 1.0, 1);
+			data[(x + y * width) * 4]     = pixel[0];
+			data[(x + y * width) * 4 + 1] = pixel[1];
+			data[(x + y * width) * 4 + 2] = pixel[2];
+			data[(x + y * width) * 4 + 3] = pixel[3];
+		}
+	}
+	setFace(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, data);
+
+	// -Z face
+	for(int x = 0; x < width; ++x) {
+		for(int y = 0; y < height; ++y) {
+			pixel = generator(-2.0 * (float)x / width + 1.0, -2.0 * (float)y / height + 1.0, -1);
+			data[(x + y * width) * 4]     = pixel[0];
+			data[(x + y * width) * 4 + 1] = pixel[1];
+			data[(x + y * width) * 4 + 2] = pixel[2];
+			data[(x + y * width) * 4 + 3] = pixel[3];
+		}
+	}
+	setFace(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, data);
+
 	delete[] data;
 }
 
@@ -218,6 +335,6 @@ void TextureCubemap::updateImage(const GLvoid* pixels, Dimensions dims, Offset o
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glPixelStorei(GL_UNPACK_ROW_LENGTH, this->dims[0]);
 	bind();
-	glTexSubImage2D(target, 0, off[0], off[1], dims[0], dims[1], format, type, pixels);
+	glTexSubImage2D(face, 0, off[0], off[1], dims[0], dims[1], format, type, pixels);
 	unbind();
 }
