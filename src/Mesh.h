@@ -48,6 +48,7 @@ public:
 	void draw(Shader* shader, glm::mat4 modelMat);
 	int getNumInstances() { return instances.size(); }
 	vector<Vertex> getVertices() { return vertices; }
+	void setTexture(Texture2D* tex) { this->tex = tex; }
 };
 
 // turn into template?

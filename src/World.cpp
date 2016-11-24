@@ -32,22 +32,22 @@ using namespace std;
 World::World() {
 	// set up terrain
 	timer.start("Generating terrain...");
-	terrain.generateDiamondSquare(200, 0.1, 0.25);
-	//terrain.generatePlane(500, 500);
+	terrain.generateDiamondSquare(2000, 0.1, 0.25, 1, 400);
+	//terrain.generateDiamondSquare(200, 0.1, 0, 1, 400);
 	timer.stop("Terrain took ");
-
-	//// bark generation
-	timer.start("Generating bark texture...");
-	generateBarkTex();
-	timer.stop("Bark texture took ");
 
 	// skybox generation
 	timer.start("Generating skybox...");
-	//skybox = new Skybox(2000);
+	skybox = new Skybox(2000);
 	timer.stop("Skybox took ");
-	
+
+	//// bark generation
+	timer.start("Generating tree textures...");
+	generateBarkTex();
+	timer.stop("Tree textures took ");
 
 	// set up trees
+	timer.start("Generating models...");
 	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2, barkTex);
 	glm::vec3 treePos(-1, 0, -1);
 	ptree->translate(glm::vec3(
@@ -55,6 +55,7 @@ World::World() {
 		terrain.getYAtXZWorld(treePos.x, treePos.z), 
 		treePos.z));
 	models.push_back(ptree);
+	timer.stop("Models took ");
 
 	// set up camera
 	glm::vec3 cameraPos(8, 2, 15);
@@ -175,7 +176,7 @@ void World::draw(GLFWwindow* window) {
 	glBindTexture(GL_TEXTURE_2D, blurredShadowmapTex->getRef());
 	
 	// draw skybox
-	//skybox->draw(camera.getViewMat(), camera.getProjMat());
+	skybox->draw(camera.getViewMat(), camera.getProjMat());
 
 	// Draw models
 	terrain.draw(primaryShader);
@@ -184,7 +185,7 @@ void World::draw(GLFWwindow* window) {
 	}
 
 	// debug quad
-	//DebugHelper::renderTex(skyTex);
+	//DebugHelper::renderTex(barkTex);
 }
 
 
@@ -194,7 +195,7 @@ void World::generateBarkTex() {
 	// step-shaded perlin octave noise
 	PerlinNoise pnoise(237);
 	Texture2D* tempTex1 = new Texture2D(200, 200, [pnoise](float x, float y)->Texture::PixelRGBA32F {
-		float val = floor(10.0 * pnoise.octaveNoise(25.0 * x, 5.0 * y, 0, 2, 0.5)) / 10.0;
+		float val = floor(10.0 * pnoise.octaveNoise(25.0 * x, 5.0 * y, 0, 2, 0.5, 25)) / 10.0;
 		return {val, val, val, 1.0};
 	});
 	//tempTex2->setFilterMode(Texture::LINEAR);

@@ -50,6 +50,7 @@ PerlinNoise::PerlinNoise(unsigned int seed) {
 }
 
 float PerlinNoise::noise(float x, float y, float z, unsigned int period) const {
+	// wrap to period
 	if(period < 1)
 		period = 1;
 	x = fmod(x, (float)period);
@@ -63,13 +64,13 @@ float PerlinNoise::noise(float x, float y, float z, unsigned int period) const {
 	// get faded distances from coordinates
 	float u = fade(x), v = fade(y), w = fade(z);
 	// hashing method
-	int aaa = p[p[p[                  xi] +                   yi] +                   zi];
-    int aba = p[p[p[                  xi] + (yi + 1) % period] +                   zi];
-    int aab = p[p[p[                  xi] +                   yi] + (zi + 1) % period];
-    int abb = p[p[p[                  xi] + (yi + 1) % period] + (zi + 1) % period];
-    int baa = p[p[p[(xi + 1) % period] +                   yi] +                   zi];
-    int bba = p[p[p[(xi + 1) % period] + (yi + 1) % period] +                   zi];
-    int bab = p[p[p[(xi + 1) % period] +                   yi] + (zi + 1) % period];
+	int aaa = p[p[p[               xi] +                yi] +                zi];
+    int aba = p[p[p[               xi] + (yi + 1) % period] +                zi];
+    int aab = p[p[p[               xi] +                yi] + (zi + 1) % period];
+    int abb = p[p[p[               xi] + (yi + 1) % period] + (zi + 1) % period];
+    int baa = p[p[p[(xi + 1) % period] +                yi] +                zi];
+    int bba = p[p[p[(xi + 1) % period] + (yi + 1) % period] +                zi];
+    int bab = p[p[p[(xi + 1) % period] +                yi] + (zi + 1) % period];
     int bbb = p[p[p[(xi + 1) % period] + (yi + 1) % period] + (zi + 1) % period];
 	// find component of each hash for 8 surrounding vertices, normalize on [0,1]
 	return (lerp(w, lerp(v, lerp(u, grad(aaa, x    , y    , z    ),

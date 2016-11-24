@@ -13,6 +13,8 @@
 #include "Vertex.h"
 #include "Model.h"
 #include "Material.h"
+#include "Texture.h"
+#include "PerlinNoise.h"
 
 // debugging only!
 #include <iostream>
@@ -206,7 +208,8 @@ void Terrain::generateHills(int width, int number) {
 */
 
 
-void Terrain::generateDiamondSquare(float width, float aproxResolution, float roughness) {
+void Terrain::generateDiamondSquare(float width, float aproxResolution, float roughness
+		, float tileSize, float tileResolution) {
 	this->width = width;
 	length = width;
 	int xCount = pow(2, round(log(width * aproxResolution - 1) / log(2))) + 1;
@@ -237,10 +240,11 @@ void Terrain::generateDiamondSquare(float width, float aproxResolution, float ro
 
 	// calculate vertex normals
 	generateNormals(&vertices, xCount, xCount);
+	generateTexcoords(&vertices, xCount, xCount, tileSize);
 
 	// create mesh and mesh instance
 	mesh = newMesh(vertices, indices, GL_TRIANGLE_STRIP, false);
-	instancePtr = mesh->newInstance(Materials::copper);
+	instancePtr = mesh->newInstance(Materials::blackRubber);
 
 	// center and scale mesh instance to fit (-1, -1, -1) (1, 1, 1) cube
 	float minHeight = 1, maxHeight = 0;
@@ -255,23 +259,29 @@ void Terrain::generateDiamondSquare(float width, float aproxResolution, float ro
 
 	// scale model to xCount
 	scale(glm::vec3(1.0f / resolution, 1.0f / resolution, 1.0f / resolution));
+
+	generateTexture(tileResolution);
 }
 
-void Terrain::generatePlane(float width, float length) {
+void Terrain::generatePlane(float width, float length, float tileSize, float tileResolution) {
 	vector<Vertex> vertices;
 	this->width = width;
 	this->length = length;
 	this->resolution = 2 / width;
 	float x = width / 2, z = length / 2;
-	vertices.push_back(Vertex { glm::vec3(-x, 0, -z), glm::vec3(0, 1, 0) });
-	vertices.push_back(Vertex { glm::vec3(x, 0, -z), glm::vec3(0, 1, 0) });
-	vertices.push_back(Vertex { glm::vec3(-x, 0, z), glm::vec3(0, 1, 0) });
-	vertices.push_back(Vertex { glm::vec3(x, 0, z), glm::vec3(0, 1, 0) });
+	vertices.push_back(Vertex{glm::vec3(-x, 0, -z), glm::vec3(0, 1, 0)});
+	vertices.push_back(Vertex{glm::vec3(x, 0, -z), glm::vec3(0, 1, 0)});
+	vertices.push_back(Vertex{glm::vec3(-x, 0, z), glm::vec3(0, 1, 0)});
+	vertices.push_back(Vertex{glm::vec3(x, 0, z), glm::vec3(0, 1, 0)});
+
+	generateTexcoords(&vertices, 2, 2, tileSize);
 
 	vector<GLuint> indices = { 0, 2, 1, 3 };
 
 	mesh = newMesh(vertices, indices, GL_TRIANGLE_STRIP);
-	instancePtr = mesh->newInstance(Materials::copper);
+	instancePtr = mesh->newInstance(Materials::blackRubber);
+
+	generateTexture(tileResolution);
 }
 
 float Terrain::getYAtXZWorld(float x, float z) {
@@ -499,4 +509,32 @@ void Terrain::generateNormals(vector<Vertex>* vertices, int width, int length) {
 			(*vertices)[x + y * width].normal = glm::normalize(normal);
 		}
 	}
+}
+
+void Terrain::generateTexcoords(std::vector<Vertex>* vertices, int width, int length
+		, float tileSize) {
+	for(int y = 0; y < length; y++) {
+		for(int x = 0; x < width; x++) {
+			(*vertices)[x + y * width].texcoords.x = (float)x / tileSize;
+			(*vertices)[x + y * width].texcoords.y = (float)y / tileSize;
+		}
+	}
+}
+
+void Terrain::generateTexture(float width) {
+	PerlinNoise pnoiseSnow(237);
+	texSnow = new Texture2D(width, width, 
+		[pnoiseSnow](float x, float y)->Texture::PixelRGBA32F {
+			float val = pnoiseSnow.octaveNoise(15.0 * x, 15.0 * y, 0, 8, 0.75, 15) + 0.25 * 4 / 5;
+			Texture::PixelRGBA32F pixel = {
+				val,
+				val,
+				val,
+				1
+			};
+			return pixel;
+	});
+
+	texSnow->setFilterMode(Texture::LINEAR);
+	mesh->setTexture(texSnow);
 }

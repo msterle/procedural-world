@@ -81,9 +81,9 @@ Skybox::Skybox(float size) : tex(NULL) {
 			return {1, 1, 1, 1};
 		float val = min(1.0, 
 			  max(0.0, pnoise.octaveNoise(15.0 * x / y, 1.0, 15.0 * z / y, 8, 0.5) - 0.5) * 2.0
-			* max(0.0, pnoise.octaveNoise(5.0 * x / y, 5.0 * z / y, 0, 2, 0.5) - 0.4)
+			* max(0.0, pnoise.octaveNoise(5.0 * x / y, 1.0, 5.0 * z / y, 2, 0.5) - 0.4)
 			* 10.0 / 6.0 * 3
-			+ 0.8 * pow(100.0, -y)); // add for raleigh scattering
+			+ pow(100.0, -y)); // add for raleigh scattering
 		Texture::PixelRGBA32F pixel = {
 			fma(val, colorLight[0], fma(-val, colorDark[0], colorDark[0])),
 			fma(val, colorLight[1], fma(-val, colorDark[1], colorDark[1])),
