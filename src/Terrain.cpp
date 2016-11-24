@@ -15,6 +15,8 @@
 #include "Material.h"
 #include "Texture.h"
 #include "PerlinNoise.h"
+#include "Shader.h"
+#include "helpers.h"
 
 // debugging only!
 #include <iostream>
@@ -24,8 +26,15 @@ using namespace std;
 
 // Public methods
 
-Terrain::Terrain() {
-	//glGenBuffers(1, &this->colorBuffer);
+Terrain::Terrain(Shader* shader) : shader(shader) {
+
+}
+
+Terrain::~Terrain() {
+	delete grassTex;
+	delete rockTex;
+	delete snowTex;
+	delete waterTex;
 }
 
 /*
@@ -244,7 +253,7 @@ void Terrain::generateDiamondSquare(float width, float aproxResolution, float ro
 
 	// create mesh and mesh instance
 	mesh = newMesh(vertices, indices, GL_TRIANGLE_STRIP, false);
-	instancePtr = mesh->newInstance(Materials::blackRubber);
+	instancePtr = mesh->newInstance(Materials::terrain);
 
 	// center and scale mesh instance to fit (-1, -1, -1) (1, 1, 1) cube
 	float minHeight = 1, maxHeight = 0;
@@ -522,19 +531,71 @@ void Terrain::generateTexcoords(std::vector<Vertex>* vertices, int width, int le
 }
 
 void Terrain::generateTexture(float width) {
-	PerlinNoise pnoiseSnow(237);
-	texSnow = new Texture2D(width, width, 
-		[pnoiseSnow](float x, float y)->Texture::PixelRGBA32F {
-			float val = pnoiseSnow.octaveNoise(15.0 * x, 15.0 * y, 0, 8, 0.75, 15) + 0.25 * 4 / 5;
+	shader->use();
+	
+	Texture::PixelRGBA32F colorDark = {0.10, 0.09, 0.06, 1};
+	Texture::PixelRGBA32F colorLight = {0.62, 0.61, 0.56, 1};
+
+	PerlinNoise pnoiseRock(123);
+	rockTex = new Texture2D(width, width, 
+		[pnoiseRock, colorDark, colorLight](float x, float y)->Texture::PixelRGBA32F {
+			//float val = max(0.0f, pnoiseRock.octaveNoise(50.0 * x, 50.0 * y, 0, 4, 1, 50));
+			float val = max(0.0f, pnoiseRock.noise(300.0 * x, 300.0 * y, 0, 400));
 			Texture::PixelRGBA32F pixel = {
-				val,
-				val,
-				val,
+				fma(val, colorLight[0], fma(-val, colorDark[0], colorDark[0])),
+				fma(val, colorLight[1], fma(-val, colorDark[1], colorDark[1])),
+				fma(val, colorLight[2], fma(-val, colorDark[2], colorDark[2])),
 				1
 			};
 			return pixel;
 	});
+	glUniform1i(glGetUniformLocation(shader->getRef(), "rockTex"), 2);
+	    glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, rockTex->getRef());
 
-	texSnow->setFilterMode(Texture::LINEAR);
-	mesh->setTexture(texSnow);
+	colorDark = {0.02, 0.3, 0.06, 1};
+	colorLight = {0.04, 0.8, 0, 1};
+	PerlinNoise pnoiseGrass(456);
+	grassTex = new Texture2D(width, width, 
+		[pnoiseRock, colorDark, colorLight](float x, float y)->Texture::PixelRGBA32F {
+			float val = max(0.0f, pnoiseRock.octaveNoise(50.0 * x, 50.0 * y, 0, 4, 0.5, 50));
+			//float val = max(0.0f, pnoiseRock.noise(200.0 * x, 200.0 * y, 0, 400));
+			Texture::PixelRGBA32F pixel = {
+				fma(val, colorLight[0], fma(-val, colorDark[0], colorDark[0])),
+				fma(val, colorLight[1], fma(-val, colorDark[1], colorDark[1])),
+				fma(val, colorLight[2], fma(-val, colorDark[2], colorDark[2])),
+				1
+			};
+			return pixel;
+	});
+	glUniform1i(glGetUniformLocation(shader->getRef(), "grassTex"), 3);
+	    glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, grassTex->getRef());
+	
+	PerlinNoise pnoiseSnow(789);
+	snowTex = new Texture2D(width, width, [pnoiseSnow](float x, float y)->Texture::PixelRGBA32F {
+		float val = pnoiseSnow.octaveNoise(15.0 * x, 15.0 * y, 0, 8, 0.75, 15) + 0.25 * 4 / 5;
+		Texture::PixelRGBA32F pixel = {
+			val,
+			val,
+			val,
+			1
+		};
+		return pixel;
+	});
+	glUniform1i(glGetUniformLocation(shader->getRef(), "snowTex"), 4);
+	    glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, snowTex->getRef());
+
+
+
+	//texRock->setFilterMode(Texture::LINEAR);
+	mesh->setTexture(grassTex);
+}
+
+void Terrain::draw(Shader* shader) {
+	GLuint loc_isTerrain = glGetUniformLocation(shader->getRef(), "isTerrain");
+	glUniform1i(loc_isTerrain, 1);
+	Model::draw(shader);
+	glUniform1i(loc_isTerrain, 0);
 }

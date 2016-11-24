@@ -147,4 +147,11 @@ namespace Materials {
 		10
 	};
 
+	Material terrain = {
+		glm::vec4(0.02, 0.02, 0.02, 1),
+		glm::vec4(0.01, 0.01, 0.01, 1),
+		glm::vec4(0.1, 0.1, 0.1, 1),
+		10
+	};
+
 }

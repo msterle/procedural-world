@@ -16,14 +16,13 @@ in Material v2f_material;
 
 uniform bool useLighting;
 uniform bool isTextured;
-uniform bool isTerrain;
 uniform vec4 viewPos;
 uniform vec4 lightPosition;  // light position in camera space
 uniform vec4 lightColor;
 uniform sampler2D shadowDepthTex;
-uniform sampler2D meshTex;
-uniform sampler2D snowTex;
+uniform sampler2D rockTex;
 uniform sampler2D grassTex;
+uniform sampler2D snowTex;
 uniform int PCFSamples;
 
 out vec4 out_color;
@@ -43,11 +42,9 @@ float chebyshev(vec3 projCoords) {
 }
 
 vec4 getDiffuseColor() {
-    if(!isTerrain)
-        return texture2D(meshTex, v2f_texcoords);
     return v2f_position.y > 34 
-        ? texture2D(snowTex, v2f_texcoords) 
-        : texture2D(grassTex, v2f_texcoords);
+        ? texture2D(meshTex, snowTex) 
+        : texture2D(meshTex, rockTex);
     //float moment = dx*dx+dy*dy; // slope squared
     //texture2D(meshTex, v2f_texcoords)
 }

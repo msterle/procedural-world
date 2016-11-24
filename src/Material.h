@@ -9,7 +9,9 @@ struct Material {
 };
 
 namespace Materials {
-	extern Material brass, bronze, polishedBronze, chrome, copper, polishedCopper, gold, polishedGold, pewter, silver, polishedSilver, emerald, jade, obsidian, pearl, ruby, turquoise, blackPlastic, blackRubber, bark;
+	extern Material brass, bronze, polishedBronze, chrome, copper, polishedCopper, gold, 
+		polishedGold, pewter, silver, polishedSilver, emerald, jade, obsidian, pearl, ruby, 
+		turquoise, blackPlastic, blackRubber, bark, terrain;
 }
 
 #endif

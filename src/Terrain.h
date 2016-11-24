@@ -16,10 +16,12 @@ class Terrain: public Model {
 protected:
 	float width, length, resolution;
 	Mesh* mesh;
+	Shader* shader;
 	MeshInstancePtr instancePtr;
-	Texture2D* texGrass, * texRock, *texSnow, *texWater;
+	Texture2D* grassTex, * rockTex, * snowTex, * waterTex;
 public:
-	Terrain();
+	Terrain(Shader* shader = NULL);
+	~Terrain();
 	//void buildFromHeightmap(std::string heightmapPath, std::string colorPath, int scale = 1);
 	//void resampleHeightmap(int scale = 1);
 	//void generateHills(int width, int number);
@@ -33,6 +35,8 @@ public:
 	float getResolution() { return resolution; }
 	unsigned int getVerticesXCount() { return round(width * resolution); }
 	unsigned int getVerticesZCount() { return round(length * resolution); }
+	void draw(Shader* shader);
+	void setShader(Shader* shader) { this->shader = shader; }
 protected:
 	//GLuint colorBuffer;
 	//cimg_library::CImg<unsigned char> heightImg, colorImg;

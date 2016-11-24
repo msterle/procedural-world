@@ -49,6 +49,7 @@ protected:
 	BlurFilter* blurFilter;
 	DebugHelper::Timer timer;
 	void generateBarkTex();
+	void generateTrees(unsigned int count);
 };
 
 #endif
