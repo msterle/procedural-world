@@ -40,7 +40,7 @@ World::World() {
 	// set up terrain
 	timer.start("Generating terrain...");
 	terrain.setShader(primaryShader);
-	terrain.generateDiamondSquare(200, 0.1, 0.25, 1, 200);
+	terrain.generateDiamondSquare(2000, 0.1, 0.25, 1, 200);
 	//terrain.generateDiamondSquare(200, 0.1, 0, 1, 400);
 	timer.stop("Terrain took ");
 
