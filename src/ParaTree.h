@@ -11,11 +11,14 @@
 #include "PLS.h"
 #include "Turtle.h"
 
+
 using namespace std;
 
 
 class ParaTree : public Model {
 public:
+	//Tree box positions
+	float top, bot, right, left, front, back;
 	struct TreeParams {
 		float r1, r2, a1, a2, f1, f2, w0, q, e, min, n;
 	};
@@ -26,6 +29,7 @@ protected:
 	PLS treePLS;
 	Turtle turtle;
 	Mesh* cylinderMesh;
+	glm::vec3 position, BS_center, BS_radius;
 	void generate(unsigned int n);
 	struct Actions {
 		static void setWidth(void* v_self, float w) {
@@ -50,6 +54,13 @@ protected:
 	};
 public:
 	ParaTree(TreeParams treeParams = Presets::h);
+	glm::vec3 getPosition();
+	Mesh* getCylinderMesh(){ return cylinderMesh; }
+	void setPosition(glm::vec3 position);
+	//Create bounding sphere
+	void createBoundingVolume();
+	glm::vec3 getCenterCoord();
+
 };
 
 #endif

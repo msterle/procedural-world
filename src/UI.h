@@ -1,9 +1,15 @@
 #ifndef UI_H
 #define UI_H
 
+#include <vector>
+#include "World.h"
+#include "Camera.h"
+
 struct GLFWwindow;
 class World;
 class Camera;
+
+using namespace std;
 
 namespace UI {
 	// Abstract base class
@@ -48,6 +54,17 @@ namespace UI {
 		double cursorLastX, cursorLastY;
 	} extern Explore;
 
+	// UI for Walk mode
+	class UIWalk : public UIBase {
+	private:
+		virtual void onKey(GLFWwindow* window, int key, int scancode, int action, int mods);
+		virtual void onMouseButton(GLFWwindow* window, int button, int action, int mods);
+		virtual void onCursorMove(GLFWwindow* window, double xpos, double ypos);
+		virtual void onResize(GLFWwindow* window, int width, int height);
+		double cursorLastX, cursorLastY;
+	} extern walkMode;
+
+	GLboolean CheckCollision(Camera* camera);
 	void init(World* world, GLFWwindow* window);
 	void setActive(UIBase &UIinstance);
 }
