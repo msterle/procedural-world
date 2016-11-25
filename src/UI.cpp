@@ -52,9 +52,8 @@ namespace UI {
 
 	void UIExplore::onKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
 		//Display cursor and unlock it from the frame
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-			glfwSetWindowShouldClose(window, GL_TRUE);
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
 		else if(action == GLFW_PRESS || action == GLFW_REPEAT) {
 			switch(key) {
@@ -128,7 +127,7 @@ namespace UI {
 	void UIExplore::onMouseButton(GLFWwindow* window, int button, int action, int mods) {
 		if( action == GLFW_PRESS && (button == GLFW_MOUSE_BUTTON_LEFT || button == GLFW_MOUSE_BUTTON_RIGHT) ) {
 			// store cursor position
-			glfwGetCursorPos(window, &this->cursorLastX, &this->cursorLastY);
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
 	}
 
@@ -162,7 +161,6 @@ namespace UI {
 
 	// UIWalk event callbacks
 	void UIWalk::onKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		GLfloat mapheight = world->terrain.getYAtXZWorld(world->camera.getPosition().x, UI::world->camera.getPosition().z) + 3.0;
 		glm::vec3 currentPos;
 		glm::vec3 newPos;
@@ -170,7 +168,7 @@ namespace UI {
 		GLfloat cameraSpeed = 0.3;
 		GLfloat runSpeed = 0.85;
 		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-			glfwSetWindowShouldClose(window, GL_TRUE);
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
 		else if (action == GLFW_PRESS || action == GLFW_REPEAT) {
 			switch (key) {
@@ -229,7 +227,7 @@ namespace UI {
 	void UIWalk::onMouseButton(GLFWwindow* window, int button, int action, int mods) {
 		if (action == GLFW_PRESS && (button == GLFW_MOUSE_BUTTON_LEFT || button == GLFW_MOUSE_BUTTON_RIGHT)) {
 			// store cursor position
-			glfwGetCursorPos(window, &this->cursorLastX, &this->cursorLastY);
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		}
 	}
 
