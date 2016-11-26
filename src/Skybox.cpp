@@ -76,14 +76,15 @@ Skybox::Skybox(float size) : tex(NULL) {
 	Texture::PixelRGBA32F colorLight = {1, 1, 1, 1};
 
 	tex = new TextureCubemap(400, 400, [pnoise, colorDark, colorLight](float x, float y, float z)->Texture::PixelRGBA32F {
+		float horizon = -0.25;
 		// speed things up by ignoring values where y < 0
-		if(y < 0)
+		if(y < horizon)
 			return {1, 1, 1, 1};
 		float val = min(1.0, 
 			  max(0.0, pnoise.octaveNoise(15.0 * x / y, 1.0, 15.0 * z / y, 8, 0.5) - 0.5) * 2.0
 			* max(0.0, pnoise.octaveNoise(5.0 * x / y, 1.0, 5.0 * z / y, 2, 0.5) - 0.4)
 			* 10.0 / 6.0 * 3
-			+ pow(100.0, -y)); // add for raleigh scattering
+			+ pow(10.0, -(y - horizon))); // add for raleigh scattering
 		Texture::PixelRGBA32F pixel = {
 			fma(val, colorLight[0], fma(-val, colorDark[0], colorDark[0])),
 			fma(val, colorLight[1], fma(-val, colorDark[1], colorDark[1])),
@@ -112,8 +113,8 @@ void Skybox::draw(glm::mat4 view, glm::mat4 projection) {
 
 	// bind texture if it exists
 	if(tex != NULL) {
-		glUniform1i(glGetUniformLocation(shader->getRef(), "skyboxTex"), 0);
-	    glActiveTexture(GL_TEXTURE0);
+		glUniform1i(glGetUniformLocation(shader->getRef(), "skyboxTex"), 9);
+	    glActiveTexture(GL_TEXTURE9);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, tex->getRef());
 	}
 

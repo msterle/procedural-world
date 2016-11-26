@@ -25,7 +25,7 @@ public:
 	//void buildFromHeightmap(std::string heightmapPath, std::string colorPath, int scale = 1);
 	//void resampleHeightmap(int scale = 1);
 	//void generateHills(int width, int number);
-	void generateDiamondSquare(float width, float resolution, float roughness
+	void generateDiamondSquare(float width, float height, float resolution, float roughness
 			, float tileSize = 1, float tileResolution = 100);
 	void generatePlane(float width, float length, float tileSize = 1, float tileResolution = 100);
 	float getYAtXZWorld(float x, float z);

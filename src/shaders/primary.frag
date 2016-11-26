@@ -26,6 +26,7 @@ uniform sampler2D snowTex;
 uniform sampler2D grassTex;
 uniform sampler2D rockTex;
 uniform int PCFSamples;
+uniform float snowLine;
 
 out vec4 out_color;
 
@@ -46,12 +47,9 @@ float chebyshev(vec3 projCoords) {
 vec4 getDiffuseColor() {
     if(!isTerrain)
         return texture2D(meshTex, v2f_texcoords);
-    float dx = dFdx(v2f_normal.y);
-    float dy = dFdy(v2f_normal.y);
-    //if(v2f_normal.x * v2f_normal.x + v2f_normal.z * v2f_normal.z > 0.25)
-    if(dx * dx + dy * dy > 0.0001)
+    if(v2f_normal.x * v2f_normal.x + v2f_normal.z * v2f_normal.z > 0.5)
         return texture2D(rockTex, v2f_texcoords);
-    if(v2f_position.y > 355)
+    if(v2f_position.y > snowLine)
         return texture2D(snowTex, v2f_texcoords) ;
     return texture2D(grassTex, v2f_texcoords);
     //float moment = dx*dx+dy*dy; // slope squared

@@ -113,7 +113,8 @@ namespace UI {
 		}
 		if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
 			// move camera in/out
-			UI::world->camera.moveRelative(glm::vec3(0, 0, this->cursorLastY - ypos) * UI::MOUSE_SENS_MOV);
+			float speed = glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ? 20 * UI::MOUSE_SENS_MOV : UI::MOUSE_SENS_MOV;
+			UI::world->camera.moveRelative(glm::vec3(0, 0, this->cursorLastY - ypos) * speed);
 			// store cursor position
 			this->cursorLastX = xpos;
 			this->cursorLastY = ypos;

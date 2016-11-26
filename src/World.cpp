@@ -20,6 +20,7 @@
 #include "PerlinNoise.h"
 #include "Vertex.h"
 #include "Skybox.h"
+#include "Seeder.h"
 
 
 // debugging only
@@ -31,6 +32,8 @@ using namespace std;
 // constructor
 
 World::World() {
+	float terrainHeight = 75, terrainWidth = 250;
+
 	// set up shaders
 	primaryShader = new Shader(PathHelper::shader("primary.vert"), 
 		PathHelper::shader("primary.frag"));
@@ -40,13 +43,13 @@ World::World() {
 	// set up terrain
 	timer.start("Generating terrain...");
 	terrain.setShader(primaryShader);
-	terrain.generateDiamondSquare(2000, 0.1, 0.25, 1, 200);
+	terrain.generateDiamondSquare(terrainWidth, terrainHeight, 0.4, 0.05, 1, 400);
 	//terrain.generateDiamondSquare(200, 0.1, 0, 1, 400);
 	timer.stop("Terrain took ");
 
 	// skybox generation
 	timer.start("Generating skybox...");
-	//skybox = new Skybox(2000);
+	skybox = new Skybox(1000);
 	timer.stop("Skybox took ");
 
 	//// bark generation
@@ -56,6 +59,7 @@ World::World() {
 
 	// set up trees
 	timer.start("Generating models...");
+	/*
 	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2, barkTex);
 	glm::vec3 treePos(-1, 0, -1);
 	ptree->translate(glm::vec3(
@@ -63,20 +67,21 @@ World::World() {
 		terrain.getYAtXZWorld(treePos.x, treePos.z), 
 		treePos.z));
 	models.push_back(ptree);
-	cout << terrain.getYAtXZWorld(treePos.x, treePos.z) << endl;
-	//generateTrees(50);
+	*/
+	Seeder seeder(&terrain, barkTex);
+	list<Model*> seeded = seeder.seed(25);
+	models.insert(models.end(), seeded.begin(), seeded.end());
 	timer.stop("Models took ");
 
 	// set up camera
-	glm::vec3 cameraPos(8, 2, 15);
+	glm::vec3 cameraPos(-terrainWidth / 4, 2, -terrainWidth / 4);
 	camera.setPosition(glm::vec3(
 		cameraPos.x, 
 		terrain.getYAtXZWorld(cameraPos.x, cameraPos.z) + cameraPos.y, 
 		cameraPos.z));
-	camera.lookAt(glm::vec3(0, camera.getPosition().y + 3.5, 0));
+	camera.lookAt(glm::vec3(0, camera.getPosition().y + 10, 0));
 
 	// set up light
-	glm::vec3 centerPos(0, terrain.getYAtXZWorld(0, 0), 0);
 	light = {glm::vec3(250.0, 1000.0, 500.0), glm::vec4(1.0, 1.0, 1.0, 1.0)};
 
 	//// configure shaders
@@ -92,6 +97,7 @@ World::World() {
 	glUniform4fv(glGetUniformLocation(primaryShader->getRef(), "lightColor"), 
 		1, glm::value_ptr(light.color));
 	glUniform1i(glGetUniformLocation(primaryShader->getRef(), "useLighting"), 1);
+	glUniform1f(glGetUniformLocation(primaryShader->getRef(), "snowLine"), terrainHeight * 3 / 4);
 	glUniform1i(glGetUniformLocation(primaryShader->getRef(), "PCFSamples"), 
 		params.PCFSamples);
 
@@ -137,7 +143,7 @@ void World::draw(GLFWwindow* window) {
 	light.lightMat = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -50.0f, 50.0f)
 		* glm::lookAt(glm::normalize(light.position) + cameraPos, cameraPos, glm::vec3(0, 1, 0));
 	*/
-	light.lightMat = glm::ortho(-25.0f, 25.0f, -25.0f, 25.0f, -200.0f, 200.0f)
+	light.lightMat = glm::ortho(-250.0f, 250.0f, -250.0f, 250.0f, -200.0f, 200.0f)
 		* glm::lookAt(glm::normalize(light.position), glm::vec3(0), glm::vec3(0, 1, 0));
 
 	//// Render shadow map
@@ -180,7 +186,11 @@ void World::draw(GLFWwindow* window) {
 	glBindTexture(GL_TEXTURE_2D, blurredShadowmapTex->getRef());
 	
 	// draw skybox
-	//skybox->draw(camera.getViewMat(), camera.getProjMat());
+	glm::mat4 skyboxViewMat = camera.getViewMat();
+	skyboxViewMat[3][0] = 0;
+	skyboxViewMat[3][1] = 0;
+	skyboxViewMat[3][2] = 0;
+	skybox->draw(skyboxViewMat, camera.getProjMat());
 
 	// Draw models
 	terrain.draw(primaryShader);
@@ -219,17 +229,4 @@ void World::generateBarkTex() {
 	delete tempTex1;
 	delete tempTex2;
 	delete tempTex3;
-}
-
-void World::generateTrees(unsigned int count) {
-	srand(glfwGetTime() * 1.0e6);
-	for(int i = 0; i < count; ++i) {
-		ParaTree* ptree = new ParaTree(ParaTree::Presets::d2, barkTex);
-		glm::vec3 treePos(fmod((float)rand(), terrain.getWidth()), 0, fmod((float)rand(), terrain.getLength()));
-		ptree->translate(glm::vec3(
-			treePos.x, 
-			terrain.getYAtXZWorld(treePos.x, treePos.z), 
-			treePos.z));
-		models.push_back(ptree);
-	}
 }

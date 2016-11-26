@@ -51,7 +51,9 @@ protected:
 		static void noop() {}
 	};
 public:
-	ParaTree(TreeParams treeParams = Presets::h, Texture2D* branchTex = NULL);
+	ParaTree(TreeParams treeParams, unsigned int n, Texture2D* branchTex = NULL);
+	ParaTree(TreeParams treeParams = Presets::h, Texture2D* branchTex = NULL) 
+		: ParaTree(treeParams, treeParams.n, branchTex) { }
 };
 
 #endif

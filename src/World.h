@@ -33,8 +33,8 @@ public:
 	Skybox* skybox;
 	Camera camera;
 	struct {
-		GLuint shadowWidth = 1024;
-		GLuint shadowHeight = 1024;
+		GLuint shadowWidth = 2048;
+		GLuint shadowHeight = 2048;
 		GLuint PCFSamples = 0;
 	} params;
 protected:

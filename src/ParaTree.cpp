@@ -29,7 +29,8 @@ using namespace std::placeholders;
 
 // Constructor
 
-ParaTree::ParaTree(ParaTree::TreeParams treeParams, Texture2D* branchTex) : branchTex(branchTex) {
+ParaTree::ParaTree(ParaTree::TreeParams treeParams, unsigned int n, Texture2D* branchTex) 
+	: branchTex(branchTex) {
 	treePLS = PLS(
 		// axiom
 		{
@@ -108,7 +109,7 @@ ParaTree::ParaTree(ParaTree::TreeParams treeParams, Texture2D* branchTex) : bran
 		}
 	);
 
-	generate(treeParams.n);
+	generate(n);
 }
 
 // protected methods

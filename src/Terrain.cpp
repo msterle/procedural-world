@@ -217,7 +217,7 @@ void Terrain::generateHills(int width, int number) {
 */
 
 
-void Terrain::generateDiamondSquare(float width, float aproxResolution, float roughness
+void Terrain::generateDiamondSquare(float width, float height, float aproxResolution, float roughness
 		, float tileSize, float tileResolution) {
 	this->width = width;
 	length = width;
@@ -226,10 +226,10 @@ void Terrain::generateDiamondSquare(float width, float aproxResolution, float ro
 	vector<Vertex> vertices(pow(xCount, 2));
 	
 	// set initial corner values
-	vertices[0].position = glm::vec3(0, (float)rand() / RAND_MAX * (xCount - 1) * roughness, 0);
-	vertices[xCount - 1].position = glm::vec3(xCount - 1, (float)rand() / RAND_MAX * (xCount - 1) * roughness, 0);
-	vertices[xCount * (xCount - 1)].position = glm::vec3(0, (float)rand() / RAND_MAX * (xCount - 1) * roughness, xCount - 1);
-	vertices[xCount * xCount - 1].position = glm::vec3(xCount - 1, (float)rand() / RAND_MAX * (xCount - 1) * roughness, xCount - 1);
+	vertices[0].position = glm::vec3(0, 0, 0);
+	vertices[xCount - 1].position = glm::vec3(xCount - 1, 0, 0);
+	vertices[xCount * (xCount - 1)].position = glm::vec3(0, 0, xCount - 1);
+	vertices[xCount * xCount - 1].position = glm::vec3(xCount - 1, 0, xCount - 1);
 	
 	// enter recursive generation algorithm
 	recurseDiamondSquare(&vertices, xCount, xCount - 1, roughness);
@@ -247,6 +247,25 @@ void Terrain::generateDiamondSquare(float width, float aproxResolution, float ro
 		}
 	}
 
+	// add central peak
+	srand(time(NULL));
+	float sigmaMult = xCount / 2;
+	float aMult = height / (sigmaMult * sqrt(2 * glm::pi<float>()));
+	float sigmaAdd = xCount / 4;
+	float aAdd = height / (sigmaAdd * sqrt(2 * glm::pi<float>()));
+	float mux = xCount * 3 / 4;
+	float muy = xCount * 3 / 4;
+	for(int y = 0; y < xCount; y++) {
+		for(int x = 0; x < xCount; x++) {
+			float peakModMult = aMult * exp(-(pow(x - mux, 2) + pow(y - muy, 2)) 
+				/ (2 * pow(sigmaMult, 2)));
+			float peakModAdd = aAdd * exp(-(pow(x - mux, 2) + pow(y - muy, 2)) 
+				/ (2 * pow(sigmaAdd, 2)));
+			vertices[x + y * xCount].position.y *= peakModMult;
+			vertices[x + y * xCount].position.y += peakModAdd;
+		}
+	}
+
 	// calculate vertex normals
 	generateNormals(&vertices, xCount, xCount);
 	generateTexcoords(&vertices, xCount, xCount, tileSize);
@@ -255,7 +274,7 @@ void Terrain::generateDiamondSquare(float width, float aproxResolution, float ro
 	mesh = newMesh(vertices, indices, GL_TRIANGLE_STRIP, false);
 	instancePtr = mesh->newInstance(Materials::terrain);
 
-	// center and scale mesh instance to fit (-1, -1, -1) (1, 1, 1) cube
+	// find min, max heights
 	float minHeight = 1, maxHeight = 0;
 	for(int y = 0; y < xCount; y++) {
 		for(int x = 0; x < xCount; x++) {
@@ -263,11 +282,14 @@ void Terrain::generateDiamondSquare(float width, float aproxResolution, float ro
 			maxHeight = max(maxHeight, vertices[x + y * xCount].position.y);
 		}
 	}
-	// center on XZ plane
-	instancePtr->translate(glm::vec3(-xCount / 2, 0, -xCount / 2));
 
-	// scale model to xCount
-	scale(glm::vec3(1.0f / resolution, 1.0f / resolution, 1.0f / resolution));
+	// center on XZ plane, translate base to zero
+	instancePtr->translate(glm::vec3(-xCount / 2, -minHeight, -xCount / 2));
+
+	// scale model to xCount and height
+	scale(glm::vec3(1.0f / resolution, 
+		maxHeight == minHeight ? 1 : height / (maxHeight - minHeight), 
+		1.0f / resolution));
 
 	generateTexture(tileResolution);
 }
@@ -445,7 +467,7 @@ void Terrain::recurseDiamondSquare(vector<Vertex>* vertices, int width, int size
 				+ (*vertices)[x + half + (y - half) * width].position.y
 				+ (*vertices)[x - half + (y + half) * width].position.y
 				+ (*vertices)[x + half + (y + half) * width].position.y) / 4
-			    + ((float)rand() / RAND_MAX - 0.5) * pow(size, 0.5) * roughness;
+			    + ((float)rand() / RAND_MAX - 0.5) * pow(size, 0.25) * roughness;
 		}
 	}
 	// do square
@@ -553,8 +575,8 @@ void Terrain::generateTexture(float width) {
 	    glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, rockTex->getRef());
 
-	colorDark = {0.02, 0.3, 0.06, 1};
-	colorLight = {0.04, 0.8, 0, 1};
+	colorDark = {0.2, 0.5, 0.2, 1};
+	colorLight = {0.2, 0.8, 0.2, 1};
 	PerlinNoise pnoiseGrass(456);
 	grassTex = new Texture2D(width, width, 
 		[pnoiseRock, colorDark, colorLight](float x, float y)->Texture::PixelRGBA32F {
@@ -594,6 +616,7 @@ void Terrain::generateTexture(float width) {
 }
 
 void Terrain::draw(Shader* shader) {
+	shader->use();
 	GLuint loc_isTerrain = glGetUniformLocation(shader->getRef(), "isTerrain");
 	glUniform1i(loc_isTerrain, 1);
 	Model::draw(shader);
