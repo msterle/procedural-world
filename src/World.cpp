@@ -66,6 +66,8 @@ World::World() {
 		treePos.x, 
 		terrain.getYAtXZWorld(treePos.x, treePos.z), 
 		treePos.z));
+	cout << "PTREE POS : " << ptree->getPosition().x << " "<< ptree->getPosition().y << " " << ptree->getPosition().z << endl;
+	ptree->createBoundingVolume();
 	models.push_back(ptree);
 	*/
 	Seeder seeder(&terrain, barkTex);

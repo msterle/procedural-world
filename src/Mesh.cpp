@@ -174,6 +174,13 @@ MeshInstancePtr Mesh::newInstance(glm::mat4 instanceMat, Material material) {
 	return ptr;
 }
 
+vector<glm::mat4> Mesh::getInstancesMatrices() {
+	vector<glm::mat4> instanceMatrices;
+	for (int i = 0; i < instances.size(); i++){
+		instanceMatrices.push_back(glm::mat4(instances[i].getInstanceMat()));
+	}
+	return instanceMatrices;
+}
 // copy factory method
 MeshInstancePtr Mesh::newInstance(MeshInstancePtr orig) {
 	MeshInstancePtr ptr(&instances, instances.size());

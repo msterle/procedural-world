@@ -37,6 +37,10 @@ public:
 		GLuint shadowHeight = 2048;
 		GLuint PCFSamples = 0;
 	} params;
+	list<Model*> getModels() { 
+		list<Model*> newModel = models;
+		return newModel;
+	}
 protected:
 	const char* TERRAIN_PATH_HEIGHTMAP = "/res/heightmap_lores.png";
 	const char* TERRAIN_PATH_COLOR = "/res/colour_lores.png";

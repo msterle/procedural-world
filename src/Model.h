@@ -11,6 +11,8 @@
 #include "Mesh.h"
 #include "Texture.h"
 
+using namespace std;
+
 class Shader;
 
 class Model {
@@ -39,6 +41,11 @@ public:
 	void draw(Shader* shader);
 	glm::vec3 getPosition() { return glm::vec3(modelMat[3][0], modelMat[3][1], modelMat[3][2]); }
 	list<Mesh> getMeshes() { return meshes; }
+	virtual void createBoundingVolume(){ cout << "Unable to create Bounding Volume" << endl; }
+	virtual glm::vec3 getCenterCoord() {return glm::vec3(0, 0, 0); }
+	virtual vector<float> getBoundingVolumePos(){ //virtual member that base class(eg. ParaTree, Rocks must implement)
+		vector<float> empty;
+		return empty; }
 };
 
 #endif

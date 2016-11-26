@@ -17,6 +17,8 @@
 #include "PLS.h"
 #include "Turtle.h"
 #include "helpers.h"
+#include "World.h"
+#include "Terrain.h"
 
 using namespace std;
 using namespace std::placeholders;
@@ -138,6 +140,36 @@ void ParaTree::Actions::forward(void* v_self, float length) {
 	segment->rotate(glm::radians(90.0f), glm::vec3(1, 0, 0)); // rotate to facing +Z to match turtle start orientation
 	segment->applyMatrix(self->turtle.getMatrix()); // transform according to turtle
 }
+
+//public method
+glm::vec3 ParaTree::getPosition() {
+	glm::vec4 currentPos(glm::vec3(position) , 1);
+
+	currentPos = glm::inverse(this->getModelMat()) * currentPos;
+	currentPos = this->getModelMat() * currentPos;
+
+	glm::vec3 newPos = glm::vec3(currentPos.x, currentPos.y + 2, currentPos.z);
+	return newPos;
+}
+
+void ParaTree::setPosition(glm::vec3 position) {
+	this->position = position;
+}
+
+void ParaTree::createBoundingVolume(){
+	GLfloat BoundingX = this->getPosition().x;
+	GLfloat BoundingY = this->getPosition().y + 2.0;
+	GLfloat BoundingZ = this->getPosition().z;
+
+	 BS_center = glm::vec3(BoundingX, BoundingY, BoundingZ);
+	
+}
+
+glm::vec3 ParaTree::getCenterCoord(){
+	this->createBoundingVolume();
+	return BS_center;
+}
+
 
 
 // tree parameter presets
