@@ -267,6 +267,8 @@ namespace UI {
 		//Loop through each model and see if the camera,(at any point)wwwwwwwwwwwwwwwww collide with one of them.
 		for (list<Model*>::iterator it = ModelPtr.begin(); it != ModelPtr.end(); it++) {
 			glm::vec3 Position = glm::vec3((*it)->getCenterCoord());
+			cout << "model  : " << glm::to_string(Position) << endl;
+			cout << "camera : " << glm::to_string(camera->getPosition()) << endl;
 			if (glm::distance(camera->getPosition(), Position) < 3.0f)
 				collision = true;
 		}

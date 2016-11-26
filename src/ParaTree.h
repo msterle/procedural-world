@@ -58,7 +58,6 @@ public:
 	ParaTree(TreeParams treeParams, unsigned int n, Texture2D* branchTex = NULL);
 	ParaTree(TreeParams treeParams = Presets::h, Texture2D* branchTex = NULL) 
 		: ParaTree(treeParams, treeParams.n, branchTex) { }
-	glm::vec3 getPosition();
 	Mesh* getCylinderMesh(){ return cylinderMesh; }
 	void setPosition(glm::vec3 position);
 	//Create bounding sphere
