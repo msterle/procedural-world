@@ -44,7 +44,6 @@ World::World() {
 	timer.start("Generating terrain...");
 	terrain.setShader(primaryShader);
 	terrain.generateDiamondSquare(terrainWidth, terrainHeight, 0.4, 0.05, 1, 400);
-	//terrain.generateDiamondSquare(200, 0.1, 0, 1, 400);
 	timer.stop("Terrain took ");
 
 	// skybox generation
@@ -59,19 +58,8 @@ World::World() {
 
 	// set up trees
 	timer.start("Generating models...");
-	/*
-	ParaTree* ptree = new ParaTree(ParaTree::Presets::d2, barkTex);
-	glm::vec3 treePos(-1, 0, -1);
-	ptree->translate(glm::vec3(
-		treePos.x, 
-		terrain.getYAtXZWorld(treePos.x, treePos.z), 
-		treePos.z));
-	cout << "PTREE POS : " << ptree->getPosition().x << " "<< ptree->getPosition().y << " " << ptree->getPosition().z << endl;
-	ptree->createBoundingVolume();
-	models.push_back(ptree);
-	*/
 	Seeder seeder(&terrain, barkTex);
-	list<Model*> seeded = seeder.seed(25);
+	list<Model*> seeded = seeder.seed(50);
 	models.insert(models.end(), seeded.begin(), seeded.end());
 	timer.stop("Models took ");
 

@@ -43,7 +43,7 @@ list<Model*> Seeder::seed(int count) {
 		}
 		treePos.y = terrain->getYAtXZWorld(treePos.x, treePos.z);
 		ParaTree::TreeParams params = presets[rand() % presets.size()];
-		params.n = params.n + ((float)rand() / RAND_MAX - 0.5) * 0.3 * params.n;
+		params.n = params.n - round(((float)rand() / RAND_MAX) * 0.5 * params.n);
 		ParaTree* ptree = new ParaTree(params, barkTex);
 		ptree->translate(treePos);
 		models.push_back(ptree);

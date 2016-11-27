@@ -249,7 +249,7 @@ void Terrain::generateDiamondSquare(float width, float height, float aproxResolu
 
 	// add central peak
 	srand(time(NULL));
-	float sigmaMult = xCount / 2;
+	float sigmaMult = xCount / 3;
 	float aMult = height / (sigmaMult * sqrt(2 * glm::pi<float>()));
 	float sigmaAdd = xCount / 4;
 	float aAdd = height / (sigmaAdd * sqrt(2 * glm::pi<float>()));
