@@ -49,7 +49,7 @@ protected:
 	Light light;
 	Shader* primaryShader, * shadowShader;
 	FrameBuffer* shadowmapFBO;
-	Texture2D* shadowmapTex, * blurredShadowmapTex, * barkTex, * skyTex;
+	Texture2D* shadowmapTex, * blurredShadowmapTex, * barkTex, * leafTex, * skyTex;
 	BlurFilter* blurFilter;
 	DebugHelper::Timer timer;
 	void generateBarkTex();

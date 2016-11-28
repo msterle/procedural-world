@@ -13,8 +13,8 @@ set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/lib)
 
-# include_directories(include)
-# include_directories("${PROJECT_SOURCE_DIR}")
+#include_directories(${CMAKE_SOURCE_DIR}/lib)
+link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 file(GLOB SOURCES "src/*.cpp")
 
@@ -38,3 +38,5 @@ add_executable(comp371project ${SOURCES})
 set_property(TARGET comp371project PROPERTY CXX_STANDARD 11)
 
 target_link_libraries(comp371project ${PROJECT_LINK_LIBS})
+
+target_link_libraries(comp371project "SOIL")

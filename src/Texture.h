@@ -58,7 +58,6 @@ public:
 	Texture(GLenum target, const Texture& orig) 
 			: Texture(target, orig.internalFormat, orig.dims, orig.format, orig.type, orig.wrap, 
 				orig.border, orig.filter) { }
-	//
 	void release() { 
 		glDeleteTextures(1, &texID);
 		texID = 0;
@@ -149,6 +148,8 @@ public:
 	// texture generators
 	Texture2D(GLsizei width, GLsizei height, GeneratorRGBA8U generator);
 	Texture2D(GLsizei width, GLsizei height, GeneratorRGBA32F generator);
+	// load from file
+	static Texture2D* newRGBA8FromFile(std::string path);
 	// copy constructor
 	Texture2D(const Texture2D& orig) 
 			: Texture(GL_TEXTURE_2D, orig) { init(); }

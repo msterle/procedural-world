@@ -65,6 +65,12 @@ public:
 			* glm::mat4_cast(transComponents.orientQuat)
 			* glm::scale(glm::mat4(1), transComponents.scaleVec);
 	}
+	glm::mat4 getMatrixWidthOnly() {
+		// scale, translate, then rotate
+		return glm::translate(glm::mat4(1), transComponents.translVec)
+			* glm::mat4_cast(transComponents.orientQuat)
+			* glm::scale(glm::mat4(1), glm::vec3(transComponents.scaleVec.x, transComponents.scaleVec.y, 1));
+	}
 	/*
 	glm::mat4 setMatrix(glm::mat4 transformMat) {
 		glm::vec3 skew;

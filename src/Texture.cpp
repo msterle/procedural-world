@@ -3,6 +3,7 @@
 #include "../include/glew.h"
 #include "../include/glfw3.h"
 #include <functional>
+#include "../include/SOIL.h"
 
 // debug only
 #include <iostream>
@@ -120,6 +121,16 @@ Texture2D::Texture2D(GLsizei width, GLsizei height, GeneratorRGBA32F generator)
 	}
 	updateImage(data);
 	delete[] data;
+}
+
+// load from file using SOIL
+Texture2D* Texture2D::newRGBA8FromFile(string path) {
+	int width, height;
+	unsigned char* image = SOIL_load_image(path.c_str(), &width, &height, 0, SOIL_LOAD_AUTO);
+	Texture2D* tex = new Texture2D(GL_RGBA8, width, height, GL_RGBA, GL_UNSIGNED_BYTE);
+	tex->setPixelData(image);
+	cout << path << endl;
+	return tex;
 }
 
 //// protected methods

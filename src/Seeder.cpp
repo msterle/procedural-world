@@ -9,12 +9,12 @@ using namespace std;
 
 list<Model*> Seeder::seed(int count) {
 	vector<ParaTree::TreeParams> presets;
-	presets.push_back(ParaTree::Presets::d);
+	//presets.push_back(ParaTree::Presets::d); // 2D
 	presets.push_back(ParaTree::Presets::d2);
-	presets.push_back(ParaTree::Presets::e);
+	//presets.push_back(ParaTree::Presets::e); // 2D
 	presets.push_back(ParaTree::Presets::g);
 	presets.push_back(ParaTree::Presets::h);
-	presets.push_back(ParaTree::Presets::i);
+	//presets.push_back(ParaTree::Presets::i); // leaves too large
 
 
 	list<Model*> models;
@@ -43,8 +43,8 @@ list<Model*> Seeder::seed(int count) {
 		}
 		treePos.y = terrain->getYAtXZWorld(treePos.x, treePos.z);
 		ParaTree::TreeParams params = presets[rand() % presets.size()];
-		params.n = params.n - round(((float)rand() / RAND_MAX) * 0.5 * params.n);
-		ParaTree* ptree = new ParaTree(params, barkTex);
+		params.n = params.n - round(((float)rand() / RAND_MAX) * 0.25 * params.n);
+		ParaTree* ptree = new ParaTree(params, barkTex, leafTex);
 		ptree->translate(treePos);
 		models.push_back(ptree);
 		positions.push_back(treePos);

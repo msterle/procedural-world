@@ -48,7 +48,7 @@ World::World() {
 
 	// skybox generation
 	timer.start("Generating skybox...");
-	skybox = new Skybox(1000);
+	skybox = new Skybox(500);
 	timer.stop("Skybox took ");
 
 	//// bark generation
@@ -56,10 +56,12 @@ World::World() {
 	generateBarkTex();
 	timer.stop("Tree textures took ");
 
+	leafTex = Texture2D::newRGBA8FromFile(PathHelper::res("leaf.png"));
+
 	// set up trees
 	timer.start("Generating models...");
-	Seeder seeder(&terrain, barkTex);
-	list<Model*> seeded = seeder.seed(25);
+	Seeder seeder(&terrain, barkTex, leafTex);
+	list<Model*> seeded = seeder.seed(50);
 	models.insert(models.end(), seeded.begin(), seeded.end());
 	timer.stop("Models took ");
 
@@ -70,6 +72,13 @@ World::World() {
 		terrain.getYAtXZWorld(cameraPos.x, cameraPos.z) + cameraPos.y, 
 		cameraPos.z));
 	camera.lookAt(glm::vec3(0, camera.getPosition().y + 10, 0));
+
+	// Test tree
+	ParaTree* tree = new ParaTree(ParaTree::Presets::d2, 12, barkTex, leafTex);
+	glm::vec3 treePos = cameraPos + glm::vec3(10, 0, 10);
+	treePos.y = terrain.getYAtXZWorld(treePos.x, treePos.z);
+	tree->translate(treePos);
+	models.push_back(tree);
 
 	// set up light
 	light = {glm::vec3(250.0, 1000.0, 500.0), glm::vec4(1.0, 1.0, 1.0, 1.0)};
@@ -189,7 +198,7 @@ void World::draw(GLFWwindow* window) {
 	}
 
 	// debug quad
-	//DebugHelper::renderTex(barkTex);
+	//DebugHelper::renderTex(leafTex);
 }
 
 

@@ -24,13 +24,13 @@ public:
 		float r1, r2, a1, a2, f1, f2, w0, q, e, min, n;
 	};
 	struct Presets {
-		static const TreeParams a, b, c, d, e, f, g, h, i, d2;
+		static const TreeParams a, b, c, d, e, f, g, h, i, d2, e2;
 	};
 protected:
 	PLS treePLS;
 	Turtle turtle;
-	Mesh* cylinderMesh;
-	Texture2D* branchTex;
+	Mesh* cylinderMesh, * leafMesh;
+	Texture2D* branchTex, * leafTex;
 	glm::vec3 position, BS_center, BS_radius;
 	void generate(unsigned int n);
 	struct Actions {
@@ -38,6 +38,7 @@ protected:
 			((ParaTree*)v_self)->turtle.setWidth(w / 150);
 		}
 		static void forward(void* v_self, float length = 1);
+		static void apex(void* v_self, float s, float w);
 		static void turnLeft(void* v_self, float angle = 20) {
 			((ParaTree*)v_self)->turtle.turn(glm::radians(-angle));
 		}
@@ -55,9 +56,9 @@ protected:
 		static void noop() {}
 	};
 public:
-	ParaTree(TreeParams treeParams, unsigned int n, Texture2D* branchTex = NULL);
-	ParaTree(TreeParams treeParams = Presets::h, Texture2D* branchTex = NULL) 
-		: ParaTree(treeParams, treeParams.n, branchTex) { }
+	ParaTree(TreeParams treeParams, unsigned int n, Texture2D* branchTex = NULL, Texture2D* leafTex = NULL);
+	ParaTree(TreeParams treeParams = Presets::h, Texture2D* branchTex = NULL, Texture2D* leafTex = NULL) 
+		: ParaTree(treeParams, treeParams.n, branchTex, leafTex) { }
 	Mesh* getCylinderMesh(){ return cylinderMesh; }
 	void setPosition(glm::vec3 position);
 	//Create bounding sphere

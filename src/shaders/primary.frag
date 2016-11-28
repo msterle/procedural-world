@@ -58,22 +58,24 @@ vec4 getDiffuseColor() {
 
 void main() {
     vec4 diffuseColor = isTextured ? getDiffuseColor() : v2f_material.diffuse;
-    vec4 ambientColor = isTextured ? diffuseColor / 8 : v2f_material.ambient;
+    vec4 ambientColor = isTextured ? vec4(diffuseColor.xyz / 8, diffuseColor.a) : v2f_material.ambient;
 
     if(useLighting) {
         // Compute the diffuse component
         vec4 L = normalize(lightPosition - v2f_position);
-        vec4 Diffuse =  max(dot(L, v2f_normal), 0) * lightColor * diffuseColor;
+        vec4 diffuseColor =  vec4(max(dot(L, v2f_normal), 0) * lightColor.xyz * diffuseColor.xyz, diffuseColor.a);
          
         // Compute the specular component
         vec4 V = normalize(viewPos - v2f_position);
         vec4 H = normalize(L + V);
-        vec4 Specular = pow(max(dot(H, v2f_normal), 0), v2f_material.shininess) * lightColor * v2f_material.specular;
+        vec4 specularColor = pow(max(dot(H, v2f_normal), 0), v2f_material.shininess) * vec4(lightColor.xyz * v2f_material.specular.xyz, v2f_material.specular.a);
         
         // combine light components
         vec3 projCoords = v2f_positionL.xyz / v2f_positionL.w * 0.5 + 0.5;
         float shadow = chebyshev(projCoords);
-        vec4 lighting = max((Diffuse + Specular) * shadow, ambientColor);
+        vec4 lighting = vec4(max((diffuseColor.xyz + specularColor.xyz) * shadow, ambientColor.xyz), diffuseColor.a);
+        if(lighting.a < 0.9)
+            discard;
         out_color = lighting;
     }
     else {

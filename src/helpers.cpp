@@ -67,6 +67,8 @@ namespace GLHelper{
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
 
+		glClearColor(0.0, 0.0, 0.0, 0.0);
+
 		// Enable primitive restart
 		glEnable(GL_PRIMITIVE_RESTART);
 		// Define restart index
