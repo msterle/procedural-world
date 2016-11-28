@@ -59,7 +59,7 @@ World::World() {
 	// set up trees
 	timer.start("Generating models...");
 	Seeder seeder(&terrain, barkTex);
-	list<Model*> seeded = seeder.seed(50);
+	list<Model*> seeded = seeder.seed(25);
 	models.insert(models.end(), seeded.begin(), seeded.end());
 	timer.stop("Models took ");
 
