@@ -25,3 +25,6 @@ Win32
 *.sdf
 *.sln
 *.v12.suo
+
+#libreoffice temp files
+doc/.~lock.*
