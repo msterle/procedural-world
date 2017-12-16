@@ -13,3 +13,7 @@ make all
 ```
 bin/comp371project
 ```
+
+# Screenshots
+![screen1](https://github.com/msterle/procedural-world/blob/master/doc/screen1.png)
+![screen2](https://github.com/msterle/procedural-world/blob/master/doc/screen2.png)
