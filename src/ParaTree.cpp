@@ -84,10 +84,12 @@ ParaTree::ParaTree(ParaTree::TreeParams treeParams, unsigned int n, Texture2D* b
 				'F',
 				bind(ParaTree::Actions::forward, (void*)this, _1)
 			},
+			/*
 			{
 				'A',
 				bind(ParaTree::Actions::apex, (void*)this, _1, _2)
 			},
+			*/
 			{
 				'+',
 				bind(ParaTree::Actions::turnLeft, (void*)this, _1)

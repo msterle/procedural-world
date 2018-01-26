@@ -59,26 +59,60 @@ World::World() {
 	leafTex = Texture2D::newRGBA8FromFile(PathHelper::res("leaf.png"));
 
 	// set up trees
+	/*
 	timer.start("Generating models...");
 	Seeder seeder(&terrain, barkTex, leafTex);
 	list<Model*> seeded = seeder.seed(50);
 	models.insert(models.end(), seeded.begin(), seeded.end());
 	timer.stop("Models took ");
+	*/
+
+	// Test tree
+	/*
+	ParaTree* tree = new ParaTree(ParaTree::Presets::d2, 12, barkTex, leafTex);
+	glm::vec3 treePos = glm::vec3(-terrainWidth / 4, 2, -terrainWidth / 4);
+	treePos.y = terrain.getYAtXZWorld(treePos.x, treePos.z);
+	tree->translate(treePos);
+	models.push_back(tree);
+	*/
+
+	//Test trees
+	vector<ParaTree::TreeParams> testTrees = {
+		ParaTree::Presets::a,
+		ParaTree::Presets::b,
+		ParaTree::Presets::c,
+		ParaTree::Presets::d,
+		ParaTree::Presets::e,
+		ParaTree::Presets::f,
+		ParaTree::Presets::g,
+		ParaTree::Presets::h,
+		ParaTree::Presets::i,
+		ParaTree::Presets::d2,
+		ParaTree::Presets::e2
+	};
+
+	glm::vec3 originGround(-terrainWidth / 4, 2, -terrainWidth / 4);
+	originGround.y = terrain.getYAtXZWorld(originGround.x, originGround.z);
+
+	float xStart = 0;
+	for(const auto &treeParams : testTrees) {
+		ParaTree* tree = new ParaTree(treeParams, 12, barkTex, leafTex);
+		glm::vec3 treePos = originGround;
+		treePos.x += xStart;
+		treePos.y = terrain.getYAtXZWorld(treePos.x, treePos.z);
+		tree->translate(treePos);
+		models.push_back(tree);
+		xStart += 10;
+	}
 
 	// set up camera
-	glm::vec3 cameraPos(-terrainWidth / 4, 2, -terrainWidth / 4);
+	glm::vec3 cameraPos = originGround;
+	cameraPos.z += 20;
 	camera.setPosition(glm::vec3(
 		cameraPos.x, 
 		terrain.getYAtXZWorld(cameraPos.x, cameraPos.z) + cameraPos.y, 
 		cameraPos.z));
-	camera.lookAt(glm::vec3(0, camera.getPosition().y + 10, 0));
-
-	// Test tree
-	ParaTree* tree = new ParaTree(ParaTree::Presets::d2, 12, barkTex, leafTex);
-	glm::vec3 treePos = cameraPos + glm::vec3(10, 0, 10);
-	treePos.y = terrain.getYAtXZWorld(treePos.x, treePos.z);
-	tree->translate(treePos);
-	models.push_back(tree);
+	camera.lookAt(originGround);
 
 	// set up light
 	light = {glm::vec3(250.0, 1000.0, 500.0), glm::vec4(1.0, 1.0, 1.0, 1.0)};
