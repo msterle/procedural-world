@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <random>
+#include <cmath>
 #include "../include/glew.h"
 #include "../include/glfw3.h"
 #include "../include/glm/gtc/type_ptr.hpp"
@@ -77,7 +78,7 @@ World::World() {
 	*/
 
 	//Test trees
-	vector<ParaTree::TreeParams> testTrees = {
+	vector<ParaTree::TreeParams> treeParams = {
 		ParaTree::Presets::a,
 		ParaTree::Presets::b,
 		ParaTree::Presets::c,
@@ -91,28 +92,32 @@ World::World() {
 		ParaTree::Presets::e2
 	};
 
-	glm::vec3 originGround(-terrainWidth / 4, 2, -terrainWidth / 4);
-	originGround.y = terrain.getYAtXZWorld(originGround.x, originGround.z);
+	this->originGround = glm::vec3 (-terrainWidth / 4, 2, -terrainWidth / 4);
+	this->originGround.y = terrain.getYAtXZWorld(this->originGround.x, this->originGround.z);
 
-	float xStart = 0;
-	for(const auto &treeParams : testTrees) {
-		ParaTree* tree = new ParaTree(treeParams, 12, barkTex, leafTex);
-		glm::vec3 treePos = originGround;
-		treePos.x += xStart;
+	int nTrees = treeParams.size();
+	cout << nTrees << endl;
+	for(int i = 0; i < nTrees; i++) {
+		ParaTree* tree = new ParaTree(treeParams[i], this->generation, barkTex, leafTex);
+		glm::vec3 treePos = this->originGround;
+		float angle = (float)i / nTrees * 2 * M_PI;
+		treePos.x += 15 * sin(angle);
+		treePos.z += 15 * cos(angle);
 		treePos.y = terrain.getYAtXZWorld(treePos.x, treePos.z);
+		tree->rotate(angle, glm::vec3(0, 1, 0));
 		tree->translate(treePos);
+		this->dynamicTrees.push_back(tree);
 		models.push_back(tree);
-		xStart += 10;
 	}
 
 	// set up camera
-	glm::vec3 cameraPos = originGround;
+	glm::vec3 cameraPos = this->originGround;
 	cameraPos.z += 20;
 	camera.setPosition(glm::vec3(
 		cameraPos.x, 
 		terrain.getYAtXZWorld(cameraPos.x, cameraPos.z) + cameraPos.y, 
 		cameraPos.z));
-	camera.lookAt(originGround);
+	camera.lookAt(this->originGround);
 
 	// set up light
 	light = {glm::vec3(250.0, 1000.0, 500.0), glm::vec4(1.0, 1.0, 1.0, 1.0)};
@@ -235,6 +240,37 @@ void World::draw(GLFWwindow* window) {
 	//DebugHelper::renderTex(leafTex);
 }
 
+void World::generateDynamicTrees() {
+	//Test trees
+	vector<ParaTree::TreeParams> treeParams = {
+		ParaTree::Presets::a,
+		ParaTree::Presets::b,
+		ParaTree::Presets::c,
+		ParaTree::Presets::d,
+		ParaTree::Presets::e,
+		ParaTree::Presets::f,
+		ParaTree::Presets::g,
+		ParaTree::Presets::h,
+		ParaTree::Presets::i,
+		ParaTree::Presets::d2,
+		ParaTree::Presets::e2
+	};
+
+	int nTrees = treeParams.size();
+	for(int i = 0; i < this->dynamicTrees.size(); i++) {
+		ParaTree* tree = new ParaTree(treeParams[i], this->generation, barkTex, leafTex);
+		glm::vec3 treePos = this->originGround;
+		float angle = (float)i / nTrees * 2 * M_PI;
+		treePos.x += 15 * sin(angle);
+		treePos.z += 15 * cos(angle);
+		treePos.y = terrain.getYAtXZWorld(treePos.x, treePos.z);
+		tree->rotate(angle, glm::vec3(0, 1, 0));
+		tree->translate(treePos);
+		//ParaTree** toDelete = &this->dynamicTrees[i];
+		*this->dynamicTrees[i] = *tree;
+		//delete *toDelete;
+	}
+}
 
 //// protected methods
 

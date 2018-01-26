@@ -119,6 +119,12 @@ namespace UI {
 			case GLFW_KEY_H:
 				UI::setActive(UI::walkMode);
 				break;
+			case GLFW_KEY_EQUAL:
+				UI::world->generationInc();
+				break;
+			case GLFW_KEY_MINUS:
+				UI::world->generationDec();
+				break;
 			}
 		}
 	}
