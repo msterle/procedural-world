@@ -6,7 +6,7 @@ project(comp371project)
 set(GCC_COVERAGE_COMPILE_FLAGS "-g -w")
 set(GCC_COVERAGE_LINK_FLAGS "-pthread")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS}")
-set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}  -framework OpenGL -framework CoreFoundation")
 
 # Set project directories
 #set(PROJECT_SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
@@ -26,9 +26,24 @@ if(MSVC)
 	add_definitions(-DGLEW_STATIC)
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG "${EXECUTABLE_OUTPUT_PATH}")
 else()
+  find_package(X11 REQUIRED)
+  if(X11_FOUND)
+    include_directories(${X11_INCLUDE_DIR})
+  endif()
+  
+  find_package(glew REQUIRED)
+  if(GLEW_FOUND)
+    include_directories(${GLEW_INCLUDE_DIRS})
+    #link_libraries(${GLEW_LIBRARIES})
+  endif()
+
+  include_directories("/usr/local/lib")
+  link_directories("/usr/local/lib")
+  link_libraries(SOIL)
+
 	find_package(glfw3 3.2 REQUIRED)
 	find_package(OpenGL REQUIRED)
-	set(PROJECT_LINK_LIBS GLEW GL glfw)
+	set(PROJECT_LINK_LIBS glfw ${GLEW_LIBRARIES})
 endif()
 
 add_definitions(-DPROJECT_ROOT="${CMAKE_SOURCE_DIR}")
@@ -39,4 +54,4 @@ set_property(TARGET comp371project PROPERTY CXX_STANDARD 11)
 
 target_link_libraries(comp371project ${PROJECT_LINK_LIBS})
 
-target_link_libraries(comp371project "SOIL")
+target_link_libraries(comp371project "/usr/local/lib/libSOIL.a")

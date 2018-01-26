@@ -271,7 +271,7 @@ void Terrain::generateDiamondSquare(float width, float height, float aproxResolu
 	generateTexcoords(&vertices, xCount, xCount, tileSize);
 
 	// create mesh and mesh instance
-	mesh = newMesh(vertices, indices, GL_TRIANGLE_STRIP, false);
+	mesh = newMesh(vertices, indices, GL_TRIANGLE_STRIP);
 	instancePtr = mesh->newInstance(Materials::terrain);
 
 	// find min, max heights

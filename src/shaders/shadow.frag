@@ -2,6 +2,8 @@
 
 in vec4 v2f_position;
 
+out vec4 fragColor;
+
 void main() {
 	float depth = v2f_position.z / v2f_position.w ;
 	depth = depth * 0.5 + 0.5;
@@ -14,5 +16,5 @@ void main() {
 	moment2 += 0.25*(dx*dx+dy*dy);
 	
 
-	gl_FragColor = vec4(moment1, moment2, 0.0, 0.0);
+	fragColor = vec4(moment1, moment2, 0.0, 0.0);
 } 

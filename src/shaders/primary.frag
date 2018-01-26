@@ -31,7 +31,7 @@ uniform float snowLine;
 out vec4 out_color;
 
 float chebyshev(vec3 projCoords) {
-    vec2 moments = texture2D(shadowDepthTex, projCoords.xy).rg;
+    vec2 moments = texture(shadowDepthTex, projCoords.xy).rg;
 
     if (projCoords.z <= moments.x)
         return 1.0;
@@ -46,14 +46,14 @@ float chebyshev(vec3 projCoords) {
 
 vec4 getDiffuseColor() {
     if(!isTerrain)
-        return texture2D(meshTex, v2f_texcoords);
+        return texture(meshTex, v2f_texcoords);
     if(v2f_normal.x * v2f_normal.x + v2f_normal.z * v2f_normal.z > 0.5)
-        return texture2D(rockTex, v2f_texcoords);
+        return texture(rockTex, v2f_texcoords);
     if(v2f_position.y > snowLine)
-        return texture2D(snowTex, v2f_texcoords) ;
-    return texture2D(grassTex, v2f_texcoords);
+        return texture(snowTex, v2f_texcoords) ;
+    return texture(grassTex, v2f_texcoords);
     //float moment = dx*dx+dy*dy; // slope squared
-    //texture2D(meshTex, v2f_texcoords)
+    //texture(meshTex, v2f_texcoords)
 }
 
 void main() {

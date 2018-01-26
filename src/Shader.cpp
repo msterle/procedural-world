@@ -68,7 +68,7 @@ GLuint Shader::compileShader(Type shaderType, string path) {
 	glGetShaderiv(shaderRef, GL_COMPILE_STATUS, &success);
 	if(!success) {
 		glGetShaderInfoLog(shaderRef, 512, NULL, infoLog);
-		cerr << "ERROR::SHADER::" << shaderTypeString << "::COMPILATION_FAILED\n" << infoLog << endl;
+		cerr << "ERROR::SHADER::" << path << "::COMPILATION_FAILED\n" << infoLog << endl;
 		exit(-1);
 	}
 	return shaderRef;
