@@ -117,7 +117,7 @@ World::World() {
 		cameraPos.x, 
 		terrain.getYAtXZWorld(cameraPos.x, cameraPos.z) + cameraPos.y, 
 		cameraPos.z));
-	camera.lookAt(this->originGround);
+	//camera.lookAt(this->originGround);
 
 	// set up light
 	light = {glm::vec3(250.0, 1000.0, 500.0), glm::vec4(1.0, 1.0, 1.0, 1.0)};
